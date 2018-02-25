@@ -53,7 +53,8 @@ extern u16 g_ffff ;		//拐弯角度_中值------://右转3/4  左转 1/4 中间 1/2
 Fencha_struct FindSpace(u16 dst,u8 num,u8 dir);//16位处理检测到磁导航的数据函数
 Fencha_struct FindSpace1(u8 dst,u8 num,u8 dir);//8位处理检测到磁导航的数据函数
  		
-void PID_Adjust(u16 j_speed,float kp,float ki,float kd);
+void PID_AUTO_QianLun(u16 j_speed,float kp,float ki,float kd);
+void PID_AUTO_HouLun(u16 j_speed2,float kp2,float ki2,float kd2);	//后轮的PID调节
 
 void PID_SD_Adjust(u16 j_speed,float kp,float ki,float kd);
 

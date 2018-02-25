@@ -40,8 +40,19 @@ CPU_STK Auto_TASK_STK[Auto_STK_SIZE];
 //任务函数
 void Auto_task(void *p_arg);						//自动模式任务
 
+//任务优先级 
+#define PID_TASK_PRIO		6
+//任务堆栈大小	
+#define PID_STK_SIZE 		512
+//任务控制块
+OS_TCB PIDTaskTCB;
+//任务堆栈	
+CPU_STK PID_TASK_STK[PID_STK_SIZE];
+//任务函数
+void PID_task(void *p_arg);							//PID任务
+
 //任务优先级
-#define Manual_TASK_PRIO		6
+#define Manual_TASK_PRIO		7
 //任务堆栈大小	
 #define Manual_STK_SIZE 		512
 //任务控制块
@@ -52,7 +63,7 @@ CPU_STK Manual_TASK_STK[Manual_STK_SIZE];
 void Manual_task(void *p_arg);						//手动模式任务
 
 //任务优先级
-#define FLOAT_TASK_PRIO		7
+#define FLOAT_TASK_PRIO		8
 //任务堆栈大小
 #define FLOAT_STK_SIZE		512
 //任务控制块
@@ -63,7 +74,7 @@ __align(8) CPU_STK	FLOAT_TASK_STK[FLOAT_STK_SIZE];
 void float_task(void *p_arg);						//浮点任务
 
 //任务优先级
-#define Screen_TASK_PRIO		8
+#define Screen_TASK_PRIO		9
 //任务堆栈大小	
 #define Screen_STK_SIZE 		512
 //任务控制块
@@ -72,18 +83,6 @@ OS_TCB ScreenTaskTCB;
 CPU_STK Screen_TASK_STK[Screen_STK_SIZE];
 //任务函数
 void Screen_task(void *p_arg);						//屏幕任务
-
-//任务优先级 
-#define PID_TASK_PRIO		9
-//任务堆栈大小	
-#define PID_STK_SIZE 		512
-//任务控制块
-OS_TCB PIDTaskTCB;
-//任务堆栈	
-CPU_STK PID_TASK_STK[PID_STK_SIZE];
-//任务函数
-void PID_task(void *p_arg);							//PID任务
-
 
 //任务优先级
 #define Control_TASK_PRIO		10
@@ -249,9 +248,24 @@ void start_task(void *p_arg)
                  (void   	* )0,				
                  (OS_OPT      )OS_OPT_TASK_STK_CHK|OS_OPT_TASK_STK_CLR, 
                  (OS_ERR 	* )&err);
+
+	//PID
+	OSTaskCreate((OS_TCB 	* )&PIDTaskTCB,					//6
+				 (CPU_CHAR	* )"PID task", 		
+                 (OS_TASK_PTR )PID_task, 			
+                 (void		* )0,					
+                 (OS_PRIO	  )PID_TASK_PRIO,     	
+                 (CPU_STK   * )&PID_TASK_STK[0],	
+                 (CPU_STK_SIZE)PID_STK_SIZE/10,	
+                 (CPU_STK_SIZE)PID_STK_SIZE,		
+                 (OS_MSG_QTY  )0,					
+                 (OS_TICK	  )0,					
+                 (void   	* )0,				
+                 (OS_OPT      )OS_OPT_TASK_STK_CHK|OS_OPT_TASK_STK_CLR, 
+                 (OS_ERR 	* )&err);
 				 
 	//创建手动任务
-	OSTaskCreate((OS_TCB 	* )&ManualTaskTCB,				//6
+	OSTaskCreate((OS_TCB 	* )&ManualTaskTCB,				//7
 				 (CPU_CHAR	* )"Manual task", 		
                  (OS_TASK_PTR )Manual_task, 			
                  (void		* )0,					
@@ -266,7 +280,7 @@ void start_task(void *p_arg)
                  (OS_ERR 	* )&err);
 				 
 	//创建浮点测试任务
-	OSTaskCreate((OS_TCB 	* )&FloatTaskTCB,				//7
+	OSTaskCreate((OS_TCB 	* )&FloatTaskTCB,				//8
 				 (CPU_CHAR	* )"float test task", 		
                  (OS_TASK_PTR )float_task, 			
                  (void		* )0,					
@@ -281,7 +295,7 @@ void start_task(void *p_arg)
                  (OS_ERR 	* )&err);	
 
 	//创建触摸屏任务
-	OSTaskCreate((OS_TCB 	* )&ScreenTaskTCB,				//8
+	OSTaskCreate((OS_TCB 	* )&ScreenTaskTCB,				//9
 				 (CPU_CHAR	* )"Screen task", 		
                  (OS_TASK_PTR )Screen_task, 			
                  (void		* )0,					
@@ -295,20 +309,6 @@ void start_task(void *p_arg)
                  (OS_OPT      )OS_OPT_TASK_STK_CHK|OS_OPT_TASK_STK_CLR, 
                  (OS_ERR 	* )&err);	
 
-	//PID
-	OSTaskCreate((OS_TCB 	* )&PIDTaskTCB,					//9
-				 (CPU_CHAR	* )"PID task", 		
-                 (OS_TASK_PTR )PID_task, 			
-                 (void		* )0,					
-                 (OS_PRIO	  )PID_TASK_PRIO,     	
-                 (CPU_STK   * )&PID_TASK_STK[0],	
-                 (CPU_STK_SIZE)PID_STK_SIZE/10,	
-                 (CPU_STK_SIZE)PID_STK_SIZE,		
-                 (OS_MSG_QTY  )0,					
-                 (OS_TICK	  )0,					
-                 (void   	* )0,				
-                 (OS_OPT      )OS_OPT_TASK_STK_CHK|OS_OPT_TASK_STK_CLR, 
-                 (OS_ERR 	* )&err);
 	//控制
 	OSTaskCreate((OS_TCB 	* )&ControlTaskTCB,				//10
 				 (CPU_CHAR	* )"Control task", 		
@@ -432,25 +432,60 @@ void Transducer_task(void *p_arg)  	//开关量输入采集
 }
 
 //自动操作任务
-void Auto_task(void *p_arg)
+void Auto_task(void *p_arg)			//自动模式--前轮PID
 {
 	OS_ERR err;
 	p_arg = p_arg;
+
+	//speek("手动任务");
 	while(1)
 	{
-		
-		//speek("手动任务");
-		
-		
-		
-		
-		
-		
-		
-		
-		OSTimeDlyHMSM(0,0,2,0,OS_OPT_TIME_HMSM_STRICT,&err); //延时20ms
+		if(g_AGV_Car_Speed>0 && g_AGV_Car_mode == 0) 
+		{
+			if(g_Start_flag.Start_Auto_PID)		//1:找到磁条
+			{
+				PID_AUTO_QianLun(g_AGV_Car_Speed,g_Auto_Kp,g_Auto_Ki,g_Auto_Kd);	//前轮
+			}
+			else
+			{
+				OSTimeDlyHMSM(0,0,0,10,OS_OPT_TIME_HMSM_STRICT,&err); 		//暂定5ms		
+			}			
+			
+		}
+		else
+		{
+			OSTimeDlyHMSM(0,0,0,10,OS_OPT_TIME_HMSM_STRICT,&err); 		//暂定5ms		
+		}
+	}		
+}
+void PID_task(void *p_arg)			//自动模式--后轮PID
+{
+	OS_ERR err;
+	p_arg = p_arg;
+	
+	while(1)
+	{
+		if(g_AGV_Car_Speed>0 && g_AGV_Car_mode == 0) 
+		{
+			if(g_Start_flag.Start_Auto_PID)		//1:找到磁条
+			{
+				
+				PID_AUTO_HouLun(g_AGV_Car_Speed,g_Auto_Kp,g_Auto_Ki,g_Auto_Kd);		//后轮
+				//g_CtXunZheng.XunZ_OK_AGV = 0;	//清除磁条上轨标志
+			}
+			else
+			{
+				OSTimeDlyHMSM(0,0,0,10,OS_OPT_TIME_HMSM_STRICT,&err); 		//暂定5ms		
+			}			
+		}
+		else
+		{
+			OSTimeDlyHMSM(0,0,0,10,OS_OPT_TIME_HMSM_STRICT,&err); 		//暂定5ms		
+		}
 	}
 }
+
+
 
 void Manual_task(void *p_arg)  //手动任务
 {
@@ -472,9 +507,8 @@ void Manual_task(void *p_arg)  //手动任务
 			{
 				if(g_Start_flag.Start_Manu_PID)			//1:启动
 				{
-
-					
 					g_XZ_Ok = 0;
+					
 					PID_SD_Adjust(g_AGV_shoudong_Speed,g_SD_Kp,g_SD_Ki,g_SD_Kd);	//延时在里面
 				}		
 				else									//0:停止
@@ -488,14 +522,13 @@ void Manual_task(void *p_arg)  //手动任务
 			}		
 			else 
 			{
-				MotoStop(0);		//后续更新,不一直发送
+				g_Start_flag.Start_Manu_PID = 1;		//允许手动PID
+
 				if(!g_XZ_Ok)
 				{
 					DwqXunZheng_QH();					//电位器寻正	
 				}
-				
-				g_Start_flag.Start_button_Car = 1;		//清按钮停止信号
-				g_Start_flag.Start_Manu_PID = 1;		//允许手动PID
+				MotoStop(0);							//后续更新,不一直发送				
 						
 			}					
 		}
@@ -1657,31 +1690,8 @@ void Screen_task(void *p_arg)    	//触摸屏界面操作
 
 
 
-void PID_task(void *p_arg)			//自动模式--底层PID函数
-{
-	OS_ERR err;
-	p_arg = p_arg;
-	
-	while(1)
-	{
-		if(g_AGV_Car_Speed>0 && g_AGV_Car_mode == 0) 
-		{
-			if(g_Start_flag.Start_Auto_PID)		//1:找到磁条
-			{
-				PID_Adjust(g_AGV_Car_Speed,g_Auto_Kp,g_Auto_Ki,g_Auto_Kd);
-			}
-			else
-			{
-				OSTimeDlyHMSM(0,0,0,10,OS_OPT_TIME_HMSM_STRICT,&err); 		//暂定5ms		
-			}			
-			
-		}
-		else
-		{
-			OSTimeDlyHMSM(0,0,0,10,OS_OPT_TIME_HMSM_STRICT,&err); 		//暂定5ms		
-		}
-	}
-}
+
+
 
 //1.开机电位器寻正
 //2.启动按键被按下磁导航寻轨

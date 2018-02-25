@@ -328,7 +328,7 @@ float Cdh4_Inc;
 
 PIDspeed PID_speed;
 //磁导航PID调节
-void PID_Adjust(u16 j_speed,float kp,float ki,float kd)
+void PID_AUTO_QianLun(u16 j_speed,float kp,float ki,float kd)
 {
 	u8 num = 0;
 	PID.Kp = kp;
@@ -339,28 +339,27 @@ void PID_Adjust(u16 j_speed,float kp,float ki,float kd)
 	
 	if(g_AGV_Car_dir == 0)
 	{
-		while( g_CDH8_qian_1.Num==0 && num!=100 )				//空点检测1秒
+		while( g_CDH8_qian_1.Num==0 && num<50 )				//空点检测0.5秒
 		{
 			num++;
 			delay_rtos(0,0,0,10);
 		}			
-		if(g_CDH8_qian_1.Num==0)								//未检出到磁条
+		if(g_CDH8_qian_1.Num==0)							//未检出到磁条停止
 		{
-			MotoStop(0);
+			AGV_System_Stop();					//停止
 			HmiTaskState = 4;								//触摸屏显示车辆停止
 		}
 		else
 		{
 			HmiTaskState = 5;								//正在运行
 			
+			
 			Cdh1_Inc = IncPIDCalc(g_CDH8_qian_1.Distance);	//1 位置式PID//输入差值						
 			PID_speed.moter1_speed = j_speed-Cdh1_Inc;
 			PID_speed.moter2_speed = j_speed+Cdh1_Inc;
 			
-
-
-			if(PID_speed.moter1_speed>1000)	PID_speed.moter1_speed = 1000;
-			if(PID_speed.moter2_speed>1000)	PID_speed.moter2_speed = 1000;
+			if(PID_speed.moter1_speed>j_speed)	PID_speed.moter1_speed = j_speed;
+			if(PID_speed.moter2_speed>j_speed)	PID_speed.moter2_speed = j_speed;
 
 
 			if(PID_speed.moter1_speed<0)	PID_speed.moter1_speed = 0;
@@ -375,14 +374,14 @@ void PID_Adjust(u16 j_speed,float kp,float ki,float kd)
 	}
 	else if(g_AGV_Car_dir == 1)					//后退
 	{
-		while(g_CDH8_qian_2.Num==0&&num!=100)		//空点检测1秒
+		while(g_CDH8_qian_2.Num==0 && num!=50)		//空点检测0.5秒
 		{
 			num++;
 			delay_rtos(0,0,0,10);
 		}
 		if(g_CDH8_qian_2.Num==0)
 		{
-			MotoStop(0);
+			AGV_System_Stop();					//停止
 			HmiTaskState = 4;					//无磁条停止
 		}
 		else
@@ -392,12 +391,12 @@ void PID_Adjust(u16 j_speed,float kp,float ki,float kd)
 
 			
 			Cdh2_Inc = IncPIDCalc(g_CDH8_qian_2.Distance);//2 位置式PID//输入差值
-			PID_speed.moter2_speed = j_speed-Cdh1_Inc;	
-			PID_speed.moter1_speed = j_speed+Cdh1_Inc;
+			PID_speed.moter2_speed = j_speed-Cdh2_Inc;	
+			PID_speed.moter1_speed = j_speed+Cdh2_Inc;
 							
 			
-			if(PID_speed.moter1_speed>1000)	PID_speed.moter1_speed = 1000;
-			if(PID_speed.moter2_speed>1000)	PID_speed.moter2_speed = 1000;
+			if(PID_speed.moter1_speed>j_speed)	PID_speed.moter1_speed = j_speed;
+			if(PID_speed.moter2_speed>j_speed)	PID_speed.moter2_speed = j_speed;
 
 			if(PID_speed.moter1_speed<0)	PID_speed.moter1_speed = 0;
 			if(PID_speed.moter2_speed<0)	PID_speed.moter2_speed = 0;
@@ -412,6 +411,92 @@ void PID_Adjust(u16 j_speed,float kp,float ki,float kd)
 
 	}
 }
+
+void PID_AUTO_HouLun(u16 j_speed2,float kp2,float ki2,float kd2)	//后轮的PID调节
+{
+	u8 num2 = 0;
+	PID2.Kp = kp2;
+	PID2.Ki = ki2;
+	PID2.Kd = kd2; 
+	
+	PID2.SetTarget = 0;		//PID2目标值
+	
+	if(g_AGV_Car_dir == 0)	//前进
+	{
+		while( g_CDH8_hou_1.Num==0 && num2<50 )				//空点检测0.5秒
+		{
+			num2++;
+			delay_rtos(0,0,0,10);
+		}			
+		if(g_CDH8_hou_1.Num==0)							//未检出到磁条停止
+		{
+			AGV_System_Stop();							//停止
+			HmiTaskState = 4;								//触摸屏显示车辆停止
+		}
+		else
+		{
+			HmiTaskState = 5;								//正在运行
+			
+			Cdh3_Inc = IncPIDCalc2(g_CDH8_hou_1.Distance);	//1 位置式PID//输入差值						
+			PID_speed.moter3_speed = j_speed2-Cdh3_Inc;
+			PID_speed.moter4_speed = j_speed2+Cdh3_Inc;
+			
+			if(PID_speed.moter3_speed>j_speed2)	PID_speed.moter3_speed = j_speed2;
+			if(PID_speed.moter4_speed>j_speed2)	PID_speed.moter4_speed = j_speed2;
+
+
+			if(PID_speed.moter3_speed<0)	PID_speed.moter3_speed = 0;
+			if(PID_speed.moter4_speed<0)	PID_speed.moter4_speed = 0;
+
+
+			Motor_Zzhuan(3,PID_speed.moter3_speed); Motor_Fzhuan(4,PID_speed.moter4_speed);
+			
+			
+						
+		}
+	}
+	else if(g_AGV_Car_dir == 1)					//后退
+	{
+		while(g_CDH8_hou_2.Num==0 && num2!=50)		//空点检测0.5秒
+		{
+			num2++;
+			delay_rtos(0,0,0,10);
+		}
+		if(g_CDH8_hou_2.Num==0)
+		{
+			AGV_System_Stop();
+			HmiTaskState = 4;					//无磁条停止
+		}
+		else
+		{
+			HmiTaskState = 5;					//正在运行
+			
+
+			
+			Cdh4_Inc = IncPIDCalc2(g_CDH8_hou_2.Distance);//2 位置式PID//输入差值
+			PID_speed.moter4_speed = j_speed2-Cdh4_Inc;	
+			PID_speed.moter3_speed = j_speed2+Cdh4_Inc;
+							
+			
+			if(PID_speed.moter4_speed>j_speed2)	PID_speed.moter4_speed = j_speed2;
+			if(PID_speed.moter3_speed>j_speed2)	PID_speed.moter3_speed = j_speed2;
+
+			if(PID_speed.moter4_speed<0)	PID_speed.moter4_speed = 0;
+			if(PID_speed.moter3_speed<0)	PID_speed.moter3_speed = 0;
+
+		
+			
+			
+			Motor_Zzhuan(4,PID_speed.moter4_speed);	Motor_Fzhuan(3,PID_speed.moter3_speed);
+			
+					
+		}
+
+	}
+}
+
+
+
 
 
 float g_SD_Kp = 200;

@@ -17,6 +17,8 @@ typedef struct
 	u8 XunZ_OK_go_on_Both;
 	u8 XunZ_OK_go_back_Both;
 	
+	u8 XunZ_OK_AGV;
+	
 }AGV_CtXunZheng;
 
 typedef struct
@@ -26,18 +28,20 @@ typedef struct
 //	u8 button_network_PC;		//上位机
 //	u8 button_yaokong_youxian;	//有线遥控
 	
-	u8 Start_AGV_SysCode;		//系统程序调用
-	u8 Start_IR;				//系统程序调用
-	u8 Start_jixie;				//系统程序调用
+	u8 Start_AGV_SysCode;		//启动--系统程序调用
+	u8 Stop_AGV_SysCode;		//停止--系统程序调用
 	
-	u8 button_Start;			
+	u8 Start_IR;				//红外避障
+	u8 Start_jixie;				//机械避障
+	
+	u8 button_Start;			//避障传感器--总开关		
 	
 	u8 Start_Auto_PID;			//底层PID函数的开关--自动
-	
 	u8 Start_Manu_PID;			//底层PID函数的开关--手动
 	
-	u8 Start_button_Car;		//按键短触发
-	//u8 Start_Manu;
+	u8 Start_button_Car;		//启动--总开关
+	u8 Stop_button_Car;			//停止--总开关
+	
 
 }AGV_Start_flag;
 

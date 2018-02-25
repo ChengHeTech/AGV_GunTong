@@ -569,6 +569,7 @@ void check_CtXunZ_OK(u16 XunZ_speed)
 			temp_Val = 0;
 		}	
 	}
+	//g_CtXunZheng.XunZ_OK_AGV = temp_Val;
 	g_Start_flag.Start_Auto_PID = temp_Val;	//1:找到磁条 0:未找到
 
 
@@ -576,8 +577,8 @@ void check_CtXunZ_OK(u16 XunZ_speed)
 
 void AGV_System_Stop(void)
 {
-	MotoStop(0);
-	g_Start_flag.Start_AGV_SysCode = 0;
+	//MotoStop(0);
+	g_Start_flag.Stop_AGV_SysCode = 1;
 
 }	
 void AGV_System_Start(void)
@@ -586,6 +587,7 @@ void AGV_System_Start(void)
 }
 
 u16 g_CT_XZ_MAX_Speed = 600;
+u8 g_glag_bizhang;
 void AGV_Stop2Start(void)
 {
 
@@ -601,12 +603,13 @@ void AGV_Stop2Start(void)
 	{
 		g_Start_flag.Start_button_Car = 1;	//短触发--车辆面板启动按键
 	}
-	
-	
 	if(g_Start_flag.Start_AGV_SysCode)		//长触发--程序调用这个变量来启动停止 //1启动
 	{
-		g_Start_flag.button_Start = 1;
+		g_Start_flag.Start_AGV_SysCode = 0;
+		g_Start_flag.Start_button_Car = 1;
 	}	
+	
+	
 	
 	if(g_Start_flag.Start_IR)				//长触发--程序调用这个变量来启动停止 //1启动
 	{
@@ -626,17 +629,20 @@ void AGV_Stop2Start(void)
 //	}			
 	if(g_shoudong_stop == 1)				//短触发--触摸屏停止按键 1有效
 	{
-		g_Start_flag.Start_button_Car = 0;
+		g_Start_flag.Stop_button_Car = 1;
 	}			
 	if(AGV_input_24V_buff[0]==1)			//短触发--车辆面板停止按键 -- 系统程序中停车也用这个变量停
 	{
-		g_Start_flag.Start_button_Car = 0;
+		g_Start_flag.Stop_button_Car = 1;
 	}	
-	if(!g_Start_flag.Start_AGV_SysCode)		//长触发--程序调用这个变量来启动停止 //1启动
+	if(g_Start_flag.Stop_AGV_SysCode)		//长触发--程序调用这个变量来启动停止 //1启动
 	{
-		g_Start_flag.button_Start = 0;
+		g_Start_flag.Stop_AGV_SysCode = 0;
+		g_Start_flag.Stop_button_Car = 1;
 	}			
 
+	
+	
 	if(!g_Start_flag.Start_IR)				//长触发--//程序调用这个变量来启动停止 //1启动
 	{
 		g_Start_flag.button_Start = 0;
@@ -650,28 +656,66 @@ void AGV_Stop2Start(void)
 
 	if(!g_AGV_Car_mode)	//0:自动
 	{
-//		if(g_Start_flag.Start_button_Car==1 && g_Start_flag.button_Start==1)	//1:启动 0:停止
-		if(AGV_input_24V_buff[0]==1 )	//1:启动 0:停止		
+		//AGV磁条寻正
+		if(g_Start_flag.Start_button_Car==1 && g_Start_flag.button_Start==1)	
 		{
-			check_CtXunZ_OK(g_CT_XZ_MAX_Speed);				//自动模式--磁导航寻正
+			g_Start_flag.Start_button_Car = 0;			//清除自动启动标志
+			g_Start_flag.Stop_button_Car = 0;
+			if(!g_Start_flag.Start_Auto_PID)			//自动模式未运行		-- 这块要修改?
+			{
+				//自动模式--磁导航寻正
+
+				check_CtXunZ_OK(g_CT_XZ_MAX_Speed);		//g_Start_flag.Start_Auto_PID在这里置一;				
+							
+			}
 		}
-//		else
-//		{
-//			MotoStop(0);
-//			g_Start_flag.Start_Auto_PID = 0;	
-//		}
+		//AGV启动
+		if(g_Start_flag.Stop_button_Car==0 && g_Start_flag.button_Start==1)				//避障未触发
+		{
+			
+
+				if(g_glag_bizhang == 1)
+				{
+					g_glag_bizhang = 0;
+					check_CtXunZ_OK(g_CT_XZ_MAX_Speed);		//g_Start_flag.Start_Auto_PID在这里置一;								
+				}
+			if(g_CtXunZheng.XunZ_OK_AGV == 1)		//改成检测寻轨动作而不是成功
+			{
+				check_CtXunZ_OK(g_CT_XZ_MAX_Speed);		//g_Start_flag.Start_Auto_PID在这里置一;				
+			}					
+				
+				
+				
+//			if(g_CtXunZheng.XunZ_OK_AGV == 0)		//改成检测寻轨动作而不是成功
+//			{
+//				check_CtXunZ_OK(g_CT_XZ_MAX_Speed);		//g_Start_flag.Start_Auto_PID在这里置一;				
+//			}		
+		
+		}
+		//AGV停止
+		if(g_Start_flag.Stop_button_Car==1 || g_Start_flag.button_Start==0)		
+		{
+			if(g_Start_flag.button_Start==0)
+			{
+				g_glag_bizhang = 1;
+			}
+			//g_Start_flag.Stop_button_Car = 0;
+			g_Start_flag.Start_Auto_PID = 0;	
+			g_CtXunZheng.XunZ_OK_AGV = 0;
+			MotoStop(0);
+	
+
+			//ctxunz
+		}
 	}	
 	else				//1:手动
 	{
-		if(g_Start_flag.Start_button_Car==0 )	//1:启动 0:停止
+
+		if(g_Start_flag.Stop_button_Car==1 || g_Start_flag.button_Start==0)	//避障传感器触发 0:触发	
 		{
+			g_Start_flag.Stop_button_Car = 0;
 			g_Start_flag.Start_Manu_PID = 0;				//给键停止标志
-		}			
-		
-//		if(g_Start_flag.Start_button_Car==0 || g_Start_flag.button_Start==1)	//1:启动 0:停止
-//		{
-//			g_Start_flag.Start_Manu_PID = 0;				//给键停止标志
-//		}		
+		}				
 	}
 
 	
@@ -798,14 +842,15 @@ void delay_rtos(u32 h,u32 m,u32 s,u32 ms)
 
 AGV_Start_flag g_Start_flag = 
 {
-	1, 		//u8 Start_AGV_SysCode;		//系统程序调用
+	0, 		//u8 Start_AGV_SysCode;		//系统程序调用
 	0, 		//u8 Start_IR;				//系统程序调用
 	0,		//u8 Start_jixie;			//系统程序调用
 	0,		//u8 button_Start;		
 	0, 		//u8 Start_Auto_PID;		//底层PID函数的开关--自动
 	0,   	//u8 Start_Manu_PID;		//底层PID函数的开关--手动
 	0,
-	
+	0,
+	1
 };     
        
       
