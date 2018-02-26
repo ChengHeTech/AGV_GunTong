@@ -236,13 +236,25 @@ void CAN2_RX0_IRQHandler(void)  //地标传感器 中断处理
 		for(i=0;i<RxMessage.DLC;i++)
 		g_SD_buff[i]=RxMessage.Data[i]; 
 		
-		g_AGV_shoudong_dir 	 = g_SD_buff[0];
-		g_AGV_shoudong_Speed = g_SD_buff[1] * 30 * g_AGV_shoudong_Speed_bili/10;		//0-100*30//0-3000
+		if(g_SD_buff[0]!=3 && g_SD_buff[0]!=4)		//屏蔽左右转
+		{
+			g_AGV_shoudong_dir 	 = g_SD_buff[0];
+			
+			if(g_SD_buff[0]==9 || g_SD_buff[0]==10)	//屏蔽左右旋的速度
+			{
+				g_AGV_shoudong_Speed = 0;
+			}
+			else
+			{
+				g_AGV_shoudong_Speed = g_SD_buff[1] * 30 * g_AGV_shoudong_Speed_bili/10;		//0-100*30//0-3000		
+			}
+		
+		}
 		
 		
 	}  	
 
-if(RxMessage.StdId == 1)			//前1磁导航
+	if(RxMessage.StdId == 1)			//前1磁导航
 	{
 		for(i=0;i<RxMessage.DLC;i++)
 		g_cinavi1_RXbuff[i]=RxMessage.Data[i];

@@ -503,7 +503,7 @@ void Manual_task(void *p_arg)  //手动任务
 		
 		if(g_AGV_Car_mode) //1://手动模式
 		{	
-			if(g_AGV_shoudong_Speed > 10 ) 	
+			if(g_AGV_shoudong_Speed > 50 && g_AGV_shoudong_dir!=0) 	
 			{
 				if(g_Start_flag.Start_Manu_PID)			//1:启动
 				{
@@ -522,14 +522,12 @@ void Manual_task(void *p_arg)  //手动任务
 			}		
 			else 
 			{
-				g_Start_flag.Start_Manu_PID = 1;		//允许手动PID
-
+				MotoStop(0);							//后续更新,不一直发送				
 				if(!g_XZ_Ok)
 				{
 					DwqXunZheng_QH();					//电位器寻正	
 				}
-				MotoStop(0);							//后续更新,不一直发送				
-						
+				g_Start_flag.Start_Manu_PID = 1;		//允许手动PID					
 			}					
 		}
 		else		//0://自动模式
@@ -549,7 +547,7 @@ void float_task(void *p_arg)		//红外和机械避障
 	u8 temp_Tiaojian[] = {0,0,0,0};					//条件
 	u8 *temp_Jieguo[]  = {&g_Start_flag.Start_IR,&g_Start_flag.Start_jixie};		//结果
 	
-g_Start_flag.Start_IR=1;
+	g_Start_flag.Start_IR=1;
 	g_Start_flag.Start_jixie=1;
 
 	while(1)
@@ -1857,20 +1855,20 @@ void DCv_task(void *p_arg)											//电压采集
 
 		}
 
-		//寻正响蜂鸣器						//叫250ms
-		if(g_XZ_Beep)
-		{
-			BEEP = 1;
-			temp_j++;
-			if(temp_j == 10)
-			{
-				BEEP = 0;
-				g_flag_RFID_beep = 0;	
-				temp_j = 0;			
-				g_XZ_Beep = 0;
-			}
+//		//寻正响蜂鸣器						//叫250ms
+//		if(g_XZ_Beep)
+//		{
+//			BEEP = 1;
+//			temp_j++;
+//			if(temp_j == 10)
+//			{
+//				BEEP = 0;
+//				g_flag_RFID_beep = 0;	
+//				temp_j = 0;			
+//				g_XZ_Beep = 0;
+//			}
 
-		}
+//		}
 		
 		//触摸屏通信指示灯和板子运行指示灯LED1		//500ms闪烁
 		temp_i++;
