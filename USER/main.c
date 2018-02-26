@@ -546,6 +546,11 @@ void float_task(void *p_arg)		//红外和机械避障
 
 	while(1)
 	{	
+		
+		g_Start_flag.Start_IR = 1;		//1启动
+		g_Start_flag.Start_jixie = 1;	//1启动
+		
+		
 //		if(!g_AGV_Car_dir)	//0:前进
 //		{
 //			if(!g_flag_IR_qian_jin)				//近红外避障 0触发
@@ -1802,12 +1807,37 @@ void DCv_task(void *p_arg)											//电压采集
 {
 	u8 temp_i=0;
 	u8 temp_j=0;
+	u16 temp_k=0;
+	u8 temp_p=0;
 	
 	OS_ERR err;
 	p_arg = p_arg;
+	
+	GET_Battery();	//获取电池信息
 
 	while(1)
 	{		
+		temp_k++;
+		if(temp_k > 1200)	//60s
+		{
+			GET_Battery();	//获取电池信息
+
+			
+			temp_k = 0;				
+		}	
+
+		if(g_battery.Realy_mah < g_battery.Std_mah/4)		// <10AH,报警
+		{
+			temp_p++;
+			if(temp_p > 100)				//5s
+			{
+				speek("电量少于四分之一,请及时充电");
+				temp_p = 0;
+			}
+		}
+		
+
+		
 		//读到地标响蜂鸣器						//叫250ms
 		if(g_flag_RFID_beep)
 		{

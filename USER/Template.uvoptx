@@ -120,7 +120,7 @@
         <SetRegEntry>
           <Number>0</Number>
           <Key>DLGUARM</Key>
-          <Name>芤?芤?趏甼</Name>
+          <Name>渉?渉?趏yR</Name>
         </SetRegEntry>
         <SetRegEntry>
           <Number>0</Number>
@@ -259,6 +259,26 @@
           <count>21</count>
           <WinNumber>1</WinNumber>
           <ItemText>g_XZ_Ok,0x0A</ItemText>
+        </Ww>
+        <Ww>
+          <count>22</count>
+          <WinNumber>1</WinNumber>
+          <ItemText>AGV_input_24V_buff,0x0A</ItemText>
+        </Ww>
+        <Ww>
+          <count>23</count>
+          <WinNumber>1</WinNumber>
+          <ItemText>temp_k,0x0A</ItemText>
+        </Ww>
+        <Ww>
+          <count>24</count>
+          <WinNumber>1</WinNumber>
+          <ItemText>g_battery_RXbuff</ItemText>
+        </Ww>
+        <Ww>
+          <count>25</count>
+          <WinNumber>1</WinNumber>
+          <ItemText>g_battery,0x0A</ItemText>
         </Ww>
       </WatchWindow1>
       <WatchWindow2>
@@ -447,7 +467,7 @@
         <Mm>
           <WinNumber>1</WinNumber>
           <SubType>8</SubType>
-          <ItemText>j_speed</ItemText>
+          <ItemText>g_battery</ItemText>
           <AccSizeX>0</AccSizeX>
         </Mm>
       </MemoryWindow1>
@@ -598,7 +618,7 @@
 
   <Group>
     <GroupName>HARDWARE</GroupName>
-    <tvExp>0</tvExp>
+    <tvExp>1</tvExp>
     <tvExpOptDlg>0</tvExpOptDlg>
     <cbSel>0</cbSel>
     <RteFlg>0</RteFlg>
@@ -858,7 +878,7 @@
 
   <Group>
     <GroupName>SYSTEM</GroupName>
-    <tvExp>0</tvExp>
+    <tvExp>1</tvExp>
     <tvExpOptDlg>0</tvExpOptDlg>
     <cbSel>0</cbSel>
     <RteFlg>0</RteFlg>

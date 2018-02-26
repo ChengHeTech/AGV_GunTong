@@ -648,6 +648,7 @@ void AGV_Stop2Start(void)
 		g_Start_flag.button_Start = 0;
 	}		
 
+	
 	if(!g_Start_flag.Start_jixie)			//长触发--程序调用这个变量来启动停止 //1启动
 	{
 		g_Start_flag.button_Start = 0;

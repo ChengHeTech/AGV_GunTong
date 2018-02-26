@@ -1,8 +1,13 @@
 #include "battery.h"
 
+//
+//黑--蓝--GND
+//白--黄--R
+//红--红--T
+//
 
 char g_battery_RXbuff[g_battery_RXbuff_len];
-char g_battery_TXbuff[g_battery_TXbuff_len];
+char g_battery_TXbuff[g_battery_TXbuff_len] = {0xDD, 0xA5, 0x03, 0x00, 0xFF, 0xFD, 0x77};
 
 
 
@@ -46,6 +51,7 @@ void USART3_Configuration(u32 bound)
    
 }
 
+battery g_battery;
 
 void USART3_IRQHandler(void)             
 {
@@ -61,15 +67,16 @@ void USART3_IRQHandler(void)
 		temp_data3 = g_battery_RXbuff_len - DMA_GetCurrDataCounter(DMA1_Stream1); 
 		DMA1_Stream1->NDTR = g_battery_RXbuff_len;
 		
-//		if((g_battery_RXbuff[0] == 0x7E)&&(g_battery_RXbuff[127] == 0x0D))
-//		{
-//			lidian.voltage = (HexToChar(g_battery_RXbuff[101])<<12)|(HexToChar(g_battery_RXbuff[102])<<8)|(HexToChar(g_battery_RXbuff[103])<<4)|(HexToChar(g_battery_RXbuff[104]));
-//			lidian.MAh 	= (HexToChar(g_battery_RXbuff[105])<<12)|(HexToChar(g_battery_RXbuff[106])<<8)|(HexToChar(g_battery_RXbuff[107])<<4)|(HexToChar(g_battery_RXbuff[108]));
-//			lidian.Current = (HexToChar(g_battery_RXbuff[97])<<12)|(HexToChar(g_battery_RXbuff[98])<<8)|(HexToChar(g_battery_RXbuff[99])<<4)|(HexToChar(g_battery_RXbuff[100]));
-//			DianChiDianLiang = lidian.MAh;
-//			DianChiDianLiu 	= lidian.Current;
-//			
-//		}		
+		if((g_battery_RXbuff[0] == 0xDD)&&(g_battery_RXbuff[1] == 0xA5)&&(g_battery_RXbuff[2] == 0x00))
+		{
+			g_battery.dianya 		= g_battery_RXbuff[4]<<8  | g_battery_RXbuff[7];
+			g_battery.Realy_mah 	= g_battery_RXbuff[8]<<8  | g_battery_RXbuff[9];
+			g_battery.Std_mah		= g_battery_RXbuff[10]<<8 | g_battery_RXbuff[11];
+			g_battery.XunHuan_time 	= g_battery_RXbuff[12]<<8 | g_battery_RXbuff[13];
+			
+		}		
+		
+		memset(g_battery_RXbuff,0,sizeof(g_battery_RXbuff));	//清零数组
 		
 		DMA_Cmd(DMA1_Stream1, ENABLE);
 	}
@@ -91,26 +98,26 @@ void DMA_Uart3_Init(void)
 
 	/*--- LUMMOD_UART_Tx_DMA_Channel DMA Config ---*/
  
-    DMA_Cmd(DMA1_Stream3, DISABLE);
-    DMA_DeInit(DMA1_Stream3);
-	DMA_InitStructure.DMA_Channel = DMA_Channel_4;
-    DMA_InitStructure.DMA_PeripheralBaseAddr = (uint32_t)(&USART3->DR);
-    DMA_InitStructure.DMA_Memory0BaseAddr = (uint32_t)g_battery_TXbuff;         //发送buff
-    DMA_InitStructure.DMA_DIR = DMA_DIR_MemoryToPeripheral;
-    DMA_InitStructure.DMA_BufferSize = g_battery_TXbuff_len;					 //发送buff长度
-    DMA_InitStructure.DMA_PeripheralInc = DMA_PeripheralInc_Disable;
-    DMA_InitStructure.DMA_MemoryInc = DMA_MemoryInc_Enable;
-    DMA_InitStructure.DMA_PeripheralDataSize = DMA_PeripheralDataSize_Byte;
-    DMA_InitStructure.DMA_MemoryDataSize = DMA_MemoryDataSize_Byte;
-    DMA_InitStructure.DMA_Mode = DMA_Mode_Circular;	
-	DMA_InitStructure.DMA_FIFOMode = DMA_FIFOMode_Disable; 
-    DMA_InitStructure.DMA_FIFOThreshold = DMA_FIFOThreshold_Full;	
-    DMA_InitStructure.DMA_Priority = DMA_Priority_VeryHigh;
-	DMA_InitStructure.DMA_MemoryBurst = DMA_MemoryBurst_Single;//存储器突发单次传输
-	DMA_InitStructure.DMA_PeripheralBurst = DMA_PeripheralBurst_Single;//外设突发单次传输
-    DMA_Init(DMA1_Stream3, &DMA_InitStructure);
-	DMA_Cmd(DMA1_Stream3, DISABLE);
-    DMA_ITConfig(DMA1_Stream3, DMA_IT_TC, ENABLE);
+//    DMA_Cmd(DMA1_Stream3, DISABLE);
+//    DMA_DeInit(DMA1_Stream3);
+//	DMA_InitStructure.DMA_Channel = DMA_Channel_4;
+//    DMA_InitStructure.DMA_PeripheralBaseAddr = (uint32_t)(&USART3->DR);
+//    DMA_InitStructure.DMA_Memory0BaseAddr = (uint32_t)g_battery_TXbuff;         //发送buff
+//    DMA_InitStructure.DMA_DIR = DMA_DIR_MemoryToPeripheral;
+//    DMA_InitStructure.DMA_BufferSize = g_battery_TXbuff_len;					 //发送buff长度
+//    DMA_InitStructure.DMA_PeripheralInc = DMA_PeripheralInc_Disable;
+//    DMA_InitStructure.DMA_MemoryInc = DMA_MemoryInc_Enable;
+//    DMA_InitStructure.DMA_PeripheralDataSize = DMA_PeripheralDataSize_Byte;
+//    DMA_InitStructure.DMA_MemoryDataSize = DMA_MemoryDataSize_Byte;
+//    DMA_InitStructure.DMA_Mode = DMA_Mode_Circular;	
+//	DMA_InitStructure.DMA_FIFOMode = DMA_FIFOMode_Disable; 
+//    DMA_InitStructure.DMA_FIFOThreshold = DMA_FIFOThreshold_Full;	
+//    DMA_InitStructure.DMA_Priority = DMA_Priority_VeryHigh;
+//	DMA_InitStructure.DMA_MemoryBurst = DMA_MemoryBurst_Single;//存储器突发单次传输
+//	DMA_InitStructure.DMA_PeripheralBurst = DMA_PeripheralBurst_Single;//外设突发单次传输
+//    DMA_Init(DMA1_Stream3, &DMA_InitStructure);
+//	DMA_Cmd(DMA1_Stream3, DISABLE);
+//    DMA_ITConfig(DMA1_Stream3, DMA_IT_TC, ENABLE);
 	
 /*--- LUMMOD_UART_Rx_DMA_Channel DMA Config ---*/
  
@@ -141,12 +148,19 @@ void DMA_Uart3_Init(void)
     NVIC_Init(&NVIC_InitStructure);
 	
 }
-void Uart3_Start_DMA_Tx(u16 size)
-{
-    DMA_SetCurrDataCounter(DMA1_Stream3,size);
-    DMA_Cmd(DMA1_Stream3, ENABLE);
-}
+//void Uart3_Start_DMA_Tx(u16 size)
+//{
+//	DMA_Cmd(DMA1_Stream3, DISABLE);
+//    DMA_SetCurrDataCounter(DMA1_Stream3,size);
+//    DMA_Cmd(DMA1_Stream3, ENABLE);
+//}
 
+void GET_Battery(void)
+{
+	USART_OUT(USART3,g_battery_TXbuff,7);
+	delay_rtos(0,0,0,100);
+	USART_OUT(USART3,g_battery_TXbuff,7);
+}
 
 
 
