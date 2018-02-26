@@ -120,7 +120,6 @@
         <SetRegEntry>
           <Number>0</Number>
           <Key>DLGUARM</Key>
-          <Name>渉?渉?趏yR</Name>
         </SetRegEntry>
         <SetRegEntry>
           <Number>0</Number>
@@ -461,6 +460,11 @@
           <count>35</count>
           <WinNumber>2</WinNumber>
           <ItemText>g_Auto_Ki</ItemText>
+        </Ww>
+        <Ww>
+          <count>36</count>
+          <WinNumber>2</WinNumber>
+          <ItemText>temp_Tiaojian,0x0A</ItemText>
         </Ww>
       </WatchWindow2>
       <MemoryWindow1>

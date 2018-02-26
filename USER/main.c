@@ -541,100 +541,105 @@ void Manual_task(void *p_arg)  //手动任务
 void float_task(void *p_arg)		//红外和机械避障
 {
 	OS_ERR err;
-	p_arg = p_arg;	
+	u8 temp_i=0;
+	u8 temp_j=0;
+	u8 temp_flag[]={0,0,0,0};
 	
+
+	u8 temp_Tiaojian[] = {0,0,0,0};					//条件
+	u8 *temp_Jieguo[]  = {&g_Start_flag.Start_IR,&g_Start_flag.Start_jixie};		//结果
+	
+g_Start_flag.Start_IR=1;
+	g_Start_flag.Start_jixie=1;
 
 	while(1)
 	{	
-		
-		g_Start_flag.Start_IR = 1;		//1启动
-		g_Start_flag.Start_jixie = 1;	//1启动
-		
-		
-//		if(!g_AGV_Car_dir)	//0:前进
+//		if(!g_AGV_Car_mode)				//自动模式
 //		{
-//			if(!g_flag_IR_qian_jin)				//近红外避障 0触发
+//			if(!g_AGV_Car_dir)	//0:前进
 //			{
-//				delay_rtos(0,0,0,10);
-//				if(!g_flag_IR_qian_jin)		
-//				{
-//					g_Start_flag.Start_IR = 0;	//0停止
-//				}
-//			}	
-//			else
-//			{
-//				delay_rtos(0,0,0,10);
-//				if(g_flag_IR_qian_jin)		
-//				{
-//					g_Start_flag.Start_IR = 1;	//1启动
-//				}		
-//			}	
-
-//			
-//			if(!g_flag_fangzhuang_qian)				//jixie避障 0触发
-//			{
-//				delay_rtos(0,0,0,10);
-//				if(!g_flag_fangzhuang_qian)		
-//				{
-//					g_Start_flag.Start_jixie = 0;	//0停止
-//				}
-//			}	
-//			else
-//			{
-//				delay_rtos(0,0,0,10);
-//				if(g_flag_fangzhuang_qian)		
-//				{
-//					g_Start_flag.Start_jixie = 1;	//1启动
-//				}		
+//				temp_j = 0;
 //			}
-//			
-//			
+//			else				//1:后退
+//			{
+//				temp_j = 2;
+//			}	
 //		}
-//		else
+//		else							//手动模式
 //		{
-//			if(!g_flag_IR_hou_jin)				//近红外避障 0触发
+//			//0:停止1:前进 2:后退 3:左转 4:右转 5左上 6右上 7左下 8右下 9左旋 10右旋 
+//			if(g_AGV_shoudong_dir==1||g_AGV_shoudong_dir==5||g_AGV_shoudong_dir==6)			//前进
 //			{
-//				delay_rtos(0,0,0,10);
-//				if(!g_flag_IR_hou_jin)		
+//				temp_j = 0;		
+//			}
+//			else if(g_AGV_shoudong_dir==2||g_AGV_shoudong_dir==7||g_AGV_shoudong_dir==8)	//后退				//1:后退
+//			{
+//				temp_j = 2;
+//			}		
+//		}
+//		
+//		if(temp_j == 0)
+//		{
+//			temp_Tiaojian[0] = g_flag_IR_qian_jin;			//条件
+//			temp_Tiaojian[1] = g_flag_fangzhuang_qian;		//条件		
+//		}
+//		else if(temp_j == 2)
+//		{
+//			temp_Tiaojian[2] = g_flag_IR_hou_jin;			//条件
+//			temp_Tiaojian[3] = g_flag_fangzhuang_hou;		//条件			
+//		}
+
+//		
+//	
+//		
+//		for(temp_i=temp_j;temp_i<temp_j+2;temp_i++)
+//		{
+//			if(temp_Tiaojian[temp_i] == 0)				//近红外避障 0触发
+//			{
+//				delay_rtos(0,0,0,100);
+//				if(temp_j == 0)
 //				{
-//					g_Start_flag.Start_IR = 0;	//0停止
+//					temp_Tiaojian[0] = g_flag_IR_qian_jin;			//条件
+//					temp_Tiaojian[1] = g_flag_fangzhuang_qian;		//条件		
+//				}
+//				else if(temp_j == 2)
+//				{
+//					temp_Tiaojian[2] = g_flag_IR_hou_jin;			//条件
+//					temp_Tiaojian[3] = g_flag_fangzhuang_hou;		//条件			
+//				}
+//				
+//				if(temp_Tiaojian[temp_i] == 0)				//近红外避障 0触发
+//				{
+//					*temp_Jieguo[temp_i] = 0;	//0停止
 //				}
 //			}	
 //			else
 //			{
-//				delay_rtos(0,0,0,10);
-//				if(g_flag_IR_hou_jin)		
+//				delay_rtos(0,0,0,100);
+//				if(temp_j == 0)
 //				{
-//					g_Start_flag.Start_IR = 1;	//1启动
-//				}		
-//			}
-
-//			if(!g_flag_fangzhuang_hou)				//jixie避障 0触发
-//			{
-//				delay_rtos(0,0,0,10);
-//				if(!g_flag_fangzhuang_hou)		
-//				{
-//					g_Start_flag.Start_jixie = 0;	//0停止
+//					temp_Tiaojian[0] = g_flag_IR_qian_jin;			//条件
+//					temp_Tiaojian[1] = g_flag_fangzhuang_qian;		//条件		
 //				}
-//			}	
-//			else
-//			{
-//				delay_rtos(0,0,0,10);
-//				if(g_flag_fangzhuang_hou)		
+//				else if(temp_j == 2)
 //				{
-//					g_Start_flag.Start_jixie = 1;	//1启动
+//					temp_Tiaojian[2] = g_flag_IR_hou_jin;			//条件
+//					temp_Tiaojian[3] = g_flag_fangzhuang_hou;		//条件			
+//				}
+//				
+//				if(temp_Tiaojian[temp_i] == 1)		
+//				{
+//					if(*temp_Jieguo[temp_i] == 0)
+//					{
+//						delay_rtos(0,0,2,0);
+//					}
+//					*temp_Jieguo[temp_i] = 1;	//1启动
 //				}		
-//			}
-
-
-//			
+//			}					
 //		}
 		
 		
-		
 
-		
-		
 		OSTimeDlyHMSM(0,0,0,10,OS_OPT_TIME_HMSM_STRICT,&err); //延时ms
 	}
 }
