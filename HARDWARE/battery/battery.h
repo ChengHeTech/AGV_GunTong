@@ -17,10 +17,21 @@ typedef struct
 
 }battery;
 
+typedef struct
+{
+	u8 No_Battery;
+	u8 Warining_Val_NoBattery;		//±¨¾¯Öµ:1-100%
+
+
+}warning;
+
+
+
 extern battery g_battery;
-extern char g_battery_TXbuff[g_battery_TXbuff_len];
+extern u8 g_battery_TXbuff[g_battery_TXbuff_len];
 
-
+extern warning Battery_Warining;
+extern char g_warning[256];
 
 
 void USART3_Configuration(u32 bound);

@@ -421,92 +421,102 @@ void HmiAutoReload()
 
 void UserConfigInit(void)
 {
-    //获取所有系统参数
-    GetAllParameterFromSystem();
 
-    if(SystemParameter[0] != 5) //首次flash中没数据时或者意外导致数据丢失先刷入初始量
+	W25QXX_Init();			//W25QXX初始化
+	
+	while(W25QXX_ReadID()!=W25Q128)//检测不到W25Q128，LED闪烁
+	{
+		LED4 = !LED4;//DS0闪烁
+		BEEP = !BEEP;
+		delay_rtos(0,0,0,100);
+	}
+	 
+	
+    GetAllParameterFromSystem();		//获取所以的系统参数
+
+    if(SystemParameter[0] != 5) 		//首次flash中没数据时或者意外导致数据丢失先刷入初始量
     {
-#if 1						//为1	//车的前100个内存中写入初始量
-        SystemParameter[0] = 5;		//判断是否第一次写入的标志
+#if 1									//为1	//车的前100个内存中写入初始量 -- 系统参数
+        SystemParameter[0] = 5;			//判断是否第一次写入的标志
         SystemParameter[1] = 0;	
         SystemParameter[2] = 0;
-        SystemParameter[3] = 0;		//手动速度
+        SystemParameter[3] = 4;			//手动速度比例 -- 4/10*3000
         SystemParameter[4] = 0; 
         SystemParameter[5] = 0; 
-        SystemParameter[6] = 0;	//
+        SystemParameter[6] = 0;			//
         SystemParameter[7] = 0;
 		
-        SystemParameter[8] = 25;  	//方向Kp
-        SystemParameter[9] = 40; 	//方向Ki
-        SystemParameter[10] = 5; 	//方向Kd
+        SystemParameter[8] = 0;  		
+        SystemParameter[9] = 0; 		
+        SystemParameter[10] = 0; 		
 		
-        SystemParameter[11] = 5;	//前进方向的PID控制周期--ms
-        SystemParameter[12] = 1050; 	//前轮中值 -- mv //要除1000
-        SystemParameter[13] = 1050; 	//后轮中值
-        SystemParameter[14] = 0; 	//前轮角度
-        SystemParameter[15] = 0; 	//后轮
+        SystemParameter[11] = 0;		
+        SystemParameter[12] = 0; 	
+        SystemParameter[13] = 0; 	
+        SystemParameter[14] = 0; 		
+        SystemParameter[15] = 0; 		
         SystemParameter[16] = 0;
         SystemParameter[17] = 0;
-        SystemParameter[18] = 200; //低速
-        SystemParameter[19] = 400; //中速
-        SystemParameter[20] = 600; //高速
+        SystemParameter[18] = 0; 		
+        SystemParameter[19] = 0; 		
+        SystemParameter[20] = 0; 		
         SystemParameter[21] = 0;
         SystemParameter[22] = 0;
         SystemParameter[23] = 0;
-        SystemParameter[24] = 0; 
-        SystemParameter[25] = 0; //
-        SystemParameter[26] = 0; //
-        SystemParameter[27] = 0; //
-        SystemParameter[28] = 0; //
-        SystemParameter[29] = 0; //
-        SystemParameter[30] = 0;
-        SystemParameter[31] = 0; //
-        SystemParameter[32] = 0; //
-        SystemParameter[33] = 0; //
-        SystemParameter[34] = 0; //
-        SystemParameter[35] = 0; //
-        SystemParameter[36] = 0; //
-        SystemParameter[37] = 0; //
-        SystemParameter[38] = 0; //
+        SystemParameter[24] = 0; 		//路径号
+        SystemParameter[25] = 0; 		//
+        SystemParameter[26] = 0; 		//
+        SystemParameter[27] = 0; 		//
+        SystemParameter[28] = 0; 		//
+        SystemParameter[29] = 0; 		//
+        SystemParameter[30] = 1;		//车号
+        SystemParameter[31] = 6; 		//系统音量
+        SystemParameter[32] = 1; 		//系统车速
+        SystemParameter[33] = 0; 		//系统语音开关
+        SystemParameter[34] = 0; 		//车身状态灯
+        SystemParameter[35] = 300; 		//低速
+        SystemParameter[36] = 800; 		//中速
+        SystemParameter[37] = 1500; 	//高速
+        SystemParameter[38] = 300; 		//工位对接速度
         SystemParameter[39] = 0;
-        SystemParameter[40] = 0;
-        SystemParameter[41] = 0;
-        SystemParameter[42] = 0;
-        SystemParameter[43] = 0;
+        SystemParameter[40] = 700;	//寻正最大速度
+        SystemParameter[41] = 60;	//电位器寻正速度比
+        SystemParameter[42] = 600;	//磁条上轨速度
+        SystemParameter[43] = 2900;	//电机最大速度
         SystemParameter[44] = 0;
         SystemParameter[45] = 0;
         SystemParameter[46] = 0;
         SystemParameter[47] = 0;
         SystemParameter[48] = 0;
         SystemParameter[49] = 0;
-        SystemParameter[50] = 0;
-        SystemParameter[51] = 0;
-        SystemParameter[52] = 0;	//
-        SystemParameter[53] = 0;
-        SystemParameter[54] = 0;
-        SystemParameter[55] = 0;
-        SystemParameter[56] = 0;
-        SystemParameter[57] = 0;
-        SystemParameter[58] = 0;
-        SystemParameter[59] = 1;  //
+        SystemParameter[50] = 25;	//自动Kp
+        SystemParameter[51] = 40;    //自动Ki
+        SystemParameter[52] = 0;	//自动Kd
+        SystemParameter[53] = 80;	//手动Kp
+        SystemParameter[54] = 100;	//手动Ki
+        SystemParameter[55] = 0;	//手动Kd
+        SystemParameter[56] = 10;	//PID控制时间
+        SystemParameter[57] = 59;	//前轮左值
+        SystemParameter[58] = 102;	//前轮中值
+        SystemParameter[59] = 146;  	//前轮右值
 
-        SystemParameter[60] = 0; //
-        SystemParameter[61] = 0; //
-        SystemParameter[62] = 0; //
-        SystemParameter[63] = 0; //
-        SystemParameter[64] = 0; //
-        SystemParameter[65] = 0; //
-        SystemParameter[66] = 0; //
-        SystemParameter[67] = 0; //
-        SystemParameter[68] = 0; //
-        SystemParameter[69] = 0; //
-        SystemParameter[70] = 0; //
-        SystemParameter[71] = 0; //
-        SystemParameter[72] = 0; //
-        SystemParameter[73] = 0; //
-        SystemParameter[74] = 0; //
-        SystemParameter[75] = 0; //
-		SystemParameter[76] = 0; //
+        SystemParameter[60] = 49; 	//后轮左值
+        SystemParameter[61] = 90; 	//后轮中值
+        SystemParameter[62] = 135; 	//后轮右值
+        SystemParameter[63] = 0; 	//
+        SystemParameter[64] = 0; 	//
+        SystemParameter[65] = 0; 	//
+        SystemParameter[66] = 0; 	//
+        SystemParameter[67] = 0; 	//
+        SystemParameter[68] = 0; 	//
+        SystemParameter[69] = 0; 	//
+        SystemParameter[70] = 20; 	//无电报警值
+        SystemParameter[71] = 0; 	//
+        SystemParameter[72] = 0; 	//
+        SystemParameter[73] = 0; 	//
+        SystemParameter[74] = 0; 	//
+        SystemParameter[75] = 0; 	//
+		SystemParameter[76] = 0; 	//
         SystemParameter[77] = 0;
         SystemParameter[78] = 0;
         SystemParameter[79] = 0;
@@ -520,8 +530,8 @@ void UserConfigInit(void)
         SystemParameter[87] = 0;
         SystemParameter[88] = 0;
         SystemParameter[89] = 0;
-        SystemParameter[98] = 4; //系统音量
-        SystemParameter[99] = 200; //工位对接速度
+        SystemParameter[98] = 0; 
+        SystemParameter[99] = 0; 
 #endif
         //存储所有系统参数
         SetAllParameterToSystem();
@@ -544,27 +554,102 @@ void UserConfigInit(void)
 //	
 //系统参数更新到触摸屏上
 //	
+		
 	
+	//	
+	//系统参数从Flash更新到系统中
+	//				
+	AGV_SYS.SD_Speed_bili       = 		  SystemParameter[3];	//手动速度比例 -- 4/10*3000
+
+	AGV_SYS.ID 					=         SystemParameter[30];	//车号
+	AGV_SYS.yinliang			=         SystemParameter[31]; 	//系统音量
+	AGV_SYS.Auto_Speed_bili		=         SystemParameter[32]; 	//自动运行速度的比例
+	AGV_SYS.Key_yuyin 			=         SystemParameter[33]; 	//系统语音开关
+	AGV_SYS.Key_RGB_LED 		=         SystemParameter[34]; 	//车身状态灯
+	AGV_SYS.L_speed 			=         SystemParameter[35];  //低速
+	AGV_SYS.M_speed 			=         SystemParameter[36];  //中速
+	AGV_SYS.H_speed 			=         SystemParameter[37]; 	//高速
+	AGV_SYS.duijie_speed 		=         SystemParameter[38]; 	//工位对接速度
+		   
+	AGV_SYS.XZ_MAX_Speed 		=         SystemParameter[40]; 	//寻正最大速度
+	AGV_SYS.XZ_DWQ_Speed_bili	=         SystemParameter[41];	//电位器寻正速度比
+	AGV_SYS.XZ_CiTiao_Speed 	=         SystemParameter[42]; 	//磁条上轨速度
+	AGV_SYS.Motor_MAX_Speed 	=         SystemParameter[43];	//电机最大速度
+
+
+	AGV_SYS.AUTO_Kp       		=		  SystemParameter[50];	//自动Kp
+	AGV_SYS.AUTO_Ki        		=		  SystemParameter[51];  //自动Ki
+	AGV_SYS.AUTO_Kd        		=		  SystemParameter[52];	//自动Kd
+	AGV_SYS.SD_Kp       		=		  SystemParameter[53];	//手动Kp
+	AGV_SYS.SD_Ki        		=		  SystemParameter[54];	//手动Ki
+	AGV_SYS.SD_Kd        		=		  SystemParameter[55];	//手动Kd
+	AGV_SYS.PID_time 			=         SystemParameter[56];	//PID控制时间
+
+	g_DWQ.qianlun_L_val        	=		  SystemParameter[57];	//前轮左值
+	g_DWQ.qianlun_zhong_val     =	      SystemParameter[58];	//前轮中值
+	g_DWQ.qianlun_R_val        	=		  SystemParameter[59];  //前轮右值
+
+	g_DWQ.houlun_L_val        	=		  SystemParameter[60]; 	//后轮左值
+	g_DWQ.houlun_zhong_val    	=		  SystemParameter[61]; 	//后轮中值
+	g_DWQ.houlun_R_val        	=		  SystemParameter[62]; 	//后轮右值
+
+	Battery_Warining.Warining_Val_NoBattery = SystemParameter[70];
+
+	//	
+	//系统参数从Flash更新到触摸屏上
+	//				
+	g_shoudong_screen_speed     = 		  SystemParameter[3];	//手动速度比例 -- 4/10*3000
+
+	g_AGV_ID 					=         SystemParameter[30];	//车号
+	g_AGV_speaker_val 			=         SystemParameter[31]; 	//系统音量
+	g_sys_set_agvSPEED			=         SystemParameter[32]; 	//系统车速 -- 自动
+	g_AGV_speaker_key 			=         SystemParameter[33]; 	//系统语音开关
+	g_AGV_LED_car_state			=         SystemParameter[34]; 	//车身状态灯
+	HmiDiSu       				=         SystemParameter[35];  //低速
+	HmiZhongSu     				=         SystemParameter[36];  //中速
+	HmiGaoSu      				=         SystemParameter[37]; 	//高速
+	g_AGV_speed_duijie			=         SystemParameter[38]; 	//工位对接速度
+			   	   
+	XZ_Speed40					=         SystemParameter[40]; 	//寻正最大速度
+	XZ_Speed41					=         SystemParameter[41];	//电位器寻正速度比
+	XZ_Speed42					=         SystemParameter[42]; 	//磁条上轨速度
+	XZ_Speed43					=         SystemParameter[43];	//电机最大速度
+
+	g_screen_Auto_Kp			=		  SystemParameter[50];	//自动Kp
+	g_screen_Auto_Ki			=		  SystemParameter[51];  //自动Ki
+	g_screen_Auto_Kd			=		  SystemParameter[52];	//自动Kd
+	g_screen_Manu_Kp			=		  SystemParameter[53];	//手动Kp
+	g_screen_Manu_Ki			=		  SystemParameter[54];	//手动Ki
+	g_screen_Manu_Kd			=		  SystemParameter[55];	//手动Kd
+	g_screen_control_TIME		=         SystemParameter[56];	//PID控制时间
+
+	g_screen_qianlun_ZuoZhi		=		  SystemParameter[57];	//前轮左值
+	g_screen_qianlun_ZhongZhi	=	      SystemParameter[58];	//前轮中值
+	g_screen_qianlun_YouZhi		=		  SystemParameter[59];  //前轮右值
+
+	g_screen_houlun_ZuoZhi		=		  SystemParameter[60]; 	//后轮左值
+	g_screen_houlun_ZhongZhi 	=		  SystemParameter[61]; 	//后轮中值
+	g_screen_houlun_YouZhi 		=		  SystemParameter[62]; 	//后轮右值
+
+	Li_Warning_val_NoBattery 	= 		  SystemParameter[70];
+
+
 	
+	switch(AGV_SYS.Auto_Speed_bili)
+	{
+		case 0:
+				AGV_SYS.Car_Auto_Speed 	= AGV_SYS.L_speed;
+			break;
+		case 1:
+				AGV_SYS.Car_Auto_Speed 	= AGV_SYS.M_speed;
+			break;	
+		case 2:
+				AGV_SYS.Car_Auto_Speed 	= AGV_SYS.H_speed;
+			break;	
+		default :
+			break;
 	
-//    PLC_Data[52] = SystemParameter[52]; //叉车号
-
-
-
-
-
-//    PID.Kp = PLC_Data[8] = SystemParameter[8];		//初始化屏幕的PID参数kp
-//    PID.Ki = PLC_Data[9] = SystemParameter[9];     //初始化屏幕的PID参数ki
-//    PID.Kd = PLC_Data[10] = SystemParameter[10];   //初始化屏幕的PID参数kd
-
-//    PLC_Data[11] = SystemParameter[11];			   //测试前进的PID控制周期
-
-//	PLC_Data[12] = SystemParameter[12]; //前轮中值
-//	PLC_Data[13] = SystemParameter[13]; //后轮中值
-//	
-//    HmiDiSu    = SystemParameter[18];		//一档速度
-//    HmiZhongSu = SystemParameter[19];   //二档速度
-//    HmiGaoSu   = SystemParameter[20];   //三档速度
+	}	
 
 
 //
@@ -578,7 +663,7 @@ void UserConfigInit(void)
 
     //获取当前路径信息
     GetRouteData(HmiRouteNum);
-
+	
     //获取及更新流程数据
     GetProcessData();
 }

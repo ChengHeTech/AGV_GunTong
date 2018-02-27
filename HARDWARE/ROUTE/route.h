@@ -6,13 +6,13 @@
 // 
 typedef struct
 {
-	u16 ID;					//站点号
+	u16 ID;				//站点号
 	u8 	motion;			//到站动作		//6
 	u8  speed;			//到站速度		//4
 	u8  delay;			//到站延时
 	
 	u8  fencha;			//分叉动作
-	u8  IR_bizhang;	//红外避障开关
+	u8  IR_bizhang;		//红外避障开关
 	u8  guntong;		//辊筒动作
 
 }AGV_station;
@@ -67,6 +67,7 @@ extern u16 HmiProcessCopiedNumTemp;//被复制流程号临时变量
 
 //PLC_OutPut段
 #define P_RUN_LED                       PLC_OutPut[1]//屏幕运行指示灯
+#define Sys_battery 					PLC_Data[51]	//系统电量
 //#define P_                       PLC_OutPut[2]//屏幕运行指示灯
 //#define P_                       PLC_OutPut[3]//屏幕运行指示灯
 //#define P_                       PLC_OutPut[4]//屏幕运行指示灯
@@ -75,25 +76,21 @@ extern u16 HmiProcessCopiedNumTemp;//被复制流程号临时变量
 //#define P_                       PLC_OutPut[7]//屏幕运行指示灯
 
 
-#define g_IR_yuan_CAR_qian 		PLC_OutPut[25]	//车前远红外避障
-#define g_IR_yuan_CAR_hou		PLC_OutPut[26]	//车后远红外避障
+#define g_IR_yuan_CAR_qian 		PLC_OutPut[29]	//车前远红外避障
+#define g_IR_yuan_CAR_hou		PLC_OutPut[30]	//车后远红外避障
 
-#define g_IR_jin_CAR_qian	PLC_OutPut[29] //车前近红外
-#define g_IR_jin_CAR_hou	PLC_OutPut[30] //车后近红外
+#define g_IR_jin_CAR_qian		PLC_OutPut[25] //车前近红外
+#define g_IR_jin_CAR_hou		PLC_OutPut[26] //车后近红外
 
-#define g_jiexie_qian		PLC_OutPut[46]	//前机械避障
-#define g_jiexie_hou		PLC_OutPut[47]	//后机械避障
+#define g_jiexie_qian			PLC_OutPut[46]	//前机械避障
+#define g_jiexie_hou			PLC_OutPut[47]	//后机械避障
 
-#define g_IR_guntong_left	PLC_OutPut[27]	//辊筒左红外
-#define g_IR_guntong_right	PLC_OutPut[28]  //辊筒右红外
-
-
-
-
+#define g_IR_guntong_left		PLC_OutPut[27]	//辊筒左红外
+#define g_IR_guntong_right		PLC_OutPut[28]  //辊筒右红外
 
 //#define g_IR_qian	PLC_OutPut[48] = ZZBZ2; //左转下雷达避障2
-#define g_jixieKEY_start	PLC_OutPut[50]  //面板启动按键 -- 传感器调试
-#define g_jixieKEy_stop		PLC_OutPut[49]  //面板停止按键 -- 传感器调试
+#define g_jixieKEY_start		PLC_OutPut[50]  //面板启动按键 -- 传感器调试
+#define g_jixieKEy_stop			PLC_OutPut[49]  //面板停止按键 -- 传感器调试
 
 
 
@@ -148,7 +145,7 @@ extern u16 HmiProcessCopiedNumTemp;//被复制流程号临时变量
  	       
 
 
-//#define HmiRoadData7         PLC_Data[39] 	//工作区（AGV在设备工作区内）
+//#define HmiRoadData7          	//工作区（AGV在设备工作区内）
 //#define HmiRoadData8         PLC_Data[44] 	//时间
 //#define HmiRoadData9         PLC_Data[34] 	//旋转次数
 //#define HmiRoadData10        PLC_Data[47] 	//电梯的使用与否 0:不使用1:去一楼2:去三楼 //使用电梯:叉车从一楼叉货上三楼或叉车从三楼叉货上一楼,其余为不使用电梯
@@ -156,10 +153,11 @@ extern u16 HmiProcessCopiedNumTemp;//被复制流程号临时变量
 //#define HmiRoadData12        PLC_OutPut[51]	//PLC_Data[40] //左磁导航触发
 //#define HmiRoadData13        PLC_OutPut[52]	//PLC_Data[43] //右磁导航触发
 //#define HmiRoadData14        PLC_OutPut[53]	//PLC_Data[45] //前磁导航触发
-//#define HmiRoadData15        PLC_Data[46] 	//左磁导航触发次数
-//#define HmiRoadData16        PLC_Data[48] 	//右磁导航触发次数
-//#define HmiRoadData17        PLC_Data[49] 	//前磁导航触发次数
-//#define HmiRoadData18        PLC_Data[50] 	//叉臂调节算法的选择
+
+#define XZ_Speed40       	 PLC_Data[46] 		//寻正最大速度
+#define XZ_Speed41        	 PLC_Data[48] 		//电位器寻正速度比
+#define XZ_Speed42       	 PLC_Data[49] 		//磁条寻轨速度
+#define XZ_Speed43       	 PLC_Data[50] 		//电机最大速度
 
 
 
@@ -234,19 +232,23 @@ extern u16 HmiProcessCopiedNumTemp;//被复制流程号临时变量
 #define g_AGV_speaker_key 		PLC_OutPut[24]	//系统语音开关
 #define g_AGV_LED_car_state 	PLC_OutPut[17]	//车身状态灯
 
-#define HmiDiSu       			PLC_Data[18] 	//低速
+#define HmiDiSu       			PLC_Data[39] 	//低速
 #define HmiZhongSu     			PLC_Data[19] 	//中速
 #define HmiGaoSu      			PLC_Data[20] 	//高速
 #define g_AGV_speed_duijie		PLC_Data[99] 	//工位对接速度
 
 
 
-//PLC_Data[123] = SystemParameter[31];  //未使用
-//PLC_Data[124] = SystemParameter[32];  //未使用
-//PLC_Data[125] = SystemParameter[33];  //
-//PLC_Data[126] = SystemParameter[34];  //
-//PLC_Data[127] = SystemParameter[35];  //
-//PLC_Data[128] = SystemParameter[36];  //
+#define Li_dianya 				PLC_Data[123]	//电压
+#define Li_Realy_mah			PLC_Data[124]	//实时容量
+#define Li_Std_mah 				PLC_Data[125] 	//标称容量
+#define Li_XunHuan_time			PLC_Data[126] 	//循环次数
+
+#define Li_Warning_val_NoBattery 			PLC_Data[128]	//没电报警值
+
+
+
+// = SystemParameter[36];  //
 //PLC_Data[129] = SystemParameter[37];  //
 //PLC_Data[130] = SystemParameter[38];  //
 

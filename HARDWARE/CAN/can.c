@@ -1,6 +1,7 @@
 #include "can.h"
 
 u8 g_Get_RFID_buff[16];
+
 u8 g_cinavi1_RXbuff[16];  //前磁导航
 u8 g_cinavi2_RXbuff[16];	
 u8 g_cinavi3_RXbuff[16];  
@@ -157,7 +158,7 @@ u8 g_Ct_chugui[4];
 void CAN1_RX0_IRQHandler(void)			//磁导航采集
 {
   	CanRxMsg RxMessage;
-	int i=0;
+	//int i=0;
     CAN_Receive(CAN1, CAN_FIFO0, &RxMessage);
 	
 //	if(RxMessage.StdId == 1)			//前1磁导航
@@ -242,11 +243,11 @@ void CAN2_RX0_IRQHandler(void)  //地标传感器 中断处理
 			
 			if(g_SD_buff[0]==9 || g_SD_buff[0]==10)	//屏蔽左右旋的速度
 			{
-				g_AGV_shoudong_Speed = 0;
+				AGV_SYS.Car_SD_Speed = 0;
 			}
 			else
 			{
-				g_AGV_shoudong_Speed = g_SD_buff[1] * 30 * g_AGV_shoudong_Speed_bili/10;		//0-100*30//0-3000		
+				AGV_SYS.Car_SD_Speed = g_SD_buff[1] * 30 * AGV_SYS.SD_Speed_bili/10;		//0-100*30//0-3000		
 			}
 		
 		}

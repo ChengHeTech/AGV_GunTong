@@ -1,10 +1,9 @@
 #include "motor.h"
 
-u16 g_MAX_Speed = 2999;
 
-u16 g_AGV_Car_Speed;	
-u16 g_AGV_shoudong_Speed;
-u16 g_AGV_shoudong_Speed_bili = 4;
+
+
+
 u16 g_AGV_shoudong_dir;			//0:停止1:前进 2:后退 3:左转 4:右转 5左上 6右上 7左下 8右下 9左旋 10右旋 
 u8  g_AGV_Car_dir;				//全局唯一//0:前进    1:后退
 
@@ -14,7 +13,7 @@ u8  g_AGV_Car_mode = 1;				//0:自动  1:手动
 
 
 
-
+#if 0
 ////电机驱动器
 ////使能信号,方向信号,引脚初始化
 //void motor_init(void) 
@@ -76,15 +75,19 @@ u8  g_AGV_Car_mode = 1;				//0:自动  1:手动
 //	delay_us(temp_true);	//100k	
 //	
 //}
+#endif
 
 
 
+//
+//
+//
 
 void Motor_Zzhuan(u8 Motor,u32 speed)           //这是电机驱动口的控制处
 {	
-	if(speed > g_MAX_Speed)	//2999
+	if(speed > AGV_SYS.Motor_MAX_Speed)	//2999
 	{
-		speed = g_MAX_Speed;
+		speed = AGV_SYS.Motor_MAX_Speed;
 	}
 	switch(Motor)
 	{
@@ -114,9 +117,9 @@ void Motor_Fzhuan(u8 Motor,u32 speed)
 	{
 		tmep_spd = 0;
 	}
-	else if(speed > g_MAX_Speed)
+	else if(speed > AGV_SYS.Motor_MAX_Speed)
 	{
-		tmep_spd = -g_MAX_Speed;
+		tmep_spd = -AGV_SYS.Motor_MAX_Speed;
 	}
 	else
 	{
@@ -154,24 +157,24 @@ void qianlun_Back(u16 temp_speed)		//前轮后退
 	Motor_Fzhuan(1,temp_speed); Motor_Zzhuan(2,temp_speed);
 }
 
-u16 g_XZ_MAX_Speed = 700;
+
 
 
 
 
 void qianlun_TurnL(u16 temp_speed)		//前轮左转
 {
-	if(temp_speed > g_XZ_MAX_Speed)
+	if(temp_speed > AGV_SYS.XZ_MAX_Speed)
 	{
-		temp_speed = g_XZ_MAX_Speed;
+		temp_speed = AGV_SYS.XZ_MAX_Speed;
 	}
 	Motor_Fzhuan(1,temp_speed); Motor_Fzhuan(2,temp_speed);
 }
 void qianlun_TurnR(u16 temp_speed)		//前轮右转
 {
-	if(temp_speed > g_XZ_MAX_Speed)
+	if(temp_speed > AGV_SYS.XZ_MAX_Speed)
 	{
-		temp_speed = g_XZ_MAX_Speed;
+		temp_speed = AGV_SYS.XZ_MAX_Speed;
 	}
 	Motor_Zzhuan(1,temp_speed); Motor_Zzhuan(2,temp_speed);
 }
@@ -188,17 +191,17 @@ void houlun_Back(u16 temp_speed)		//后轮后退
 }
 void houlun_TurnL(u16 temp_speed)		//后轮左转
 {
-	if(temp_speed > g_XZ_MAX_Speed)
+	if(temp_speed > AGV_SYS.XZ_MAX_Speed)
 	{
-		temp_speed = g_XZ_MAX_Speed;
+		temp_speed = AGV_SYS.XZ_MAX_Speed;
 	}
 	Motor_Fzhuan(3,temp_speed); Motor_Fzhuan(4,temp_speed);
 }
 void houlun_TurnR(u16 temp_speed)		//后轮右转
 {
-	if(temp_speed > g_XZ_MAX_Speed)
+	if(temp_speed > AGV_SYS.XZ_MAX_Speed)
 	{
-		temp_speed = g_XZ_MAX_Speed;
+		temp_speed = AGV_SYS.XZ_MAX_Speed;
 	}
 	Motor_Zzhuan(3,temp_speed); Motor_Zzhuan(4,temp_speed);
 }
@@ -210,7 +213,7 @@ void houlun_TurnR(u16 temp_speed)		//后轮右转
 u16 g_xz_dwq[2];
 u8 g_XZ_Ok;
 u8 g_XZ_Beep;
-u8 g_XZ_Speed = 60;
+
 void DwqXunZheng_QH(void)
 {
 	//OS_ERR err;
@@ -227,11 +230,11 @@ void DwqXunZheng_QH(void)
 		
 		if(g_xz_dwq[0] > g_DWQ.qianlun_zhong_val)		//驱动偏右,左转
 		{
-			qianlun_TurnL( abs(temp_cha[0]) * g_XZ_Speed );			//最大速度90*10左右
+			qianlun_TurnL( abs(temp_cha[0]) * AGV_SYS.XZ_DWQ_Speed_bili );			//最大速度90*10左右
 		} 
 		if(g_xz_dwq[0]<g_DWQ.qianlun_zhong_val)		//驱动偏左,右转
 		{
-			qianlun_TurnR( abs(temp_cha[0]) * g_XZ_Speed );
+			qianlun_TurnR( abs(temp_cha[0]) * AGV_SYS.XZ_DWQ_Speed_bili );
 		}
 		
 		//OSTimeDlyHMSM(0,0,0,10,OS_OPT_TIME_HMSM_STRICT,&err);
@@ -249,11 +252,11 @@ void DwqXunZheng_QH(void)
 	{
 		if(g_xz_dwq[1]>g_DWQ.houlun_zhong_val)		//驱动偏右,左转
 		{
-			houlun_TurnL( abs(temp_cha[1]) * g_XZ_Speed );
+			houlun_TurnL( abs(temp_cha[1]) * AGV_SYS.XZ_DWQ_Speed_bili );
 		}
 		if(g_xz_dwq[1]<g_DWQ.houlun_zhong_val)		//驱动偏左,右转
 		{
-			houlun_TurnR( abs(temp_cha[1]) * g_XZ_Speed );
+			houlun_TurnR( abs(temp_cha[1]) * AGV_SYS.XZ_DWQ_Speed_bili );
 		}
 		
 		//OSTimeDlyHMSM(0,0,0,10,OS_OPT_TIME_HMSM_STRICT,&err);
@@ -591,7 +594,7 @@ void AGV_System_Start(void)
 	g_Start_flag.Start_AGV_SysCode = 1;
 }
 
-u16 g_CT_XZ_MAX_Speed = 600;
+
 u8 g_glag_bizhang;
 void AGV_Stop2Start(void)
 {
@@ -659,6 +662,23 @@ void AGV_Stop2Start(void)
 		g_Start_flag.button_Start = 0;
 	}	
 	
+//	if(g_Start_flag.button_Start == 1)//避障语音
+//	{
+//	
+//	}
+//	else
+//	{
+//	
+//	}
+//	if(g_Start_flag.Start_button_Car == 1)
+//	{
+//		speek("启动");
+//	}	
+//	if(g_Start_flag.Stop_button_Car == 1)
+//	{
+//		speek("停止");
+//	}
+	
 
 	if(!g_AGV_Car_mode)	//0:自动
 	{
@@ -671,7 +691,7 @@ void AGV_Stop2Start(void)
 			{
 				//自动模式--磁导航寻正
 
-				check_CtXunZ_OK(g_CT_XZ_MAX_Speed);		//g_Start_flag.Start_Auto_PID在这里置一;				
+				check_CtXunZ_OK(AGV_SYS.XZ_CiTiao_Speed);		//g_Start_flag.Start_Auto_PID在这里置一;				
 							
 			}
 		}
@@ -683,19 +703,19 @@ void AGV_Stop2Start(void)
 			if(g_glag_bizhang == 1)
 			{
 				g_glag_bizhang = 0;	
-				check_CtXunZ_OK(g_CT_XZ_MAX_Speed);		//g_Start_flag.Start_Auto_PID在这里置一;								
+				check_CtXunZ_OK(AGV_SYS.XZ_CiTiao_Speed);		//g_Start_flag.Start_Auto_PID在这里置一;								
 			}
 			
 //			if(g_CtXunZheng.XunZ_OK_AGV == 1)		//改成检测寻轨动作而不是成功
 //			{
-//				check_CtXunZ_OK(g_CT_XZ_MAX_Speed);		//g_Start_flag.Start_Auto_PID在这里置一;				
+//				check_CtXunZ_OK(AGV_SYS.XZ_CiTiao_Speed);		//g_Start_flag.Start_Auto_PID在这里置一;				
 //			}					
 				
 				
 				
 //			if(g_CtXunZheng.XunZ_OK_AGV == 0)		//改成检测寻轨动作而不是成功
 //			{
-//				check_CtXunZ_OK(g_CT_XZ_MAX_Speed);		//g_Start_flag.Start_Auto_PID在这里置一;				
+//				check_CtXunZ_OK(AGV_SYS.XZ_CiTiao_Speed);		//g_Start_flag.Start_Auto_PID在这里置一;				
 //			}		
 		
 		}
@@ -863,7 +883,7 @@ AGV_Start_flag g_Start_flag =
 	1
 };     
        
-      
+
 
 
 

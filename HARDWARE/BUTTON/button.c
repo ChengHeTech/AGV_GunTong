@@ -69,94 +69,94 @@ void agv_24V_input(void)	//未做按键消抖,后面做
 {
 	if(!g_button_stop)						//g_jixieKEy_stop
 	{
-		AGV_input_24V_buff[0] = g_jixieKEy_stop= 1;
+		AGV_input_24V_buff[0] = 1;
 	}
 	else
 	{
-		AGV_input_24V_buff[0] = g_jixieKEy_stop = 0;
+		AGV_input_24V_buff[0] = 0;
 	}
 		
 	if(!g_button_start)					//g_jixieKEY_start
 	{
-		AGV_input_24V_buff[1] = g_jixieKEY_start = 1;
+		AGV_input_24V_buff[1] = 1;
 	}
 	else
 	{
-		AGV_input_24V_buff[1] = g_jixieKEY_start = 0;
+		AGV_input_24V_buff[1] = 0;
 	}		
 	
 	if(!g_flag_IR_qian_yuan)					//前远红外  	//g_IR_yuan_CAR_qian
 	{
-		AGV_input_24V_buff[2] = g_IR_yuan_CAR_qian = 1;
+		AGV_input_24V_buff[2] =  1;
 	}
 	else
 	{
-		AGV_input_24V_buff[2] = g_IR_yuan_CAR_qian = 0;
+		AGV_input_24V_buff[2] =  0;
 	}	
 
 	
 	if(!g_flag_IR_hou_yuan)						//后远红外		//g_IR_yuan_CAR_hou
 	{
-		AGV_input_24V_buff[3] = g_IR_yuan_CAR_hou= 1;
+		AGV_input_24V_buff[3] =  1;
 	}
 	else
 	{
-		AGV_input_24V_buff[3] = g_IR_yuan_CAR_hou = 0;
+		AGV_input_24V_buff[3] = 0;
 	}	
 	
 	if(!g_flag_fangzhuang_qian)			//g_jiexie_qian
 	{
-		AGV_input_24V_buff[4] = g_jiexie_qian = 1;
+		AGV_input_24V_buff[4] =  1;
 	}
 	else
 	{
-		AGV_input_24V_buff[4] = g_jiexie_qian= 0;
+		AGV_input_24V_buff[4] = 0;
 	}
 		
 	if(!g_flag_fangzhuang_hou)			//g_jiexie_hou
 	{
-		AGV_input_24V_buff[5] = g_jiexie_hou =1;
+		AGV_input_24V_buff[5] = 1;
 	}
 	else
 	{
-		AGV_input_24V_buff[5] = g_jiexie_hou = 0;
+		AGV_input_24V_buff[5] = 0;
 	}		
 	
 	if(!g_flag_guntong_zuo)				//g_IR_guntong_left
 	{
-		AGV_input_24V_buff[6] = g_IR_guntong_left = 1;
+		AGV_input_24V_buff[6] = 1;
 	}
 	else
 	{
-		AGV_input_24V_buff[6] = g_IR_guntong_left = 0;
+		AGV_input_24V_buff[6] = 0;
 	}	
 	
 	if(!g_flag_guntong_you)				//g_IR_guntong_right
 	{
-		AGV_input_24V_buff[7] = g_IR_guntong_right = 1;
+		AGV_input_24V_buff[7] = 1;
 	}
 	else
 	{
-		AGV_input_24V_buff[7] = g_IR_guntong_right = 0;
+		AGV_input_24V_buff[7] = 0;
 	}	
 	
 	
 	if(!g_flag_IR_qian_jin)					//前近红外  	//g_IR_jin_CAR_qian
 	{
-		AGV_input_24V_buff[8] = g_IR_jin_CAR_qian = 1; 
+		AGV_input_24V_buff[8] =  1; 
 	}
 	else
 	{
-		AGV_input_24V_buff[8] = g_IR_jin_CAR_qian = 0;
+		AGV_input_24V_buff[8] = 0;
 	}	
 
 	if(!g_flag_IR_hou_jin)					//后近红外  	//g_IR_jin_CAR_hou
 	{
-		AGV_input_24V_buff[9] = g_IR_jin_CAR_hou = 1; 
+		AGV_input_24V_buff[9] = 1; 
 	}
 	else
 	{
-		AGV_input_24V_buff[9] = g_IR_jin_CAR_hou = 0;
+		AGV_input_24V_buff[9] =  0;
 	}	
 
 

@@ -4,16 +4,17 @@ u16 g_AD_Value[30][3];
 u16 g_After_filter[3];		//0 - 4096
 double g_ADC_dianweiqi[2];		//电位器电压值 0 - 3.3V
 
-dianweiqi g_DWQ = 
-{
-	102,			//	 qianlun_zhong_val,	//102
-	59 ,			//	 qianlun_L_val,		//49
-	146,			//	 qianlun_R_val,		//156
-	
-	90,			//	 houlun_zhong_val,		//90
-	49 ,			//	 houlun_L_val,		//39 + 10
-	135				//	 houlun_R_val,		//145 - 10
-};
+dianweiqi g_DWQ;
+//dianweiqi g_DWQ = 
+//{
+//	102,			//	 qianlun_zhong_val,	//102
+//	59 ,			//	 qianlun_L_val,		//49
+//	146,			//	 qianlun_R_val,		//156
+//	
+//	90,			//	 houlun_zhong_val,		//90
+//	49 ,			//	 houlun_L_val,		//39 + 10
+//	135				//	 houlun_R_val,		//145 - 10
+//};
 
 void ADC1_Configuration(void)   
 {   

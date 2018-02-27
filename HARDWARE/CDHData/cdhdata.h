@@ -36,16 +36,12 @@ extern Fencha_struct g_CDH8_qian_2;
 extern Fencha_struct g_CDH8_hou_1;
 extern Fencha_struct g_CDH8_hou_2;
 
-extern u8 g_PID_time;
 
-extern float g_Auto_Kp;
-extern float g_Auto_Ki;
-extern float g_Auto_Kd;
 
-extern float g_SD_Kp ;
-extern float g_SD_Ki ;
-extern float g_SD_Kd ;
-extern u16 g_ffff ;		//拐弯角度_中值------://右转3/4  左转 1/4 中间 1/2
+
+
+
+
 
 
 

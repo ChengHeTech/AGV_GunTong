@@ -172,7 +172,7 @@ int main(void)
 	TIM4_PWM_Init(21000-1,4-1);		//  1000,8   21000 000
 	PID_Init();
 	
-	//UserConfigInit();				//用户参数初始化	
+	UserConfigInit();				//用户参数初始化	
 
 	
 	
@@ -382,7 +382,7 @@ void start_task(void *p_arg)
 
 
 
-void Transducer_task(void *p_arg)  	//开关量输入采集
+void Transducer_task(void *p_arg)  	//开关量输入采集及行车灯状态
 {
 	u8 temp_l=0;
 	OS_ERR err;
@@ -559,14 +559,14 @@ void Auto_task(void *p_arg)			//自动模式--前轮PID
 	OS_ERR err;
 	p_arg = p_arg;
 
-	//speek("手动任务");
+	//speek("任务");
 	while(1)
 	{
-		if(g_AGV_Car_Speed>0 && g_AGV_Car_mode == 0) 
+		if(AGV_SYS.Car_Auto_Speed>0 && g_AGV_Car_mode == 0) 
 		{
 			if(g_Start_flag.Start_Auto_PID)		//1:找到磁条
 			{
-				PID_AUTO_QianLun(g_AGV_Car_Speed,g_Auto_Kp,g_Auto_Ki,g_Auto_Kd);	//前轮
+				PID_AUTO_QianLun(AGV_SYS.Car_Auto_Speed,AGV_SYS.AUTO_Kp,AGV_SYS.AUTO_Ki,AGV_SYS.AUTO_Kd);	//前轮
 			}
 			else
 			{
@@ -587,12 +587,12 @@ void PID_task(void *p_arg)			//自动模式--后轮PID
 	
 	while(1)
 	{
-		if(g_AGV_Car_Speed>0 && g_AGV_Car_mode == 0) 
+		if(AGV_SYS.Car_Auto_Speed>0 && g_AGV_Car_mode == 0) 
 		{
 			if(g_Start_flag.Start_Auto_PID)		//1:找到磁条
 			{
 				
-				PID_AUTO_HouLun(g_AGV_Car_Speed,g_Auto_Kp,g_Auto_Ki,g_Auto_Kd);		//后轮
+				PID_AUTO_HouLun(AGV_SYS.Car_Auto_Speed,AGV_SYS.AUTO_Kp,AGV_SYS.AUTO_Ki,AGV_SYS.AUTO_Kd);		//后轮
 				//g_CtXunZheng.XunZ_OK_AGV = 0;	//清除磁条上轨标志
 			}
 			else
@@ -625,13 +625,13 @@ void Manual_task(void *p_arg)  //手动任务
 		
 		if(g_AGV_Car_mode) //1://手动模式
 		{	
-			if(g_AGV_shoudong_Speed > 50 && g_AGV_shoudong_dir!=0) 	
+			if(AGV_SYS.Car_SD_Speed > 50 && g_AGV_shoudong_dir!=0) 	
 			{
 				if(g_Start_flag.Start_Manu_PID)			//1:启动
 				{
 					g_XZ_Ok = 0;
 					
-					PID_SD_Adjust(g_AGV_shoudong_Speed,g_SD_Kp,g_SD_Ki,g_SD_Kd);	//延时在里面
+					PID_SD_Adjust(AGV_SYS.Car_SD_Speed,AGV_SYS.SD_Kp,AGV_SYS.SD_Ki,AGV_SYS.SD_Kd);	//延时在里面
 				}		
 				else									//0:停止
 				{
@@ -675,14 +675,12 @@ void Screen_task(void *p_arg)    	//触摸屏界面操作
 	OS_ERR err;
 	p_arg = p_arg;	
 	
-//	g_AGV_Car_Speed = g_sys_set_agvSPEED = 1;		//AGV车的全局运行速度 0:低速 1:中速 2:高速
-//	g_screen_qianlun_jiaodu = g_ADC_dianweiqi[0] * 100;
-//	g_screen_houlun_jiaodu  = g_ADC_dianweiqi[1] * 100;	
+
 
 	while(1)
 	{
 
-		#if 0
+		#if 1
 		
 	    switch(HmiScreenSetGet)
         {
@@ -698,60 +696,82 @@ void Screen_task(void *p_arg)    	//触摸屏界面操作
 							//Shou_Dong();		//切到手动程序
 						 
 							g_AGV_Car_mode = 1;
+							speek("手动");
+							delay_rtos(0,0,0,500);
 					 }
 					 else if(g_shoudong_auto == 1)				//屏幕的自动按键按下时
 					 {
 							//Zi_Dong();			//切到自动程序
 							g_AGV_Car_mode = 0;
+							speek("自动");
+						 delay_rtos(0,0,0,500);
 					 }
 					 else if(g_shoudong_guntong_zuozhuan == 1)				//辊筒左转
 					 {
 							//Cha_Sheng();
+							guntong_start = 1;		//高电平有效
+							speek("辊筒左转");
+						 delay_rtos(0,0,0,500);
 					 }
 					 else if(g_shoudong_guntong_youzhuan == 1)				//辊筒右转
 					 {
 							//Cha_Jiang();
+							guntong_fanzhuan = 1;	//高电平有效
+							speek("辊筒右转");
+						 delay_rtos(0,0,0,500);
 					 }
 					 else if(g_shoudong_turn_left == 1)				//左转
 					 {
 							//Zuo_Fen();
+							speek("左转向");
+						 delay_rtos(0,0,0,500);
 					 }
 					 else if(g_shoudong_turn_right == 1)				//右转
 					 {
 							//You_Fen();
+							speek("右转向");
+						 delay_rtos(0,0,0,500);
 					 }
 					 if(g_AGV_Car_mode == 0)				//0:自动模式 1:自动模式
 					 {
 							if(g_shoudong_start == 1)			//启动
 							{
 								//Qi_Dong();		//启动的语音
+								g_shoudong_start = 1;
+								speek("启动");
+								delay_rtos(0,0,0,500);
 							}
 							if(g_shoudong_stop == 1)		 	//停止
 							{
 								//Ting_Zhi();		//停止的语音
+								g_shoudong_stop = 1;
+								speek("停止");
+								delay_rtos(0,0,0,500);
 							}
 							else if(g_shoudong_goto == 1)		//设置前进方向,自动模式下,设置行走方向
 							{
 								//Qian_Jin();		//前进模式
+								g_AGV_Car_dir = 0;
+								speek("方向前进");
+								delay_rtos(0,0,0,500);
 							}
 							else if(g_shoudong_goback == 1) 	//设置后退方向,自动模式下,设置行走方向
 							{
 								//Hou_You();		//后退模式
+								g_AGV_Car_dir = 1;
+								speek("方向后退");
+								delay_rtos(0,0,0,500);
 							}
 					 }
-					 /*********当屏幕上参数发生改变时记录参数到flash开始********/
-					 if(g_AGV_shoudong_Speed_bili != g_shoudong_screen_speed)		//PLC_Data[3]	
-					 {
-							g_AGV_shoudong_Speed_bili = g_shoudong_screen_speed;				//更新屏幕的速度显示值
-							
-						 SystemParameter[3] = g_AGV_shoudong_Speed_bili;		//手动速度比例:  x/10
 
-							SetOneParameterToSystem(SystemParameter[3], 3);
-					 }
-					 /*********当屏幕上参数发生改变时记录参数到flash结束********/
+					 AGV_SYS.SD_Speed_bili = g_shoudong_screen_speed;	//PLC_Data[3]				//更新屏幕的速度显示值
 
-					 osdelay_ms(10);
+					 SystemParameter[3] = AGV_SYS.SD_Speed_bili;		//手动速度比例:  x/10
+
+
+					osdelay_ms(20);
 				}
+				SetOneParameterToSystem(SystemParameter[3], 3);
 			}
 			break;
 			//路径规划段界面	
@@ -764,11 +784,11 @@ void Screen_task(void *p_arg)    	//触摸屏界面操作
 				}
 			}
 			break;
-			case LuJingGuiHuaJieMian:				//路径规划界面
-			case FuZhiLuJingTanChuJieMian:			//复制路径界面
-			case QueDingChaRuZhanDianJieMian: 	//插入路径界面
-			case QueDingShanChuZhanDianJieMian:	//删除路径界面
-			case XvNiDiBiaoJieMian:  				//虚拟地标界面
+			case LuJingGuiHuaJieMian:					//4路径规划界面
+			case FuZhiLuJingTanChuJieMian:				//11复制路径界面
+			case QueDingChaRuZhanDianJieMian: 			//12插入路径界面
+			case QueDingShanChuZhanDianJieMian:			//13删除路径界面
+			case XvNiDiBiaoJieMian:  					//14虚拟地标界面
 			{
 				while(HmiScreenSetGet == LuJingGuiHuaJieMian || HmiScreenSetGet == FuZhiLuJingTanChuJieMian ||
 						HmiScreenSetGet == QueDingChaRuZhanDianJieMian || HmiScreenSetGet == QueDingShanChuZhanDianJieMian ||
@@ -1422,30 +1442,34 @@ void Screen_task(void *p_arg)    	//触摸屏界面操作
 				}
 			}
 			break;
-			case ZiDongJieMian: 						//自动运行界面
+			case ZiDongJieMian: 					//20自动运行界面
 			{
 				while(HmiScreenSetGet == ZiDongJieMian)
 				{
-//					 if(PLC_OutPut[4] == 1)						//屏幕的手动按键按下时
-//					 {
-//							Shou_Dong();		//切到手动程序
-//					 }
-//					 else if(PLC_OutPut[5] == 1)				//屏幕的自动按键按下时
-//					 {
-//							Zi_Dong();			//切到自动程序
-//					 }
-//					 if(Mode_flag == 1)
-//					 {
-//							if(PLC_OutPut[11] == 1)			//启动
-//							{
-//								Qi_Dong();
-//							}
-//							if(PLC_OutPut[12] == 1)		 	//停止
-//							{
-//								Ting_Zhi();
-//							}
-//					 }
-					 osdelay_ms(10);
+					 if(PLC_OutPut[4] == 1)						//屏幕的手动按键按下时
+					 {
+							//Shou_Dong();		//切到手动程序
+							g_AGV_Car_mode = 1;
+					 }
+					 else if(PLC_OutPut[5] == 1)				//屏幕的自动按键按下时
+					 {
+							//Zi_Dong();			//切到自动程序
+							g_AGV_Car_mode = 0;			 
+					 }
+					 if(g_AGV_Car_mode == 0)				//0:自动模式 1:手动模式
+					 {
+							if(PLC_OutPut[11] == 1)			//启动
+							{
+								//Qi_Dong();
+								g_shoudong_start = 1;
+							}
+							if(PLC_OutPut[12] == 1)		 	//停止
+							{
+								//Ting_Zhi();
+								g_shoudong_stop = 1;
+							}
+					 }
+					 osdelay_ms(20);
 				}
 			}
 			break;
@@ -1510,23 +1534,26 @@ void Screen_task(void *p_arg)    	//触摸屏界面操作
 			}
 			break;
 			//数据调试及系统参数界面段程序
-			case ChuanGanQiJieMian:					//22//各个传感器的状态更新到屏幕上
+			case ChuanGanQiJieMian:					//22//传感器调试各个传感器的状态更新到屏幕上
 			{
 				while(HmiScreenSetGet == ChuanGanQiJieMian)
 				{
-//					PLC_OutPut[25] = CBBZ2;	//左叉臂红外避障
-//					PLC_OutPut[26] = CBBZ1;	//右叉臂红外避障
-//					PLC_OutPut[27] = QBZ1N;	//车前左上雷达
-//					PLC_OutPut[28] = QBZ1F; //车前右上雷达
-//					PLC_OutPut[29] = QBZ2N; //车前左下雷达
-//					PLC_OutPut[30] = QBZ2F; //车前右下雷达
-//					PLC_OutPut[46] = JXBZ; 	//机械避障
-//					PLC_OutPut[47] = ZZBZ1; //左转上雷达避障1
-//					PLC_OutPut[48] = ZZBZ2; //左转下雷达避障2
-//					PLC_OutPut[49] = YZBZ1; //右转上雷达避障1
-//					PLC_OutPut[50] = YZBZ2; //右转下雷达避障2
+					g_IR_yuan_CAR_qian 	= 	AGV_input_24V_buff[2];	//g_flag_IR_qian_yuan;							//#define g_IR_yuan_CAR_qian 		PLC_OutPut[25]	//车前远红外避障
+					g_IR_yuan_CAR_hou	=	AGV_input_24V_buff[3];	//g_flag_IR_hou_yuan;								//#define g_IR_yuan_CAR_hou		PLC_OutPut[26]	//车后远红外避障
+                    
+					g_IR_jin_CAR_qian	=	AGV_input_24V_buff[8];	g_flag_IR_qian_jin;								//#define g_IR_jin_CAR_qian		PLC_OutPut[29] //车前近红外
+					g_IR_jin_CAR_hou	=	AGV_input_24V_buff[9];	//								//#define g_IR_jin_CAR_hou		PLC_OutPut[30] //车后近红外
+                    
+					g_jiexie_qian		=	AGV_input_24V_buff[4];	//g_flag_fangzhuang_qian;								//#define g_jiexie_qian			PLC_OutPut[46]	//前机械避障
+					g_jiexie_hou		=	AGV_input_24V_buff[5];	//g_flag_fangzhuang_hou;								//#define g_jiexie_hou			PLC_OutPut[47]	//后机械避障
+                    
+					g_IR_guntong_left	=	AGV_input_24V_buff[6];	//g_flag_guntong_zuo;								//#define g_IR_guntong_left		PLC_OutPut[27]	//辊筒左红外
+					g_IR_guntong_right	=	AGV_input_24V_buff[7];	//g_flag_guntong_you;							//#define g_IR_guntong_right		PLC_OutPut[28]  //辊筒右红外
 					
-					osdelay_ms(20);
+					g_jixieKEY_start	=	AGV_input_24V_buff[1];	//g_button_start;
+					g_jixieKEy_stop		=	AGV_input_24V_buff[0];	//g_button_stop;
+					
+					osdelay_ms(10);
 				}
 			}
 			break;
@@ -1534,15 +1561,25 @@ void Screen_task(void *p_arg)    	//触摸屏界面操作
 			{
 				while(HmiScreenSetGet == JiBenShuJuJieMian)
 				{
-					 PID.Kp = g_screen_Auto_Kp;		           //更新自动Kp
-					 PID.Ki = g_screen_Auto_Ki;                 //更新自动ki
-					 PID.Kd = g_screen_Auto_Kd;                //更新自动kd
+					
+					
+					g_screen_qianCDH1 = g_cinavi1_RXbuff[0];
+					g_screen_qianCDH2 = g_cinavi2_RXbuff[0];
+					g_screen_houCDH1  = g_cinavi3_RXbuff[0];
+					g_screen_houCDH2  = g_cinavi4_RXbuff[0];
+					
+					g_screen_qianlun_jiaodu = g_After_filter[1];
+					g_screen_houlun_jiaodu 	= g_After_filter[2];
+					
+					 AGV_SYS.AUTO_Kp = g_screen_Auto_Kp;		           //更新自动Kp
+					 AGV_SYS.AUTO_Ki = g_screen_Auto_Ki;                 //更新自动ki
+					 AGV_SYS.AUTO_Kd = g_screen_Auto_Kd;                 //更新自动kd
 
-					 g_SD_Kp = g_screen_Manu_Kp;	           //更新手动kp
-					 g_SD_Ki = g_screen_Manu_Ki;               //更新手动ki
-					 g_SD_Kd = g_screen_Manu_Kd;               //更新手动kd
+					 AGV_SYS.SD_Kp = g_screen_Manu_Kp;	          	  //更新手动kp
+					 AGV_SYS.SD_Ki = g_screen_Manu_Ki;               	  //更新手动ki
+					 AGV_SYS.SD_Kd = g_screen_Manu_Kd;              	  //更新手动kd
 
-					 g_PID_time = g_screen_control_TIME;						//测试前进的PID控制周期
+//					 AGV_SYS.PID_time  = g_screen_control_TIME;						//测试前进的PID控制周期
 					
 					 g_DWQ.qianlun_L_val 	 = g_screen_qianlun_ZuoZhi;					//前轮左极限
 					 g_DWQ.qianlun_zhong_val = g_screen_qianlun_ZhongZhi;					//前轮中值
@@ -1560,7 +1597,7 @@ void Screen_task(void *p_arg)    	//触摸屏界面操作
 					 SystemParameter[54] = g_screen_Manu_Ki;
 					 SystemParameter[55] = g_screen_Manu_Kd;	
 					 
-					 SystemParameter[56]= g_screen_control_TIME;
+//					 SystemParameter[56]= g_screen_control_TIME;
 					 
 					 SystemParameter[57]= g_screen_qianlun_ZuoZhi;
 					 SystemParameter[58]= g_screen_qianlun_ZhongZhi;
@@ -1573,60 +1610,63 @@ void Screen_task(void *p_arg)    	//触摸屏界面操作
 					 osdelay_ms(20);
 				}
 
-				W25QXX_Write_16(SystemParameter, 50, 13);			//将当前屏幕参数写入到flash中
+				W25QXX_Write_16(SystemParameter+50, 50, 13);			//将当前屏幕参数写入到flash中
 			}
 			break;
-			case ChaBiShuJuJieMian:					//24//叉臂磁导航数据调试
+			case ChaBiShuJuJieMian:					//24//预留数据调试
 			{
 				while(HmiScreenSetGet == ChaBiShuJuJieMian)
 				{
-	//				if(SystemParameter[60] != PLC_Data[60] || SystemParameter[61] != PLC_Data[61] || SystemParameter[62] != PLC_Data[62] ||
-	//							SystemParameter[63] != PLC_Data[63] || SystemParameter[64] != PLC_Data[64] || SystemParameter[65] != PLC_Data[65] ||
-	//							SystemParameter[66] != PLC_Data[66] || SystemParameter[67] != PLC_Data[67] || SystemParameter[68] != PLC_Data[68] ||
-	//							SystemParameter[69] != PLC_Data[69] || SystemParameter[70] != PLC_Data[70] || SystemParameter[71] != PLC_Data[71] ||
-	//							SystemParameter[72] != PLC_Data[72] || SystemParameter[73] != PLC_Data[73] || SystemParameter[74] != PLC_Data[74] ||
-	//							SystemParameter[75] != PLC_Data[75] || SystemParameter[76] != PLC_Data[76])
-	//				{
-	//					 SystemParameter[60]	= PLC_Data[60];
-	//					 SystemParameter[61]	= PLC_Data[61];
-	//					 SystemParameter[62]	= PLC_Data[62];
-	//					 SystemParameter[63]	=	PLC_Data[63];
-	//					 SystemParameter[64]	=	PLC_Data[64];
-	//					 SystemParameter[65]	=	PLC_Data[65];
-	//					 SystemParameter[66]	= PLC_Data[66];
-	//					 SystemParameter[67]	= PLC_Data[67];
-	//					 SystemParameter[68]	= PLC_Data[68];
-	//					 SystemParameter[69]	=	PLC_Data[69];
-	//					 SystemParameter[70]	=	PLC_Data[70];
-	//					 SystemParameter[71]	=	PLC_Data[71];
-	//					 SystemParameter[72]	= PLC_Data[72];
-	//					 SystemParameter[73]	= PLC_Data[73];
-	//					 SystemParameter[74]	= PLC_Data[74];
-	//					 SystemParameter[75]	= PLC_Data[75];
-	//					 SystemParameter[76]	= PLC_Data[76];
-	//									
-	//					 
-	//				}
+					//#define XZ_Speed40       	 PLC_Data[46] 		//寻正最大速度
+					//#define XZ_Speed41        	 PLC_Data[48] 		//电位器寻正速度比
+					//#define XZ_Speed42       	 PLC_Data[49] 		//磁条寻轨速度
+					//#define XZ_Speed43       	 PLC_Data[50] 		//电机最大速度
+
+
+					
+					AGV_SYS.XZ_MAX_Speed 		= SystemParameter[40] 		= 	XZ_Speed40;
+					AGV_SYS.XZ_DWQ_Speed_bili 	= SystemParameter[41] 		= 	XZ_Speed41;
+					AGV_SYS.XZ_CiTiao_Speed 	= SystemParameter[42] 		= 	XZ_Speed42;
+					AGV_SYS.SD_Speed_bili 		= SystemParameter[43] 		= 	XZ_Speed43;
+					
+
 					osdelay_ms(20); 
 				}
-				//W25QXX_Write_16(&SystemParameter[60], 60, 17);			//将当前屏幕参数写入到flash中
+				W25QXX_Write_16(SystemParameter+40, 40, 4);			//将当前屏幕参数写入到flash中
 			}
 			break;
-			case LeiDaShuJuJieMian:					//25//雷达原始数据 
+			case LeiDaShuJuJieMian:					//25//电池原始数据 
 			{
 				while(HmiScreenSetGet == LeiDaShuJuJieMian)
 				{
-	//				 PLC_Data[131] = g_GetUT_buff[0];
-	//				 PLC_Data[132] = g_GetUT_buff[1];
-	//				 PLC_Data[133] = g_GetUT_buff[2];
-	//				 PLC_Data[134] = g_GetUT_buff[3];
-	//				 PLC_Data[135] = g_GetUT_buff[4];
-	//				 PLC_Data[136] = g_GetUT_buff[5];
-	//				 PLC_Data[137] = g_GetUT_buff[6];
-	//				 PLC_Data[138] = g_GetUT_buff[7];
+					Li_dianya 				=	g_battery.dianya*10;		
+					Li_Realy_mah	        =	g_battery.Realy_mah*10;	
+					Li_Std_mah 		        =	g_battery.Std_mah*10;		
+					Li_XunHuan_time	        =	g_battery.XunHuan_time;
+//		
+					if(Li_Warning_val_NoBattery < 100)	//低电量报警值
+					{
+						Battery_Warining.Warining_Val_NoBattery = Li_Warning_val_NoBattery;//PLC_Data[128]
+						
+						SystemParameter[70] = Battery_Warining.Warining_Val_NoBattery;					
+					}
+					else
+					{
+						Battery_Warining.Warining_Val_NoBattery = 99;//PLC_Data[128]
+						
+						SystemParameter[70] = Battery_Warining.Warining_Val_NoBattery;						
+					}
+
+					
+					
+//	//				 PLC_Data[135] = g_GetUT_buff[4];
+//	//				 PLC_Data[136] = g_GetUT_buff[5];
+//	//				 PLC_Data[137] = g_GetUT_buff[6];
+//	//				 PLC_Data[138] = g_GetUT_buff[7];
 
 					 osdelay_ms(20);
 				}
+				SetOneParameterToSystem(SystemParameter[70], 70);
 			}
 			break;
 			case DianTiTiaoShiJieMian:				//26//电梯调试界面(在车上对电梯的一切进行操控和显示电梯状态)
@@ -1670,21 +1710,49 @@ void Screen_task(void *p_arg)    	//触摸屏界面操作
 			{
 				while(HmiScreenSetGet == XiTongCanShuJieMian)
 				{
-					//30开始
-					 SystemParameter[30] = g_AGV_ID; 				//车号	  
-					 SystemParameter[31] = g_AGV_speaker_val;     	//系统音量      
-					 SystemParameter[32] = g_sys_set_agvSPEED;    	//AGV车速 -- 低中高 
-					 SystemParameter[33] = g_AGV_speaker_key ;	  	//系统语音开关     
-					 SystemParameter[34] = g_AGV_LED_car_state ;  	//车身状态灯    
-					 SystemParameter[35] = HmiDiSu ;      			//低速    
-					 SystemParameter[36] = HmiZhongSu;     			//中速    
-					 SystemParameter[37] = HmiGaoSu  ;    			//高速
-					 SystemParameter[38] = g_AGV_speed_duijie;		//工位对接速度
+					//30开始				
+					AGV_SYS.ID 				 = 		g_AGV_ID; 				//车号	  
+					AGV_SYS.yinliang		 = 		g_AGV_speaker_val;     	//系统音量      
+					AGV_SYS.Auto_Speed_bili	 = 		g_sys_set_agvSPEED;    	//AGV车速 -- 低中高 
+					AGV_SYS.Key_yuyin 		 = 		g_AGV_speaker_key ;	  	//系统语音开关     
+					AGV_SYS.Key_RGB_LED 	 = 		g_AGV_LED_car_state ;  	//车身状态灯    
+					AGV_SYS.L_speed 		 = 		HmiDiSu ;      			//低速    
+					AGV_SYS.M_speed 		 = 		HmiZhongSu;     		//中速    
+					AGV_SYS.H_speed 		 = 		HmiGaoSu  ;    			//高速
+					AGV_SYS.duijie_speed 	 =		g_AGV_speed_duijie;		//工位对接速度
+
+					SystemParameter[30]		 = 		g_AGV_ID; 				//车号	  
+					SystemParameter[31] 	 = 		g_AGV_speaker_val;     	//系统音量      
+					SystemParameter[32] 	 = 		g_sys_set_agvSPEED;    	//AGV车速 -- 低中高 
+					SystemParameter[33]	 	 = 		g_AGV_speaker_key ;	  	//系统语音开关     
+					SystemParameter[34] 	 = 		g_AGV_LED_car_state ;  	//车身状态灯    
+					SystemParameter[35] 	 = 		HmiDiSu ;      			//低速    
+					SystemParameter[36] 	 = 		HmiZhongSu;     		//中速    
+					SystemParameter[37] 	 = 		HmiGaoSu  ;    			//高速
+					SystemParameter[38] 	 = 		g_AGV_speed_duijie;		//工位对接速度
+					
+					switch(AGV_SYS.Auto_Speed_bili)
+					{
+						case 0:
+								AGV_SYS.Car_Auto_Speed 	= AGV_SYS.L_speed;
+							break;
+						case 1:
+								AGV_SYS.Car_Auto_Speed 	= AGV_SYS.M_speed;
+							break;	
+						case 2:
+								AGV_SYS.Car_Auto_Speed 	= AGV_SYS.H_speed;
+							break;	
+						default :
+							break;
+					
+					}					
+					
+					
                                                                                                                
 					 osdelay_ms(20);
 				}
 
-				W25QXX_Write_16(SystemParameter, 30, 9);	//将当前屏幕参数写入到flash中
+				W25QXX_Write_16(SystemParameter+30, 30, 9);	//将当前屏幕参数写入到flash中
 			}
 			break; 
 			//用户界面程序段
@@ -1841,6 +1909,8 @@ void DCv_task(void *p_arg)											//电压采集
 	u16 temp_k=0;
 	u8 temp_p=0;
 	
+	
+	
 	OS_ERR err;
 	p_arg = p_arg;
 	
@@ -1848,6 +1918,10 @@ void DCv_task(void *p_arg)											//电压采集
 
 	while(1)
 	{		
+		sprintf(g_warning,"电量少于百分之%d,请及时充电",Battery_Warining.Warining_Val_NoBattery);
+		
+	
+		
 		temp_k++;
 		if(temp_k > 1200)	//60s
 		{
@@ -1857,12 +1931,12 @@ void DCv_task(void *p_arg)											//电压采集
 			temp_k = 0;				
 		}	
 
-		if(g_battery.Realy_mah < g_battery.Std_mah/4)		// <10AH,报警
+		if(Sys_battery < Battery_Warining.Warining_Val_NoBattery)		// <10AH,报警
 		{
 			temp_p++;
 			if(temp_p > 100)				//5s
 			{
-				speek("电量少于四分之一,请及时充电");
+				speek((u8*)g_warning);
 				temp_p = 0;
 			}
 		}

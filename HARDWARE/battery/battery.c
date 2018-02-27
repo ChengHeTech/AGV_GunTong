@@ -6,9 +6,12 @@
 //ºì--ºì--T
 //
 
-char g_battery_RXbuff[g_battery_RXbuff_len];
-char g_battery_TXbuff[g_battery_TXbuff_len] = {0xDD, 0xA5, 0x03, 0x00, 0xFF, 0xFD, 0x77};
+u8 g_battery_RXbuff[g_battery_RXbuff_len];
+u8 g_battery_TXbuff[g_battery_TXbuff_len] = {0xDD, 0xA5, 0x03, 0x00, 0xFF, 0xFD, 0x77};
 
+warning Battery_Warining;
+
+char g_warning[256];
 
 
 void USART3_Configuration(u32 bound)
@@ -67,12 +70,14 @@ void USART3_IRQHandler(void)
 		temp_data3 = g_battery_RXbuff_len - DMA_GetCurrDataCounter(DMA1_Stream1); 
 		DMA1_Stream1->NDTR = g_battery_RXbuff_len;
 		
-		if((g_battery_RXbuff[0] == 0xDD)&&(g_battery_RXbuff[1] == 0xA5)&&(g_battery_RXbuff[2] == 0x00))
+		if((g_battery_RXbuff[0] == 0xDD)&&(g_battery_RXbuff[1] == 0xA5)&&(g_battery_RXbuff[2] == 0x00)) 
 		{
-			g_battery.dianya 		= g_battery_RXbuff[4]<<8  | g_battery_RXbuff[7];
-			g_battery.Realy_mah 	= g_battery_RXbuff[8]<<8  | g_battery_RXbuff[9];
-			g_battery.Std_mah		= g_battery_RXbuff[10]<<8 | g_battery_RXbuff[11];
-			g_battery.XunHuan_time 	= g_battery_RXbuff[12]<<8 | g_battery_RXbuff[13];
+			g_battery.dianya 		= 	g_battery_RXbuff[4]<<8  | g_battery_RXbuff[7];
+			g_battery.Realy_mah 	= 	g_battery_RXbuff[8]<<8  | g_battery_RXbuff[9];
+			g_battery.Std_mah		= 	g_battery_RXbuff[10]<<8 | g_battery_RXbuff[11];
+			g_battery.XunHuan_time 	= 	g_battery_RXbuff[12]<<8 | g_battery_RXbuff[13];
+
+			Sys_battery = g_battery.Realy_mah / (g_battery.Std_mah/100);			//20 00 0	3500
 			
 		}		
 		

@@ -312,14 +312,12 @@ Fencha_struct FindSpace1(u8 dst,u8 num,u8 dir)
 
 
 
-u8 g_PID_time = 5;		//ms
 
 
 
 
-float g_Auto_Kp=25;
-float g_Auto_Ki=40;
-float g_Auto_Kd=5;
+
+
 
 float Cdh1_Inc;
 float Cdh2_Inc;
@@ -499,10 +497,8 @@ void PID_AUTO_HouLun(u16 j_speed2,float kp2,float ki2,float kd2)	//后轮的PID调节
 
 
 
-float g_SD_Kp = 200;
-float g_SD_Ki = 100;
-float g_SD_Kd = 0;
-u16 g_ffff = 105;		//拐弯角度_中值------://右转3/4  左转 1/4 中间 1/2
+
+
 
 int DWQ1_Inc;
 int DWQ2_Inc;
@@ -584,10 +580,10 @@ void PID_SD_Adjust(u16 j_speed,float kp,float ki,float kd)
 	
 
 	
-	if(PID__SD_speed.moter1_speed > 300*g_AGV_shoudong_Speed_bili)	PID__SD_speed.moter1_speed = 300*g_AGV_shoudong_Speed_bili;
-	if(PID__SD_speed.moter2_speed > 300*g_AGV_shoudong_Speed_bili)	PID__SD_speed.moter2_speed = 300*g_AGV_shoudong_Speed_bili;
-	if(PID__SD_speed.moter3_speed > 300*g_AGV_shoudong_Speed_bili)	PID__SD_speed.moter3_speed = 300*g_AGV_shoudong_Speed_bili;
-	if(PID__SD_speed.moter4_speed > 300*g_AGV_shoudong_Speed_bili)	PID__SD_speed.moter4_speed = 300*g_AGV_shoudong_Speed_bili;
+	if(PID__SD_speed.moter1_speed > 300*AGV_SYS.SD_Speed_bili)	PID__SD_speed.moter1_speed = 300*AGV_SYS.SD_Speed_bili;
+	if(PID__SD_speed.moter2_speed > 300*AGV_SYS.SD_Speed_bili)	PID__SD_speed.moter2_speed = 300*AGV_SYS.SD_Speed_bili;
+	if(PID__SD_speed.moter3_speed > 300*AGV_SYS.SD_Speed_bili)	PID__SD_speed.moter3_speed = 300*AGV_SYS.SD_Speed_bili;
+	if(PID__SD_speed.moter4_speed > 300*AGV_SYS.SD_Speed_bili)	PID__SD_speed.moter4_speed = 300*AGV_SYS.SD_Speed_bili;
 
 
 	if(PID__SD_speed.moter1_speed<0)	PID__SD_speed.moter1_speed = 0;

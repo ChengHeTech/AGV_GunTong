@@ -48,9 +48,7 @@ typedef struct
 
 
 
-extern u16 g_AGV_Car_Speed;
-extern u16 g_AGV_shoudong_Speed;
-extern u16 g_AGV_shoudong_Speed_bili ;
+
 extern u16 g_AGV_shoudong_dir;	
 extern u8  g_AGV_Car_dir;				//0:前进  1:后退
 extern u8  g_AGV_Car_fencha_dir;		//全局唯一//0:左分叉  1:右分叉
@@ -64,6 +62,7 @@ extern AGV_Start_flag g_Start_flag;
 extern u8  g_AGV_Car_mode;				//0:自动  1:手动
 extern u8 g_XZ_Ok;
 extern u8 g_XZ_Beep;
+
 
 
 

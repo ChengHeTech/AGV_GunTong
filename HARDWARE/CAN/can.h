@@ -22,6 +22,10 @@ extern u16 g_AGV_RFID_ID;//地标
 extern u8  g_flag_RFID_beep;
 extern u8 g_flag_Motec_init;
 
+extern u8 g_cinavi1_RXbuff[16];  //前磁导航
+extern u8 g_cinavi2_RXbuff[16];	
+extern u8 g_cinavi3_RXbuff[16];  
+extern u8 g_cinavi4_RXbuff[16];	//后磁导航
 
 										 							 				    
 u8 CAN1_Mode_Init(u8 tsjw,u8 tbs2,u8 tbs1,u16 brp,u8 mode);//CAN初始化
