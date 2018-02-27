@@ -720,8 +720,11 @@ void AGV_Stop2Start(void)
 		if(g_Start_flag.Stop_button_Car==1 || g_Start_flag.button_Start==0)	//避障传感器触发 0:触发	
 		{
 			g_Start_flag.Stop_button_Car = 0;
-			g_Start_flag.Start_Manu_PID = 0;				//给键停止标志
+			g_Start_flag.Start_Manu_PID	 = 0;				//给键停止标志
+			
+
 		}				
+
 	}
 
 	

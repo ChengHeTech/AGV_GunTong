@@ -28,9 +28,19 @@ OS_TCB TransducerTaskTCB;
 CPU_STK Transducer_TASK_STK[Transducer_STK_SIZE];
 void Transducer_task(void *p_arg);					//手自动转换任务
 
+//任务优先级
+#define FLOAT_TASK_PRIO		5
+//任务堆栈大小
+#define FLOAT_STK_SIZE		512
+//任务控制块
+OS_TCB	FloatTaskTCB;
+//任务堆栈
+__align(8) CPU_STK	FLOAT_TASK_STK[FLOAT_STK_SIZE];
+//任务函数
+void float_task(void *p_arg);						//浮点任务
 
 //任务优先级
-#define Auto_TASK_PRIO		5
+#define Auto_TASK_PRIO		6
 //任务堆栈大小	
 #define Auto_STK_SIZE 		512
 //任务控制块
@@ -41,7 +51,7 @@ CPU_STK Auto_TASK_STK[Auto_STK_SIZE];
 void Auto_task(void *p_arg);						//自动模式任务
 
 //任务优先级 
-#define PID_TASK_PRIO		6
+#define PID_TASK_PRIO		7
 //任务堆栈大小	
 #define PID_STK_SIZE 		512
 //任务控制块
@@ -52,7 +62,7 @@ CPU_STK PID_TASK_STK[PID_STK_SIZE];
 void PID_task(void *p_arg);							//PID任务
 
 //任务优先级
-#define Manual_TASK_PRIO		7
+#define Manual_TASK_PRIO		8
 //任务堆栈大小	
 #define Manual_STK_SIZE 		512
 //任务控制块
@@ -62,16 +72,7 @@ CPU_STK Manual_TASK_STK[Manual_STK_SIZE];
 //任务函数
 void Manual_task(void *p_arg);						//手动模式任务
 
-//任务优先级
-#define FLOAT_TASK_PRIO		8
-//任务堆栈大小
-#define FLOAT_STK_SIZE		512
-//任务控制块
-OS_TCB	FloatTaskTCB;
-//任务堆栈
-__align(8) CPU_STK	FLOAT_TASK_STK[FLOAT_STK_SIZE];
-//任务函数
-void float_task(void *p_arg);						//浮点任务
+
 
 //任务优先级
 #define Screen_TASK_PRIO		9
@@ -233,9 +234,24 @@ void start_task(void *p_arg)
                  (void   	* )0,					
                  (OS_OPT      )OS_OPT_TASK_STK_CHK|OS_OPT_TASK_STK_CLR,
                  (OS_ERR 	* )&err);								 
-	
+
+//创建浮点测试任务
+	OSTaskCreate((OS_TCB 	* )&FloatTaskTCB,				//5
+				 (CPU_CHAR	* )"float test task", 		
+                 (OS_TASK_PTR )float_task, 			
+                 (void		* )0,					
+                 (OS_PRIO	  )FLOAT_TASK_PRIO,     	
+                 (CPU_STK   * )&FLOAT_TASK_STK[0],	
+                 (CPU_STK_SIZE)FLOAT_STK_SIZE/10,	
+                 (CPU_STK_SIZE)FLOAT_STK_SIZE,		
+                 (OS_MSG_QTY  )0,					
+                 (OS_TICK	  )0,					
+                 (void   	* )0,				
+                 (OS_OPT      )OS_OPT_TASK_STK_CHK|OS_OPT_TASK_STK_CLR, 
+                 (OS_ERR 	* )&err);	
+				 
 	//创建自动任务
-	OSTaskCreate((OS_TCB 	* )&AutoTaskTCB,				//5
+	OSTaskCreate((OS_TCB 	* )&AutoTaskTCB,				//6
 				 (CPU_CHAR	* )"Auto task", 		
                  (OS_TASK_PTR )Auto_task, 			
                  (void		* )0,					
@@ -250,7 +266,7 @@ void start_task(void *p_arg)
                  (OS_ERR 	* )&err);
 
 	//PID
-	OSTaskCreate((OS_TCB 	* )&PIDTaskTCB,					//6
+	OSTaskCreate((OS_TCB 	* )&PIDTaskTCB,					//7
 				 (CPU_CHAR	* )"PID task", 		
                  (OS_TASK_PTR )PID_task, 			
                  (void		* )0,					
@@ -265,7 +281,7 @@ void start_task(void *p_arg)
                  (OS_ERR 	* )&err);
 				 
 	//创建手动任务
-	OSTaskCreate((OS_TCB 	* )&ManualTaskTCB,				//7
+	OSTaskCreate((OS_TCB 	* )&ManualTaskTCB,				//8
 				 (CPU_CHAR	* )"Manual task", 		
                  (OS_TASK_PTR )Manual_task, 			
                  (void		* )0,					
@@ -279,20 +295,7 @@ void start_task(void *p_arg)
                  (OS_OPT      )OS_OPT_TASK_STK_CHK|OS_OPT_TASK_STK_CLR, 
                  (OS_ERR 	* )&err);
 				 
-	//创建浮点测试任务
-	OSTaskCreate((OS_TCB 	* )&FloatTaskTCB,				//8
-				 (CPU_CHAR	* )"float test task", 		
-                 (OS_TASK_PTR )float_task, 			
-                 (void		* )0,					
-                 (OS_PRIO	  )FLOAT_TASK_PRIO,     	
-                 (CPU_STK   * )&FLOAT_TASK_STK[0],	
-                 (CPU_STK_SIZE)FLOAT_STK_SIZE/10,	
-                 (CPU_STK_SIZE)FLOAT_STK_SIZE,		
-                 (OS_MSG_QTY  )0,					
-                 (OS_TICK	  )0,					
-                 (void   	* )0,				
-                 (OS_OPT      )OS_OPT_TASK_STK_CHK|OS_OPT_TASK_STK_CLR, 
-                 (OS_ERR 	* )&err);	
+	
 
 	//创建触摸屏任务
 	OSTaskCreate((OS_TCB 	* )&ScreenTaskTCB,				//9
@@ -431,6 +434,123 @@ void Transducer_task(void *p_arg)  	//开关量输入采集
 	}
 }
 
+void float_task(void *p_arg)		//红外和机械避障
+{
+	OS_ERR err;
+	u8 temp_i=0;
+	u8 temp_j=0;
+	u8 temp_k=0;
+	u8 temp_flag[]={0,0,0,0};
+	
+
+	u8 temp_Tiaojian[] = {0,0,0,0};					//条件
+	u8 *temp_Jieguo[]  = {&g_Start_flag.Start_IR,&g_Start_flag.Start_jixie,&g_Start_flag.Start_IR,&g_Start_flag.Start_jixie};		//结果
+	
+	g_Start_flag.Start_IR=1;
+	g_Start_flag.Start_jixie=1;
+
+	while(1)
+	{	
+		if(!g_AGV_Car_mode)				//自动模式
+		{
+			if(!g_AGV_Car_dir)	//0:前进
+			{
+				temp_j = 0;
+			}
+			else				//1:后退
+			{
+				temp_j = 2;
+			}	
+		}
+		else							//手动模式
+		{
+			//0:停止1:前进 2:后退 3:左转 4:右转 5左上 6右上 7左下 8右下 9左旋 10右旋 
+			if(g_AGV_shoudong_dir==1||g_AGV_shoudong_dir==5||g_AGV_shoudong_dir==6)			//前进
+			{
+				temp_j = 0;		
+			}
+			else if(g_AGV_shoudong_dir==2||g_AGV_shoudong_dir==7||g_AGV_shoudong_dir==8)	//后退				//1:后退
+			{
+				temp_j = 2;
+			}		
+		}
+		
+		if(temp_j == 0)
+		{
+			temp_Tiaojian[0] = g_flag_IR_qian_jin;			//条件
+			temp_Tiaojian[1] = g_flag_fangzhuang_qian;		//条件		
+		}
+		else if(temp_j == 2)
+		{
+			temp_Tiaojian[2] = g_flag_IR_hou_jin;			//条件
+			temp_Tiaojian[3] = g_flag_fangzhuang_hou;		//条件			
+		}
+
+		
+	
+		
+		for(temp_i=temp_j;temp_i<temp_j+2;temp_i++)
+		{
+			if(temp_Tiaojian[temp_i] == 0)				//近红外避障 0触发
+			{
+//				delay_rtos(0,0,0,10);
+//				if(temp_j == 0)
+//				{
+//					temp_Tiaojian[0] = g_flag_IR_qian_jin;			//条件
+//					temp_Tiaojian[1] = g_flag_fangzhuang_qian;		//条件		
+//				}
+//				else if(temp_j == 2)
+//				{
+//					temp_Tiaojian[2] = g_flag_IR_hou_jin;			//条件
+//					temp_Tiaojian[3] = g_flag_fangzhuang_hou;		//条件			
+//				}
+				
+				if(temp_Tiaojian[temp_i] == 0)				//近红外避障 0触发
+				{
+					*temp_Jieguo[temp_i] = 0;	//0停止
+				}
+			}	
+			else
+			{
+//				delay_rtos(0,0,0,10);
+//				if(temp_j == 0)
+//				{
+//					temp_Tiaojian[0] = g_flag_IR_qian_jin;			//条件
+//					temp_Tiaojian[1] = g_flag_fangzhuang_qian;		//条件		
+//				}
+//				else if(temp_j == 2)
+//				{
+//					temp_Tiaojian[2] = g_flag_IR_hou_jin;			//条件
+//					temp_Tiaojian[3] = g_flag_fangzhuang_hou;		//条件			
+//				}
+				
+				if(temp_Tiaojian[temp_i] == 1)		
+				{
+					if(*temp_Jieguo[temp_i] == 0)
+					{
+//						temp_k++;
+//						if(temp_k > 100)
+//						{
+//							*temp_Jieguo[temp_i] = 1;	//1启动
+//						}
+						delay_rtos(0,0,1,0);
+						*temp_Jieguo[temp_i] = 1;	//1启动
+					}
+					else
+					{
+						*temp_Jieguo[temp_i] = 1;	//1启动
+					}
+					
+				}		
+			}					
+		}
+		
+		
+
+		OSTimeDlyHMSM(0,0,0,10,OS_OPT_TIME_HMSM_STRICT,&err); //延时ms
+	}
+}
+
 //自动操作任务
 void Auto_task(void *p_arg)			//自动模式--前轮PID
 {
@@ -527,7 +647,17 @@ void Manual_task(void *p_arg)  //手动任务
 				{
 					DwqXunZheng_QH();					//电位器寻正	
 				}
-				g_Start_flag.Start_Manu_PID = 1;		//允许手动PID					
+				
+				
+				if(g_Start_flag.button_Start==0)
+				{
+					g_Start_flag.Start_Manu_PID = 0;		//允许手动PID	
+				}
+				else
+				{
+					g_Start_flag.Start_Manu_PID = 1;		//允许手动PID	
+				}
+								
 			}					
 		}
 		else		//0://自动模式
@@ -536,111 +666,7 @@ void Manual_task(void *p_arg)  //手动任务
 		}
 	}
 }
-void float_task(void *p_arg)		//红外和机械避障
-{
-	OS_ERR err;
-	u8 temp_i=0;
-	u8 temp_j=0;
-	u8 temp_flag[]={0,0,0,0};
-	
 
-	u8 temp_Tiaojian[] = {0,0,0,0};					//条件
-	u8 *temp_Jieguo[]  = {&g_Start_flag.Start_IR,&g_Start_flag.Start_jixie};		//结果
-	
-	g_Start_flag.Start_IR=1;
-	g_Start_flag.Start_jixie=1;
-
-	while(1)
-	{	
-//		if(!g_AGV_Car_mode)				//自动模式
-//		{
-//			if(!g_AGV_Car_dir)	//0:前进
-//			{
-//				temp_j = 0;
-//			}
-//			else				//1:后退
-//			{
-//				temp_j = 2;
-//			}	
-//		}
-//		else							//手动模式
-//		{
-//			//0:停止1:前进 2:后退 3:左转 4:右转 5左上 6右上 7左下 8右下 9左旋 10右旋 
-//			if(g_AGV_shoudong_dir==1||g_AGV_shoudong_dir==5||g_AGV_shoudong_dir==6)			//前进
-//			{
-//				temp_j = 0;		
-//			}
-//			else if(g_AGV_shoudong_dir==2||g_AGV_shoudong_dir==7||g_AGV_shoudong_dir==8)	//后退				//1:后退
-//			{
-//				temp_j = 2;
-//			}		
-//		}
-//		
-//		if(temp_j == 0)
-//		{
-//			temp_Tiaojian[0] = g_flag_IR_qian_jin;			//条件
-//			temp_Tiaojian[1] = g_flag_fangzhuang_qian;		//条件		
-//		}
-//		else if(temp_j == 2)
-//		{
-//			temp_Tiaojian[2] = g_flag_IR_hou_jin;			//条件
-//			temp_Tiaojian[3] = g_flag_fangzhuang_hou;		//条件			
-//		}
-
-//		
-//	
-//		
-//		for(temp_i=temp_j;temp_i<temp_j+2;temp_i++)
-//		{
-//			if(temp_Tiaojian[temp_i] == 0)				//近红外避障 0触发
-//			{
-//				delay_rtos(0,0,0,100);
-//				if(temp_j == 0)
-//				{
-//					temp_Tiaojian[0] = g_flag_IR_qian_jin;			//条件
-//					temp_Tiaojian[1] = g_flag_fangzhuang_qian;		//条件		
-//				}
-//				else if(temp_j == 2)
-//				{
-//					temp_Tiaojian[2] = g_flag_IR_hou_jin;			//条件
-//					temp_Tiaojian[3] = g_flag_fangzhuang_hou;		//条件			
-//				}
-//				
-//				if(temp_Tiaojian[temp_i] == 0)				//近红外避障 0触发
-//				{
-//					*temp_Jieguo[temp_i] = 0;	//0停止
-//				}
-//			}	
-//			else
-//			{
-//				delay_rtos(0,0,0,100);
-//				if(temp_j == 0)
-//				{
-//					temp_Tiaojian[0] = g_flag_IR_qian_jin;			//条件
-//					temp_Tiaojian[1] = g_flag_fangzhuang_qian;		//条件		
-//				}
-//				else if(temp_j == 2)
-//				{
-//					temp_Tiaojian[2] = g_flag_IR_hou_jin;			//条件
-//					temp_Tiaojian[3] = g_flag_fangzhuang_hou;		//条件			
-//				}
-//				
-//				if(temp_Tiaojian[temp_i] == 1)		
-//				{
-//					if(*temp_Jieguo[temp_i] == 0)
-//					{
-//						delay_rtos(0,0,2,0);
-//					}
-//					*temp_Jieguo[temp_i] = 1;	//1启动
-//				}		
-//			}					
-//		}
-		
-		
-
-		OSTimeDlyHMSM(0,0,0,10,OS_OPT_TIME_HMSM_STRICT,&err); //延时ms
-	}
-}
 
 void Screen_task(void *p_arg)    	//触摸屏界面操作
 {
