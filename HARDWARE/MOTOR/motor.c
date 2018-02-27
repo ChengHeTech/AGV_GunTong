@@ -157,8 +157,6 @@ void qianlun_Back(u16 temp_speed)		//前轮后退
 u16 g_XZ_MAX_Speed = 700;
 
 
-
-
 void qianlun_TurnL(u16 temp_speed)		//前轮左转
 {
 	if(temp_speed > g_XZ_MAX_Speed)
@@ -220,8 +218,6 @@ void DwqXunZheng_QH(void)
 	g_xz_dwq[0] = g_After_filter[1];	
 	temp_cha[0] = g_xz_dwq[0] - g_DWQ.qianlun_zhong_val;
 	
-	BEEP = 1;
-	
 	while( abs(temp_cha[0]) > 2)
 	{
 		
@@ -269,8 +265,7 @@ void DwqXunZheng_QH(void)
 	MotoStop(4);	
 
 	g_XZ_Ok = 1;
-	//g_XZ_Beep = 1;
-	BEEP = 0;
+	g_XZ_Beep = 1;
 
 }
 
@@ -582,7 +577,7 @@ void check_CtXunZ_OK(u16 XunZ_speed)
 
 void AGV_System_Stop(void)
 {
-	MotoStop(0);
+	//MotoStop(0);
 	g_Start_flag.Stop_AGV_SysCode = 1;
 
 }	
