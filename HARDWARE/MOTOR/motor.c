@@ -680,15 +680,16 @@ void AGV_Stop2Start(void)
 		{
 			
 
-				if(g_glag_bizhang == 1)
-				{
-					g_glag_bizhang = 0;
-					check_CtXunZ_OK(g_CT_XZ_MAX_Speed);		//g_Start_flag.Start_Auto_PID在这里置一;								
-				}
-			if(g_CtXunZheng.XunZ_OK_AGV == 1)		//改成检测寻轨动作而不是成功
+			if(g_glag_bizhang == 1)
 			{
-				check_CtXunZ_OK(g_CT_XZ_MAX_Speed);		//g_Start_flag.Start_Auto_PID在这里置一;				
-			}					
+				g_glag_bizhang = 0;	
+				check_CtXunZ_OK(g_CT_XZ_MAX_Speed);		//g_Start_flag.Start_Auto_PID在这里置一;								
+			}
+			
+//			if(g_CtXunZheng.XunZ_OK_AGV == 1)		//改成检测寻轨动作而不是成功
+//			{
+//				check_CtXunZ_OK(g_CT_XZ_MAX_Speed);		//g_Start_flag.Start_Auto_PID在这里置一;				
+//			}					
 				
 				
 				
@@ -701,13 +702,13 @@ void AGV_Stop2Start(void)
 		//AGV停止
 		if(g_Start_flag.Stop_button_Car==1 || g_Start_flag.button_Start==0)		
 		{
-			if(g_Start_flag.button_Start==0)
-			{
+			if(g_Start_flag.button_Start==0)		//避障停止
+			{	
 				g_glag_bizhang = 1;
 			}
 			//g_Start_flag.Stop_button_Car = 0;
 			g_Start_flag.Start_Auto_PID = 0;	
-			g_CtXunZheng.XunZ_OK_AGV = 0;
+//			g_CtXunZheng.XunZ_OK_AGV = 0;
 			MotoStop(0);
 	
 

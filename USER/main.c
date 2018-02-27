@@ -451,6 +451,8 @@ void float_task(void *p_arg)		//红外和机械避障
 
 	while(1)
 	{	
+		#if 0
+		
 		if(!g_AGV_Car_mode)				//自动模式
 		{
 			if(!g_AGV_Car_dir)	//0:前进
@@ -545,7 +547,7 @@ void float_task(void *p_arg)		//红外和机械避障
 			}					
 		}
 		
-		
+		#endif
 
 		OSTimeDlyHMSM(0,0,0,10,OS_OPT_TIME_HMSM_STRICT,&err); //延时ms
 	}

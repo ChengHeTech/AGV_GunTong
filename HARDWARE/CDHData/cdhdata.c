@@ -355,8 +355,8 @@ void PID_AUTO_QianLun(u16 j_speed,float kp,float ki,float kd)
 			
 			
 			Cdh1_Inc = IncPIDCalc(g_CDH8_qian_1.Distance);	//1 位置式PID//输入差值						
-			PID_speed.moter1_speed = j_speed-Cdh1_Inc;
-			PID_speed.moter2_speed = j_speed+Cdh1_Inc;
+			PID_speed.moter1_speed = j_speed+Cdh1_Inc;
+			PID_speed.moter2_speed = j_speed-Cdh1_Inc;
 			
 			if(PID_speed.moter1_speed>j_speed)	PID_speed.moter1_speed = j_speed;
 			if(PID_speed.moter2_speed>j_speed)	PID_speed.moter2_speed = j_speed;
@@ -391,8 +391,8 @@ void PID_AUTO_QianLun(u16 j_speed,float kp,float ki,float kd)
 
 			
 			Cdh2_Inc = IncPIDCalc(g_CDH8_qian_2.Distance);//2 位置式PID//输入差值
-			PID_speed.moter2_speed = j_speed-Cdh2_Inc;	
-			PID_speed.moter1_speed = j_speed+Cdh2_Inc;
+			PID_speed.moter2_speed = j_speed+Cdh2_Inc;	
+			PID_speed.moter1_speed = j_speed-Cdh2_Inc;
 							
 			
 			if(PID_speed.moter1_speed>j_speed)	PID_speed.moter1_speed = j_speed;
@@ -438,8 +438,8 @@ void PID_AUTO_HouLun(u16 j_speed2,float kp2,float ki2,float kd2)	//后轮的PID调节
 			HmiTaskState = 5;								//正在运行
 			
 			Cdh3_Inc = IncPIDCalc2(g_CDH8_hou_1.Distance);	//1 位置式PID//输入差值						
-			PID_speed.moter3_speed = j_speed2-Cdh3_Inc;
-			PID_speed.moter4_speed = j_speed2+Cdh3_Inc;
+			PID_speed.moter3_speed = j_speed2+Cdh3_Inc;
+			PID_speed.moter4_speed = j_speed2-Cdh3_Inc;
 			
 			if(PID_speed.moter3_speed>j_speed2)	PID_speed.moter3_speed = j_speed2;
 			if(PID_speed.moter4_speed>j_speed2)	PID_speed.moter4_speed = j_speed2;
@@ -474,8 +474,8 @@ void PID_AUTO_HouLun(u16 j_speed2,float kp2,float ki2,float kd2)	//后轮的PID调节
 
 			
 			Cdh4_Inc = IncPIDCalc2(g_CDH8_hou_2.Distance);//2 位置式PID//输入差值
-			PID_speed.moter4_speed = j_speed2-Cdh4_Inc;	
-			PID_speed.moter3_speed = j_speed2+Cdh4_Inc;
+			PID_speed.moter4_speed = j_speed2+Cdh4_Inc;	
+			PID_speed.moter3_speed = j_speed2-Cdh4_Inc;
 							
 			
 			if(PID_speed.moter4_speed>j_speed2)	PID_speed.moter4_speed = j_speed2;
