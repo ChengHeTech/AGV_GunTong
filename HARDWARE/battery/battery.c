@@ -162,9 +162,9 @@ void DMA_Uart3_Init(void)
 
 void GET_Battery(void)
 {
-	USART_OUT(USART3,g_battery_TXbuff,7);
+	USART_OUT(USART3,(char *)g_battery_TXbuff,7);
 	delay_rtos(0,0,0,100);
-	USART_OUT(USART3,g_battery_TXbuff,7);
+	USART_OUT(USART3,(char *)g_battery_TXbuff,7);
 }
 
 

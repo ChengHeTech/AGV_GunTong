@@ -71,7 +71,9 @@ void  DMA2_Stream0_IRQHandler(void)		//DMA--DAC //ADC1的前三个通道,现在用的是PC2
 			//g_ADC_dianweiqi[i-1] = g_After_filter[i]*3.3/4096.0;	
 			sum=0;
 	   }
-
+	   //36
+	   //88
+		//138
 	  DMA_ClearITPendingBit(DMA2_Stream0,DMA_IT_TCIF0);
 	}
 }

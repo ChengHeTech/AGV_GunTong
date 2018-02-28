@@ -6,14 +6,14 @@
 // 
 typedef struct
 {
-	u16 ID;				//站点号
-	u8 	motion;			//到站动作		//6
-	u8  speed;			//到站速度		//4
-	u8  delay;			//到站延时
+	u16 Station_DiBiao_ID;		//站点地标号
+	u8 	motion;					//到站动作		//6
+	u8  speed;					//到站速度		//4
+	u8  delay;					//到站延时
 	
-	u8  fencha;			//分叉动作
-	u8  IR_bizhang;		//红外避障开关
-	u8  guntong;		//辊筒动作
+	u8  fencha;					//分叉动作
+	u8  IR_bizhang;				//红外避障开关
+	u8  guntong;				//辊筒动作
 
 }AGV_station;
 
@@ -29,9 +29,9 @@ typedef struct
 extern u16 SystemParameter[SystemParaNum];//系统参数
 
 //路径: 共500个路径，每个路径100个站点，每个站点20个信息，每个信息2个字节
-#define RouteNum 500  //路径总数
-#define StationNum 100 //每条路径包含站点数
-#define StaiionInfor 20 //每个站点包含信息数
+#define RouteNum 		500  //路径总数
+#define StationNum 		100  //每条路径包含站点数
+#define StaiionInfor 	20 	 //每个站点包含信息数
 
 extern AGV_station agv_routr2station[StationNum];		//路径到站点的二维数组
 
@@ -172,7 +172,10 @@ extern u16 HmiProcessCopiedNumTemp;//被复制流程号临时变量
 
 #define HmiRfidNum           HmiRoadData5 //地标号
 
-#define HmiRoadData5         PLC_Data[16] 	//地标	
+
+
+//站点动作
+#define HmiRoadData5         PLC_Data[130] 	//地标	
 
 #define HmiRoadData6         PLC_Data[36] 	//到站动作	 0：停止	1：前进	2:后左	3：后右  4：通过
 #define HmiRoadData4         PLC_Data[27] 	//到站速度 档位默认选择慢速 0：保持 1：慢速 2：中速 3：快速  
@@ -182,6 +185,9 @@ extern u16 HmiProcessCopiedNumTemp;//被复制流程号临时变量
 #define HmiRoadData0         PLC_Data[25] 	//远程红外 默认为0 0：保持1：开2：关
 //#define HmiRoadData19        PLC_Data[51] //近程红外 默认为0 0：保持1：开2：关
 #define HmiRoadData3         PLC_Data[31] 	//辊筒 0：保持 1：左转 2：右转
+
+
+
 
 
 #define HmiRouteEnter        PLC_Data[37] //上一个下一个地下覆盖的确定按键 确定1，取消2
@@ -250,7 +256,7 @@ extern u16 HmiProcessCopiedNumTemp;//被复制流程号临时变量
 
 // = SystemParameter[36];  //
 //PLC_Data[129] = SystemParameter[37];  //
-//PLC_Data[130] = SystemParameter[38];  //
+// = SystemParameter[38];  //
 
 
 

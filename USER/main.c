@@ -837,7 +837,7 @@ void Screen_task(void *p_arg)    	//触摸屏界面操作
 	////				 }
 
 	//				 //添加站点
-	//				 if(HmiRoutemode == 2)
+	//				 if(HmiRoutemode == 2)									//4x41确定按键的模式，查看0，复制1，添加2，插入3，更改4，删除5
 	//				 {
 	//						//站点数加一
 	//						HmiStationNum ++;
@@ -1909,12 +1909,22 @@ void DCv_task(void *p_arg)											//电压采集
 	u16 temp_k=0;
 	u8 temp_p=0;
 	
-	
+
 	
 	OS_ERR err;
 	p_arg = p_arg;
 	
 	GET_Battery();	//获取电池信息
+	
+	//	 Car_LED_Blue 	=1;
+	//    // Car_LED_Yellow
+	//	
+	//	Car_LED_Qian_Enable	 =0;
+	//	Car_LED_Hou_Enable		=0;	
+	//行车灯信号线接错
+	//前后机械避障有问题
+
+	
 
 	while(1)
 	{		
@@ -1936,7 +1946,10 @@ void DCv_task(void *p_arg)											//电压采集
 			temp_p++;
 			if(temp_p > 100)				//5s
 			{
-				speek((u8*)g_warning);
+				if(!AGV_SYS.Key_yuyin)
+				{
+					speek((u8*)g_warning);
+				}
 				temp_p = 0;
 			}
 		}
@@ -1957,20 +1970,28 @@ void DCv_task(void *p_arg)											//电压采集
 
 		}
 
-//		//寻正响蜂鸣器						//叫250ms
-//		if(g_XZ_Beep)
-//		{
-//			BEEP = 1;
-//			temp_j++;
-//			if(temp_j == 10)
-//			{
-//				BEEP = 0;
-//				g_flag_RFID_beep = 0;	
-//				temp_j = 0;			
-//				g_XZ_Beep = 0;
-//			}
+		//寻正响蜂鸣器						//叫250ms
+		if(g_XZ_Beep)
+		{
+			BEEP = 1;
+			temp_j++;
+			if(temp_j == 2)
+			{
+				BEEP = 0;
+			}
+			else if(temp_j == 3)
+			{
+				BEEP = 1;
+			}
+			else if(temp_j == 4)
+			{
+				BEEP = 0;
+				
+				temp_j = 0;			
+				g_XZ_Beep = 0;				
+			}
 
-//		}
+		}
 		
 		//触摸屏通信指示灯和板子运行指示灯LED1		//500ms闪烁
 		temp_i++;

@@ -17,8 +17,9 @@ u16 HmiProcessNumFlag = 0; //上一个流程号，判断流程变化用
 u16 HmiProcessCopiedNumTemp=0;//被复制流程号临时变量
 
 
-
+//
 //---------------系统------------//
+//
 //从系统获取一个参数 num:参数位置
 u16 GetOneParameterFromSystem(u16 num)
 {
@@ -48,9 +49,13 @@ void SetAllParameterToSystem()
 {
 	W25QXX_Write_16(SystemParameter,0,SystemParaNum);
 }
-//---------------路径------------//
 
-//获取路径包含站点数 num:路径号
+
+
+//
+//---------------路径------------//
+//
+//获取路径包含站点总数 num:路径号
 u16 GetRouteStationNum(u16 num)
 {
 	//读取
@@ -71,7 +76,7 @@ void SetAllStationNum()
 void GetRouteData(u16 num)
 {
 	u16 i;
-	//读取站点数
+	//读取站点总数
 	HmiStationNum = GetRouteStationNum(num);		//更新到触摸屏上
 	
 	//读取站点信息
@@ -101,7 +106,7 @@ void SetRouteData(u16 num)
 }
 
 
-//更新路径站点数据到界面
+//更新路径当前站点动作的数据到界面
 void UpdataStationToHmi()
 {
 		HmiRoadData0  = NowRouteInfor[HmiStationSerialNum-1][0];
@@ -126,7 +131,7 @@ void UpdataStationToHmi()
 //		HmiRoadData19 = NowRouteInfor[HmiStationSerialNum-1][19];
 }
 
-//更新路径站点数据到当前
+//从界面更新路径站点数据到当前
 void UpdataStationToNow()
 {
 		NowRouteInfor[HmiStationSerialNum-1][0]  = HmiRoadData0 ;
@@ -154,7 +159,7 @@ void UpdataStationToNow()
 
 
 
-//更新路径站点数据到界面
+//清零重置路径站点数据到界面
 void ClearStationToHmi()
 {
 	//默认站点信息
@@ -182,8 +187,11 @@ void ClearStationToHmi()
 }
 
 
-//---------------流程------------//
 
+
+//
+//---------------流程------------//
+//
 //保存及更新流程数据（当前操作的流程信息）
 void	SetProcessData()
 {
@@ -396,11 +404,16 @@ void	DeleteProcessData()
 }
 
 
+
+
+
+
+
 //自动界面显示信息重载
 void HmiAutoReload()
 {
 	//如果正在执行流程，则重载路径号
-	if(HmiTask == 2)
+	if(HmiTask == 2)					//屏幕任务: 无任务0 执行路径1 执行流程2
 	{
 		//获取流程信息
 		GetProcessData();
@@ -417,6 +430,8 @@ void HmiAutoReload()
 	//重载下一地标
 	HmiNextRfidNum = NowRouteInfor[0][5];
 }
+
+
 
 
 void UserConfigInit(void)
@@ -472,7 +487,7 @@ void UserConfigInit(void)
         SystemParameter[30] = 1;		//车号
         SystemParameter[31] = 6; 		//系统音量
         SystemParameter[32] = 1; 		//系统车速
-        SystemParameter[33] = 0; 		//系统语音开关
+        SystemParameter[33] = 1; 		//系统语音开关 -- 0:打开1:关闭
         SystemParameter[34] = 0; 		//车身状态灯
         SystemParameter[35] = 300; 		//低速
         SystemParameter[36] = 800; 		//中速
@@ -674,7 +689,7 @@ void UserConfigInit(void)
 
 
 
-AGV_station agv_routr2station[StationNum];		//路径到站点的二维数组
+AGV_station agv_routr2station[StationNum];		//
 
 
 

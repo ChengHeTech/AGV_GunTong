@@ -20,18 +20,11 @@ u8  g_AGV_Car_mode = 1;				//0:自动  1:手动
 //{
 //	GPIO_InitTypeDef  GPIO_InitStructure;
 
-//	//Motec驱动器的使能输入PD -- 0 1 3 4
-//	RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOD, ENABLE);	//使能GPIOD时钟
+
 //	RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOB, ENABLE);	//
 //	RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOG, ENABLE);	//
 
-//	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_0|GPIO_Pin_1|GPIO_Pin_3|GPIO_Pin_4;
-//	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;//普通输出模式
-//	GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;//推挽输出
-//	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_100MHz;//100MHz
-//	GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP;//上拉
-//	GPIO_Init(GPIOD, &GPIO_InitStructure);//初始化
-//	GPIO_SetBits(GPIOD,GPIO_Pin_0|GPIO_Pin_1|GPIO_Pin_3|GPIO_Pin_4);
+
 //	
 //	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_10| GPIO_Pin_11| GPIO_Pin_13| GPIO_Pin_14| GPIO_Pin_15;
 //	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;			//输出
@@ -223,7 +216,7 @@ void DwqXunZheng_QH(void)
 	g_xz_dwq[0] = g_After_filter[1];	
 	temp_cha[0] = g_xz_dwq[0] - g_DWQ.qianlun_zhong_val;
 	
-	BEEP = 1;
+	//BEEP = 1;
 	
 	while( abs(temp_cha[0]) > 2)
 	{
@@ -280,7 +273,7 @@ void DwqXunZheng_QH(void)
 AGV_CtXunZheng g_CtXunZheng;
 
 
-
+u8 g_CT_XZ_jiian = 15;
 
 void CtXunZheng_qian(u8 cidaohang_id,u16 xunzheng_speed0)
 {
@@ -300,7 +293,7 @@ void CtXunZheng_qian(u8 cidaohang_id,u16 xunzheng_speed0)
 			
 			if(!temp_flag_L_jixian0)			//左极限未到位
 			{
-				if(temp_dianweiqi_1 > g_DWQ.qianlun_L_val)	//轮子左转电位器值变小 2.0
+				if(temp_dianweiqi_1 > (g_DWQ.qianlun_L_val+g_CT_XZ_jiian))	//轮子左转电位器值变小 2.0
 				{
 					qianlun_TurnL(xunzheng_speed0);		//第一次左转
 				}
@@ -316,7 +309,7 @@ void CtXunZheng_qian(u8 cidaohang_id,u16 xunzheng_speed0)
 			{
 				if(!temp_flag_R_jixian0)			//右极限未到位
 				{
-					if(temp_dianweiqi_1 < g_DWQ.qianlun_R_val)	//轮子右转电位器值变大 2.0
+					if(temp_dianweiqi_1 < g_DWQ.qianlun_R_val-g_CT_XZ_jiian)	//轮子右转电位器值变大 2.0
 					{
 						qianlun_TurnR(xunzheng_speed0);		//右转
 					}
@@ -358,7 +351,7 @@ void CtXunZheng_qian(u8 cidaohang_id,u16 xunzheng_speed0)
 			
 			if(!temp_flag_L_jixian0)			//左极限未到位
 			{
-				if(temp_dianweiqi_1 > g_DWQ.qianlun_L_val)	//轮子左转电位器值变小 0.5
+				if(temp_dianweiqi_1 > g_DWQ.qianlun_L_val+g_CT_XZ_jiian)	//轮子左转电位器值变小 0.5
 				{
 					qianlun_TurnL(xunzheng_speed0);		//第一次左转
 				}
@@ -374,7 +367,7 @@ void CtXunZheng_qian(u8 cidaohang_id,u16 xunzheng_speed0)
 			{
 				if(!temp_flag_R_jixian0)			//右极限未到位
 				{
-					if(temp_dianweiqi_1 < g_DWQ.qianlun_R_val)	//轮子右转电位器值变大 2.0
+					if(temp_dianweiqi_1 < g_DWQ.qianlun_R_val-g_CT_XZ_jiian)	//轮子右转电位器值变大 2.0
 					{
 						qianlun_TurnR(xunzheng_speed0);		//右转
 					}
@@ -428,7 +421,7 @@ void CtXunZheng_hou(u8 cidaohang_id,u16 xunzheng_speed)
 			
 			if(!temp_flag_L_jixian)			//左极限未到位
 			{
-				if(temp_dianweiqi_2 > g_DWQ.houlun_L_val)	//轮子左转电位器值变小 2.0
+				if(temp_dianweiqi_2 > g_DWQ.houlun_L_val+g_CT_XZ_jiian)	//轮子左转电位器值变小 2.0
 				{
 					houlun_TurnL(xunzheng_speed);		//第一次左转
 				}
@@ -444,7 +437,7 @@ void CtXunZheng_hou(u8 cidaohang_id,u16 xunzheng_speed)
 			{
 				if(!temp_flag_R_jixian)			//右极限未到位
 				{
-					if(temp_dianweiqi_2 < g_DWQ.houlun_R_val)	//轮子右转电位器值变大 2.0
+					if(temp_dianweiqi_2 < g_DWQ.houlun_R_val-g_CT_XZ_jiian)	//轮子右转电位器值变大 2.0
 					{
 						houlun_TurnR(xunzheng_speed);		//右转
 					}
@@ -485,7 +478,7 @@ void CtXunZheng_hou(u8 cidaohang_id,u16 xunzheng_speed)
 			
 			if(!temp_flag_L_jixian)			//左极限未到位
 			{
-				if(temp_dianweiqi_2 > g_DWQ.houlun_L_val)	//轮子左转电位器值变小 2.0
+				if(temp_dianweiqi_2 > g_DWQ.houlun_L_val+g_CT_XZ_jiian)	//轮子左转电位器值变小 2.0
 				{
 					houlun_TurnL(xunzheng_speed);		//第一次左转
 				}
@@ -501,7 +494,7 @@ void CtXunZheng_hou(u8 cidaohang_id,u16 xunzheng_speed)
 			{
 				if(!temp_flag_R_jixian)			//右极限未到位
 				{
-					if(temp_dianweiqi_2 < g_DWQ.houlun_R_val)	//轮子右转电位器值变大 2.0
+					if(temp_dianweiqi_2 < g_DWQ.houlun_R_val-g_CT_XZ_jiian)	//轮子右转电位器值变大 2.0
 					{
 						houlun_TurnR(xunzheng_speed);		//右转
 					}

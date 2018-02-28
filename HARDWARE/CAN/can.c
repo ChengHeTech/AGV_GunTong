@@ -158,67 +158,9 @@ u8 g_Ct_chugui[4];
 void CAN1_RX0_IRQHandler(void)			//磁导航采集
 {
   	CanRxMsg RxMessage;
-	//int i=0;
-    CAN_Receive(CAN1, CAN_FIFO0, &RxMessage);
-	
-//	if(RxMessage.StdId == 1)			//前1磁导航
-//	{
-//		for(i=0;i<RxMessage.DLC;i++)
-//		g_cinavi1_RXbuff[i]=RxMessage.Data[i];
-//		g_CDH8_qian_1 = FindSpace1(g_cinavi1_RXbuff[0],8,g_AGV_Car_fencha_dir);
-////		if(g_CDH8_qian_1.Distance)	//非0存
-////		{
-////			g_Ct_chugui[0] = g_CDH8_qian_1.Distance;
-////		}
-//		
-//	}   
-//	if(RxMessage.StdId == 2)			//前2磁导航
-//	{
-//		for(i=0;i<RxMessage.DLC;i++)
-//		g_cinavi2_RXbuff[i]=RxMessage.Data[i]; 
-//		g_CDH8_qian_2 = FindSpace1(g_cinavi2_RXbuff[0],8,g_AGV_Car_fencha_dir);
-////		if(g_CDH8_qian_2.Distance)	//非0存
-////		{
-////			g_Ct_chugui[1] = g_CDH8_qian_2.Distance;
-////		}
-//	}
-//	if(RxMessage.StdId == 3)			//后1磁导航
-//	{
-//		for(i=0;i<RxMessage.DLC;i++)
-//		g_cinavi3_RXbuff[i]=RxMessage.Data[i]; 
-//		g_CDH8_hou_1 = FindSpace1(g_cinavi3_RXbuff[0],8,g_AGV_Car_fencha_dir);
-////		if(g_CDH8_qian_2.Distance)	//非0存
-////		{
-////			g_Ct_chugui[1] = g_CDH8_qian_2.Distance;
-////		}
-//	}
-//	if(RxMessage.StdId == 4)			//后2磁导航
-//	{
-//		for(i=0;i<RxMessage.DLC;i++)
-//		g_cinavi4_RXbuff[i]=RxMessage.Data[i]; 
-//		g_CDH8_hou_2 = FindSpace1(g_cinavi4_RXbuff[0],8,g_AGV_Car_fencha_dir);
-////		if(g_CDH8_qian_2.Distance)	//非0存
-////		{
-////			g_Ct_chugui[1] = g_CDH8_qian_2.Distance;
-////		}
-//	}
-	
-
-	
-}
-#endif
-
-u16 g_SD_buff[16];
-
-
-#if CAN2_RX0_INT_ENABLE	//使能RX0中断    
-//中断服务函数			    
-void CAN2_RX0_IRQHandler(void)  //地标传感器 中断处理
-{
-  	CanRxMsg RxMessage;
 	int i=0;
-    CAN_Receive(CAN2, CAN_FIFO0, &RxMessage);
-	
+    CAN_Receive(CAN1, CAN_FIFO0, &RxMessage);
+
 	if(RxMessage.StdId == 16)			//地标传感器ID: 16
 	{
 		for(i=0;i<RxMessage.DLC;i++)
@@ -298,6 +240,30 @@ void CAN2_RX0_IRQHandler(void)  //地标传感器 中断处理
 //			g_Ct_chugui[1] = g_CDH8_qian_2.Distance;
 //		}
 	}
+
+	
+}
+#endif
+
+u16 g_SD_buff[16];
+
+
+#if CAN2_RX0_INT_ENABLE	//使能RX0中断    
+//中断服务函数			    
+void CAN2_RX0_IRQHandler(void)  //电机驱动
+{
+  	CanRxMsg RxMessage;
+	int i=0;
+    CAN_Receive(CAN2, CAN_FIFO0, &RxMessage);
+	
+//	if(RxMessage.StdId == 16)			//地标传感器ID: 16
+//	{
+//		for(i=0;i<RxMessage.DLC;i++)
+//		g_Get_RFID_buff[i]=RxMessage.Data[i]; 
+//		g_AGV_RFID_ID = g_Get_RFID_buff[1]<<8|g_Get_RFID_buff[0];
+//		g_flag_RFID_beep = 1;
+//		
+//	}  	
 	
 	
 }
@@ -430,7 +396,7 @@ void AGV_CanOpen_Send(void)		//换到 CAN2
 	CanOpen_buff[1] = 0;
 	
 
-	CAN1_Send_Msg(0,CanOpen_buff,2);
+	CAN2_Send_Msg(0,CanOpen_buff,2);
 	delay_rtos(0,0,0,20);
 
 
@@ -446,13 +412,13 @@ void AGV_CanOpen_Send1(void)
 	CanOpen_buff[4] = 0;
 	CanOpen_buff[5] = 0;	
 
-	CAN1_Send_Msg(0x201,CanOpen_buff,6);
+	CAN2_Send_Msg(0x201,CanOpen_buff,6);
 	delay_rtos(0,0,0,20);
-	CAN1_Send_Msg(0x202,CanOpen_buff,6);
+	CAN2_Send_Msg(0x202,CanOpen_buff,6);
 	delay_rtos(0,0,0,20);
-	CAN1_Send_Msg(0x203,CanOpen_buff,6);
+	CAN2_Send_Msg(0x203,CanOpen_buff,6);
 	delay_rtos(0,0,0,20);
-	CAN1_Send_Msg(0x204,CanOpen_buff,6);
+	CAN2_Send_Msg(0x204,CanOpen_buff,6);
 	delay_rtos(0,0,0,20);
 
 
@@ -468,13 +434,13 @@ void AGV_CanOpen_Send2(void)
 	CanOpen_buff[4] = 0;
 	CanOpen_buff[5] = 0;	
 
-	CAN1_Send_Msg(0x201,CanOpen_buff,6);
+	CAN2_Send_Msg(0x201,CanOpen_buff,6);
 	delay_rtos(0,0,0,20);
-	CAN1_Send_Msg(0x202,CanOpen_buff,6);
+	CAN2_Send_Msg(0x202,CanOpen_buff,6);
 	delay_rtos(0,0,0,20);
-	CAN1_Send_Msg(0x203,CanOpen_buff,6);
+	CAN2_Send_Msg(0x203,CanOpen_buff,6);
 	delay_rtos(0,0,0,20);
-	CAN1_Send_Msg(0x204,CanOpen_buff,6);
+	CAN2_Send_Msg(0x204,CanOpen_buff,6);
 	delay_rtos(0,0,0,20);
 
 }
@@ -511,7 +477,7 @@ void AGV_CanOpen_Send3(u8 node_id,int speed)
 	CanOpen_buff[3] = speed>>8;	
 	
 
-	CAN1_Send_Msg(temp_COB_ID,CanOpen_buff,4);
+	CAN2_Send_Msg(temp_COB_ID,CanOpen_buff,4);
 	delay_rtos(0,0,0,20);								//发送延时motec驱动发送延时
 }
 
