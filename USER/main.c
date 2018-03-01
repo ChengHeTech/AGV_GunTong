@@ -39,8 +39,20 @@ __align(8) CPU_STK	FLOAT_TASK_STK[FLOAT_STK_SIZE];
 //任务函数
 void float_task(void *p_arg);						//浮点任务
 
+
 //任务优先级
-#define Auto_TASK_PRIO		6
+#define MOTEC_TASK_PRIO		6
+//任务堆栈大小	
+#define MOTEC_STK_SIZE 		256
+//任务控制块
+OS_TCB MOTECTaskTCB;
+//任务堆栈	
+CPU_STK motec_TASK_STK[MOTEC_STK_SIZE];
+//任务函数
+void motec_task(void *p_arg);						//初始化Motec驱动器任务
+
+//任务优先级
+#define Auto_TASK_PRIO		7
 //任务堆栈大小	
 #define Auto_STK_SIZE 		512
 //任务控制块
@@ -51,7 +63,7 @@ CPU_STK Auto_TASK_STK[Auto_STK_SIZE];
 void Auto_task(void *p_arg);						//自动模式任务
 
 //任务优先级 
-#define PID_TASK_PRIO		7
+#define PID_TASK_PRIO		8
 //任务堆栈大小	
 #define PID_STK_SIZE 		512
 //任务控制块
@@ -62,7 +74,7 @@ CPU_STK PID_TASK_STK[PID_STK_SIZE];
 void PID_task(void *p_arg);							//PID任务
 
 //任务优先级
-#define Manual_TASK_PRIO		8
+#define Manual_TASK_PRIO		9
 //任务堆栈大小	
 #define Manual_STK_SIZE 		512
 //任务控制块
@@ -75,7 +87,7 @@ void Manual_task(void *p_arg);						//手动模式任务
 
 
 //任务优先级
-#define Screen_TASK_PRIO		9
+#define Screen_TASK_PRIO		10
 //任务堆栈大小	
 #define Screen_STK_SIZE 		512
 //任务控制块
@@ -86,7 +98,7 @@ CPU_STK Screen_TASK_STK[Screen_STK_SIZE];
 void Screen_task(void *p_arg);						//屏幕任务
 
 //任务优先级
-#define Control_TASK_PRIO		10
+#define Control_TASK_PRIO		11
 //任务堆栈大小	
 #define Control_STK_SIZE 		512
 //任务控制块
@@ -97,7 +109,7 @@ CPU_STK Control_TASK_STK[Control_STK_SIZE];
 void Control_task(void *p_arg);						//控制任务
 
 //任务优先级
-#define WIFI_TASK_PRIO		11
+#define WIFI_TASK_PRIO		12
 //任务堆栈大小	
 #define WIFI_STK_SIZE 		512
 //任务控制块
@@ -109,7 +121,7 @@ void WIFI_task(void *p_arg);						//WIFI任务
 
 
 //任务优先级
-#define guntong_TASK_PRIO		12
+#define guntong_TASK_PRIO		13
 //任务堆栈大小	
 #define guntong_STK_SIZE 		512
 //任务控制块
@@ -122,7 +134,7 @@ void guntong_task(void *p_arg);						//滚筒任务
 
 
 //任务优先级
-#define DCv_TASK_PRIO		13
+#define DCv_TASK_PRIO		14
 //任务堆栈大小	
 #define DCv_STK_SIZE 		128
 //任务控制块
@@ -249,9 +261,24 @@ void start_task(void *p_arg)
                  (void   	* )0,				
                  (OS_OPT      )OS_OPT_TASK_STK_CHK|OS_OPT_TASK_STK_CLR, 
                  (OS_ERR 	* )&err);	
+
+	//创建自动任务
+	OSTaskCreate((OS_TCB 	* )&MOTECTaskTCB,				//6
+				 (CPU_CHAR	* )"motec task", 		
+                 (OS_TASK_PTR )motec_task, 			
+                 (void		* )0,					
+                 (OS_PRIO	  )MOTEC_TASK_PRIO,     	
+                 (CPU_STK   * )&motec_TASK_STK[0],	
+                 (CPU_STK_SIZE)MOTEC_STK_SIZE/10,	
+                 (CPU_STK_SIZE)MOTEC_STK_SIZE,		
+                 (OS_MSG_QTY  )0,					
+                 (OS_TICK	  )0,					
+                 (void   	* )0,				
+                 (OS_OPT      )OS_OPT_TASK_STK_CHK|OS_OPT_TASK_STK_CLR, 
+                 (OS_ERR 	* )&err);
 				 
 	//创建自动任务
-	OSTaskCreate((OS_TCB 	* )&AutoTaskTCB,				//6
+	OSTaskCreate((OS_TCB 	* )&AutoTaskTCB,				//7
 				 (CPU_CHAR	* )"Auto task", 		
                  (OS_TASK_PTR )Auto_task, 			
                  (void		* )0,					
@@ -266,7 +293,7 @@ void start_task(void *p_arg)
                  (OS_ERR 	* )&err);
 
 	//PID
-	OSTaskCreate((OS_TCB 	* )&PIDTaskTCB,					//7
+	OSTaskCreate((OS_TCB 	* )&PIDTaskTCB,					//8
 				 (CPU_CHAR	* )"PID task", 		
                  (OS_TASK_PTR )PID_task, 			
                  (void		* )0,					
@@ -281,7 +308,7 @@ void start_task(void *p_arg)
                  (OS_ERR 	* )&err);
 				 
 	//创建手动任务
-	OSTaskCreate((OS_TCB 	* )&ManualTaskTCB,				//8
+	OSTaskCreate((OS_TCB 	* )&ManualTaskTCB,				//9
 				 (CPU_CHAR	* )"Manual task", 		
                  (OS_TASK_PTR )Manual_task, 			
                  (void		* )0,					
@@ -298,7 +325,7 @@ void start_task(void *p_arg)
 	
 
 	//创建触摸屏任务
-	OSTaskCreate((OS_TCB 	* )&ScreenTaskTCB,				//9
+	OSTaskCreate((OS_TCB 	* )&ScreenTaskTCB,				//10
 				 (CPU_CHAR	* )"Screen task", 		
                  (OS_TASK_PTR )Screen_task, 			
                  (void		* )0,					
@@ -313,7 +340,7 @@ void start_task(void *p_arg)
                  (OS_ERR 	* )&err);	
 
 	//控制
-	OSTaskCreate((OS_TCB 	* )&ControlTaskTCB,				//10
+	OSTaskCreate((OS_TCB 	* )&ControlTaskTCB,				//11
 				 (CPU_CHAR	* )"Control task", 		
                  (OS_TASK_PTR )Control_task, 			
                  (void		* )0,					
@@ -327,7 +354,7 @@ void start_task(void *p_arg)
                  (OS_OPT      )OS_OPT_TASK_STK_CHK|OS_OPT_TASK_STK_CLR, 
                  (OS_ERR 	* )&err);				 
 	//WIFI
-	OSTaskCreate((OS_TCB 	* )&WIFITaskTCB,				//11
+	OSTaskCreate((OS_TCB 	* )&WIFITaskTCB,				//12
 				 (CPU_CHAR	* )"WIFI task", 		
                  (OS_TASK_PTR )WIFI_task, 			
                  (void		* )0,					
@@ -342,7 +369,7 @@ void start_task(void *p_arg)
                  (OS_ERR 	* )&err);				 
 				 
 	//WIFI
-	OSTaskCreate((OS_TCB 	* )&guntongTaskTCB,				//12
+	OSTaskCreate((OS_TCB 	* )&guntongTaskTCB,				//13
 				 (CPU_CHAR	* )"guntong task", 		
                  (OS_TASK_PTR )guntong_task, 			
                  (void		* )0,					
@@ -357,7 +384,7 @@ void start_task(void *p_arg)
                  (OS_ERR 	* )&err);		
 				 
 	//电压采集		
-	OSTaskCreate((OS_TCB 	* )&DCvTaskTCB,					//13
+	OSTaskCreate((OS_TCB 	* )&DCvTaskTCB,					//14
 				 (CPU_CHAR	* )"DCv task", 		
                  (OS_TASK_PTR )DCv_task, 			
                  (void		* )0,					
@@ -553,6 +580,22 @@ void float_task(void *p_arg)		//红外和机械避障
 	}
 }
 
+
+
+void motec_task(void *p_arg)			//初始化驱动器
+{
+	OS_ERR err;
+	p_arg = p_arg;
+
+	while(1)
+	{
+		check_Motec_init();
+		delay_rtos(0,0,0,20);
+		
+	}		
+}
+
+
 //自动操作任务
 void Auto_task(void *p_arg)			//自动模式--前轮PID
 {
@@ -607,63 +650,72 @@ void PID_task(void *p_arg)			//自动模式--后轮PID
 	}
 }
 
+
+u16 ppppppp=800;
 void Manual_task(void *p_arg)  		//手动任务
 {
 	//OS_ERR err;
 	p_arg = p_arg;
 	
-	Motec_init();
-	DwqXunZheng_QH();				//电位器寻正
-	
 	while(1)
 	{
-		//前进左右转 -- 后轮打直,前轮负责转向
-		//后退左右转 -- 前轮打直,后轮负责转向
+		
+		if(g_Init_OK_Motec)
+		{
+			//前进左右转 -- 后轮打直,前轮负责转向
+			//后退左右转 -- 前轮打直,后轮负责转向
 		
 		
-		if(g_AGV_Car_mode) //1://手动模式
-		{	
-			if(AGV_SYS.Car_SD_Speed > 50 && g_AGV_shoudong_dir!=0) 	
-			{
-				if(g_Start_flag.Start_Manu_PID)			//1:启动
+			if(g_AGV_Car_mode) //1://手动模式
+			{	
+				if(AGV_SYS.Car_SD_Speed > 50 && g_AGV_shoudong_dir!=0) 	
 				{
-					g_XZ_Ok = 0;
-					
-					PID_SD_Adjust(AGV_SYS.Car_SD_Speed,AGV_SYS.SD_Kp,AGV_SYS.SD_Ki,AGV_SYS.SD_Kd);	//延时在里面
+					if(g_Start_flag.Start_Manu_PID)			//1:启动
+					{
+						g_XZ_Ok = 0;
+						
+						PID_SD_Adjust(AGV_SYS.Car_SD_Speed,AGV_SYS.SD_Kp,AGV_SYS.SD_Ki,AGV_SYS.SD_Kd);	//延时在里面
+					}		
+					else									//0:停止
+					{
+						MotoStop(0);
+						if(!g_XZ_Ok)
+						{
+							DwqXunZheng_QH();				//电位器寻正	
+						}					
+					}
 				}		
-				else									//0:停止
+				else 
 				{
-					MotoStop(0);
+					MotoStop(0);							//后续更新,不一直发送				
 					if(!g_XZ_Ok)
 					{
-						DwqXunZheng_QH();				//电位器寻正	
-					}					
-				}
-			}		
-			else 
+						DwqXunZheng_QH();					//电位器寻正	
+					}
+					
+					
+					if(g_Start_flag.button_Start==0)
+					{
+						g_Start_flag.Start_Manu_PID = 0;		//允许手动PID	
+					}
+					else
+					{
+						g_Start_flag.Start_Manu_PID = 1;		//允许手动PID	
+					}
+									
+				}					
+			}
+			else		//0://自动模式
 			{
-				MotoStop(0);							//后续更新,不一直发送				
-				if(!g_XZ_Ok)
-				{
-					DwqXunZheng_QH();					//电位器寻正	
-				}
-				
-				
-				if(g_Start_flag.button_Start==0)
-				{
-					g_Start_flag.Start_Manu_PID = 0;		//允许手动PID	
-				}
-				else
-				{
-					g_Start_flag.Start_Manu_PID = 1;		//允许手动PID	
-				}
-								
-			}					
+				delay_rtos(0,0,0,20); //
+			}			
 		}
-		else		//0://自动模式
+		
+		else
 		{
 			delay_rtos(0,0,0,20); //
 		}
+
 	}
 }
 
@@ -2103,28 +2155,28 @@ void DCv_task(void *p_arg)											//电压采集
 
 		}
 
-		//寻正响蜂鸣器						//叫250ms
-		if(g_XZ_Beep)
-		{
-			BEEP = 1;
-			temp_j++;
-			if(temp_j == 10)
-			{
-				BEEP = 0;
-			}
-			else if(temp_j == 20)
-			{
-				BEEP = 1;
-			}
-			else if(temp_j == 30)
-			{
-				BEEP = 0;
-				
-				temp_j = 0;			
-				g_XZ_Beep = 0;				
-			}
+		////寻正响蜂鸣器						//叫250ms
+		//if(g_XZ_Beep)
+		//{
+		//	BEEP = 1;
+		//	temp_j++;
+		//	if(temp_j == 10)
+		//	{
+		//		BEEP = 0;
+		//	}
+		//	else if(temp_j == 30)
+		//	{
+		//		BEEP = 1;
+		//	}
+		//	else if(temp_j == 40)
+		//	{
+		//		BEEP = 0;
+		//		
+		//		temp_j = 0;			
+		//		g_XZ_Beep = 0;				
+		//	}
 
-		}
+		//}
 		
 		//触摸屏通信指示灯和板子运行指示灯LED1		//500ms闪烁
 		temp_i++;

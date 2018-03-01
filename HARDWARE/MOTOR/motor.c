@@ -141,15 +141,51 @@ void Motor_Fzhuan(u8 Motor,u32 speed)
 //
 //前驱动轮的控制
 //
-void qianlun_Go(u16 temp_speed)			//前轮前进
+void LunZi_Go(u8 ID,u16 temp_speed)			
 {
-	Motor_Zzhuan(1,temp_speed); Motor_Fzhuan(2,temp_speed);
-}
-void qianlun_Back(u16 temp_speed)		//前轮后退
-{
-	Motor_Fzhuan(1,temp_speed); Motor_Zzhuan(2,temp_speed);
+
+	switch(ID)
+	{	
+		case 1:
+			Motor_Zzhuan(1,temp_speed); 
+			break;
+		case 2:
+			Motor_Fzhuan(2,temp_speed); 
+			break;	
+		case 3:
+			Motor_Zzhuan(3,temp_speed); 
+			break;	
+		case 4:
+			Motor_Fzhuan(4,temp_speed); 
+			break;	
+		default:
+			break;
+	}
+	
 }
 
+void LunZi_Back(u8 ID,u16 temp_speed)			
+{
+
+	switch(ID)
+	{	
+		case 1:
+			Motor_Fzhuan(1,temp_speed); 
+			break;
+		case 2:
+			Motor_Zzhuan(2,temp_speed); 
+			break;	
+		case 3:
+			Motor_Fzhuan(3,temp_speed); 
+			break;	
+		case 4:
+			Motor_Zzhuan(4,temp_speed); 
+			break;	
+		default:
+			break;
+	}
+	
+}
 
 
 
@@ -161,7 +197,8 @@ void qianlun_TurnL(u16 temp_speed)		//前轮左转
 	{
 		temp_speed = AGV_SYS.XZ_MAX_Speed;
 	}
-	Motor_Fzhuan(1,temp_speed); Motor_Fzhuan(2,temp_speed);
+
+	LunZi_Back(1,temp_speed);LunZi_Go(2,temp_speed);
 }
 void qianlun_TurnR(u16 temp_speed)		//前轮右转
 {
@@ -170,25 +207,22 @@ void qianlun_TurnR(u16 temp_speed)		//前轮右转
 		temp_speed = AGV_SYS.XZ_MAX_Speed;
 	}
 	Motor_Zzhuan(1,temp_speed); Motor_Zzhuan(2,temp_speed);
+
+	LunZi_Go(1,temp_speed);LunZi_Back(2,temp_speed);
 }
-//
-//后驱动轮的控制
-//
-void houlun_Go(u16 temp_speed)			//后轮前进
-{
-	Motor_Zzhuan(3,temp_speed); Motor_Fzhuan(4,temp_speed);
-}
-void houlun_Back(u16 temp_speed)		//后轮后退
-{
-	Motor_Fzhuan(3,temp_speed); Motor_Zzhuan(4,temp_speed);
-}
+
+
+
+
+
 void houlun_TurnL(u16 temp_speed)		//后轮左转
 {
 	if(temp_speed > AGV_SYS.XZ_MAX_Speed)
 	{
 		temp_speed = AGV_SYS.XZ_MAX_Speed;
 	}
-	Motor_Fzhuan(3,temp_speed); Motor_Fzhuan(4,temp_speed);
+	
+	LunZi_Back(3,temp_speed);LunZi_Go(4,temp_speed);
 }
 void houlun_TurnR(u16 temp_speed)		//后轮右转
 {
@@ -196,7 +230,7 @@ void houlun_TurnR(u16 temp_speed)		//后轮右转
 	{
 		temp_speed = AGV_SYS.XZ_MAX_Speed;
 	}
-	Motor_Zzhuan(3,temp_speed); Motor_Zzhuan(4,temp_speed);
+	LunZi_Go(3,temp_speed);LunZi_Back(4,temp_speed);
 }
 
 
@@ -213,10 +247,13 @@ void DwqXunZheng_QH(void)
 	int temp_cha[2]={0,0};
 	
 	
+
+	
+	
 	g_xz_dwq[0] = g_After_filter[1];	
 	temp_cha[0] = g_xz_dwq[0] - g_DWQ.qianlun_zhong_val;
 	
-	//BEEP = 1;
+	BEEP = 1;
 	
 	while( abs(temp_cha[0]) > 2)
 	{
@@ -265,8 +302,8 @@ void DwqXunZheng_QH(void)
 	MotoStop(4);	
 
 	g_XZ_Ok = 1;
-	g_XZ_Beep = 1;
-	//BEEP = 0;
+	//g_XZ_Beep = 1;
+	BEEP = 0;
 
 }
 

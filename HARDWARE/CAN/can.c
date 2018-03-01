@@ -9,6 +9,12 @@ u8 g_cinavi4_RXbuff[16];	//后磁导航
 
 u16 g_AGV_RFID_ID;//地标  //
 u8  g_flag_RFID_beep;
+u8 g_watie_Motec_init = 6;				//等待
+u8 g_watie_Motec_zijian ;			//等待500ms
+
+
+
+
 
 //CAN初始化
 //tsjw:重新同步跳跃时间单元.范围:CAN_SJW_1tq~ CAN_SJW_4tq
@@ -153,6 +159,7 @@ u8 CAN2_Mode_Init(u8 tsjw,u8 tbs2,u8 tbs1,u16 brp,u8 mode) //PB5  PB6
  
 
 u8 g_Ct_chugui[4];
+u16 g_SD_buff[16];
 #if CAN1_RX0_INT_ENABLE	//使能RX0中断   
 //中断服务函数			    
 void CAN1_RX0_IRQHandler(void)			//磁导航采集
@@ -246,7 +253,10 @@ void CAN1_RX0_IRQHandler(void)			//磁导航采集
 }
 #endif
 
-u16 g_SD_buff[16];
+
+u8 g_succese_Motec_init;
+u16 g_CANOPEN_RX_buff[5][8];
+CanRxMsg CANOPEN_RxMessage;
 
 
 #if CAN2_RX0_INT_ENABLE	//使能RX0中断    
@@ -256,36 +266,48 @@ void CAN2_RX0_IRQHandler(void)  //电机驱动
   	CanRxMsg RxMessage;
 	int i=0;
     CAN_Receive(CAN2, CAN_FIFO0, &RxMessage);
-	
-//	if(RxMessage.StdId == 16)			//地标传感器ID: 16
-//	{
-//		for(i=0;i<RxMessage.DLC;i++)
-//		g_Get_RFID_buff[i]=RxMessage.Data[i]; 
-//		g_AGV_RFID_ID = g_Get_RFID_buff[1]<<8|g_Get_RFID_buff[0];
-//		g_flag_RFID_beep = 1;
-//		
-//	}  	
-	
+//	
+	if(RxMessage.StdId == 0x701)			//
+	{
+		for(i=0;i<RxMessage.DLC;i++)
+		g_CANOPEN_RX_buff[1][i]=RxMessage.Data[i]; 
+		
+		g_succese_Motec_init = 1;
+
+		g_watie_Motec_zijian = g_watie_Motec_init;
+		
+	}  	
+	if(RxMessage.StdId == 0x702)			//
+	{
+		for(i=0;i<RxMessage.DLC;i++)
+		g_CANOPEN_RX_buff[2][i]=RxMessage.Data[i]; 
+		
+
+		g_succese_Motec_init = 1;
+		g_watie_Motec_zijian = g_watie_Motec_init;
+	}  
+	if(RxMessage.StdId == 0x703)			//
+	{
+		for(i=0;i<RxMessage.DLC;i++)
+		g_CANOPEN_RX_buff[3][i]=RxMessage.Data[i]; 
+		
+
+		g_succese_Motec_init = 1;
+		g_watie_Motec_zijian = g_watie_Motec_init;
+	}  
+	if(RxMessage.StdId == 0x704)			//
+	{
+		for(i=0;i<RxMessage.DLC;i++)
+		g_CANOPEN_RX_buff[4][i]=RxMessage.Data[i]; 
+		
+
+		g_succese_Motec_init = 1;
+		g_watie_Motec_zijian = g_watie_Motec_init;
+	}  	
 	
 }
 #endif
-//		//解析地标  --  旧版
-//		//rece_buf
-//		if(rece2_index>0)
-//		{
-//			p=strstr(rece_buf,l);
-//			if(p)
-//			{
-//				dst[0]=p[15];
-//				dst[1]=p[16];
-//				dst[2]=p[17];
-//				for(i=0;i<rece2_index;i++)
-//				rece_buf[i]=0;
-//				rece2_index=0;
-//				g_AGV_RFID_ID=(dst[0]-0x30)*100+(dst[1]-0x30)*10+(dst[2]-0x30);
-//				PLC_Data[1]=g_AGV_RFID_ID;
-//			}
-//		} 	
+	
 
 
 
@@ -449,12 +471,12 @@ void AGV_CanOpen_Send2(void)
 void Motec_init(void)		
 {
 
-	delay_rtos(0,0,2,100);
+	delay_rtos(0,0,2,0);
 	AGV_CanOpen_Send();
 	AGV_CanOpen_Send1();
 	AGV_CanOpen_Send2();
 		
-	
+	delay_rtos(0,0,0,50);
 	//g_flag_Motec_init = 1;		//初始化完成标志	
 
 }
@@ -483,7 +505,74 @@ void AGV_CanOpen_Send3(u8 node_id,int speed)
 }
 
 
+u8 g_Init_OK_Motec;
 
+void check_Motec_init(void)
+{
+	Motec_init();					//初始化驱动
+	
+	
+	PrintCom(YIN_LIANG2,9);		//音量2 
+	osdelay_ms(10);
+	while(1)
+	{
+		if(g_watie_Motec_zijian)
+		{
+			PrintCom(YIN_LIANG2,9);		//音量2 
+			osdelay_ms(10);
+			speek("驱动上电");
+			delay_rtos(0,0,1,0);
+			PrintCom(YIN_LIANG8,9);		//音量8 
+			osdelay_ms(10);
+			
+			
+			g_Init_OK_Motec = 1;
+			
+			DwqXunZheng_QH();				//电位器寻正
+		}
+		else
+		{
+			PrintCom(YIN_LIANG2,9);		//音量2 
+			osdelay_ms(10);
+			speek("驱动掉电");
+			delay_rtos(0,0,1,0);
+			PrintCom(YIN_LIANG8,9);		//音量8 
+			osdelay_ms(10);
+		}
+		while(g_watie_Motec_zijian)		//驱动器上电
+		{
+			g_watie_Motec_zijian--;
+			delay_rtos(0,0,1,0);
+		
+		}
+		g_watie_Motec_zijian = 0;
+		
+		PrintCom(YIN_LIANG2,9);		//音量2 
+		osdelay_ms(10);
+		speek("驱动掉电");
+		delay_rtos(0,0,1,0);
+		PrintCom(YIN_LIANG8,9);		//音量8 
+		osdelay_ms(10);		
+		
+		
+		g_Init_OK_Motec = 0;
+		
+		//驱动器掉电		
+		while(!g_watie_Motec_zijian)		//等待驱动器上电
+		{
+			
+			delay_rtos(0,0,0,20);
+		
+		}	
+		Motec_init();	
+		
+		delay_rtos(0,0,0,20);
+	}
+	
+	
+	
+	
+}
 
 
 

@@ -363,9 +363,7 @@ void PID_AUTO_QianLun(u16 j_speed,float kp,float ki,float kd)
 			if(PID_speed.moter1_speed<0)	PID_speed.moter1_speed = 0;
 			if(PID_speed.moter2_speed<0)	PID_speed.moter2_speed = 0;
 
-
-			Motor_Zzhuan(1,PID_speed.moter1_speed); Motor_Fzhuan(2,PID_speed.moter2_speed);
-			
+			LunZi_Go(1,PID_speed.moter1_speed);LunZi_Go(2,PID_speed.moter2_speed);
 			
 						
 		}
@@ -399,10 +397,7 @@ void PID_AUTO_QianLun(u16 j_speed,float kp,float ki,float kd)
 			if(PID_speed.moter1_speed<0)	PID_speed.moter1_speed = 0;
 			if(PID_speed.moter2_speed<0)	PID_speed.moter2_speed = 0;
 
-		
-			
-			
-			Motor_Zzhuan(2,PID_speed.moter2_speed);	Motor_Fzhuan(1,PID_speed.moter1_speed);
+			LunZi_Back(2,PID_speed.moter2_speed);LunZi_Back(1,PID_speed.moter1_speed);
 			
 					
 		}
@@ -446,11 +441,8 @@ void PID_AUTO_HouLun(u16 j_speed2,float kp2,float ki2,float kd2)	//后轮的PID调节
 			if(PID_speed.moter3_speed<0)	PID_speed.moter3_speed = 0;
 			if(PID_speed.moter4_speed<0)	PID_speed.moter4_speed = 0;
 
-
-			Motor_Zzhuan(3,PID_speed.moter3_speed); Motor_Fzhuan(4,PID_speed.moter4_speed);
+			LunZi_Go(3,PID_speed.moter3_speed);LunZi_Go(4,PID_speed.moter4_speed);
 			
-			
-						
 		}
 	}
 	else if(g_AGV_Car_dir == 1)					//后退
@@ -481,11 +473,8 @@ void PID_AUTO_HouLun(u16 j_speed2,float kp2,float ki2,float kd2)	//后轮的PID调节
 
 			if(PID_speed.moter4_speed<0)	PID_speed.moter4_speed = 0;
 			if(PID_speed.moter3_speed<0)	PID_speed.moter3_speed = 0;
-
-		
-			
-			
-			Motor_Zzhuan(4,PID_speed.moter4_speed);	Motor_Fzhuan(3,PID_speed.moter3_speed);
+	
+			LunZi_Back(4,PID_speed.moter4_speed);LunZi_Back(3,PID_speed.moter3_speed);
 			
 					
 		}
@@ -597,15 +586,20 @@ void PID_SD_Adjust(u16 j_speed,float kp,float ki,float kd)
 		case 1:					//前进
 		case 5:					//前进左拐	
 		case 6:					//前进右拐
-			Motor_Zzhuan(1,PID__SD_speed.moter1_speed); Motor_Fzhuan(2,PID__SD_speed.moter2_speed);
-			Motor_Zzhuan(3,PID__SD_speed.moter3_speed); Motor_Fzhuan(4,PID__SD_speed.moter4_speed);
+
+			LunZi_Go(1,PID__SD_speed.moter1_speed);LunZi_Go(2,PID__SD_speed.moter2_speed);
+			LunZi_Go(3,PID__SD_speed.moter3_speed);LunZi_Go(4,PID__SD_speed.moter4_speed);
+		
+		
 			break;
 		
 		case 2:					//后退
 		case 8:					//后退左拐	
 		case 7:					//后退右拐
-			Motor_Zzhuan(4,PID__SD_speed.moter4_speed);	Motor_Fzhuan(3,PID__SD_speed.moter3_speed);				
-			Motor_Zzhuan(2,PID__SD_speed.moter2_speed); Motor_Fzhuan(1,PID__SD_speed.moter1_speed);						
+			
+			LunZi_Back(4,PID__SD_speed.moter4_speed);LunZi_Back(3,PID__SD_speed.moter3_speed);		
+			LunZi_Back(2,PID__SD_speed.moter2_speed);LunZi_Back(1,PID__SD_speed.moter1_speed);	
+		
 			break;			
 		
 		default:

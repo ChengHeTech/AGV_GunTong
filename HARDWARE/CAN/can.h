@@ -26,6 +26,16 @@ extern u8 g_cinavi1_RXbuff[16];  //前磁导航
 extern u8 g_cinavi2_RXbuff[16];	
 extern u8 g_cinavi3_RXbuff[16];  
 extern u8 g_cinavi4_RXbuff[16];	//后磁导航
+extern u8 g_watie_Motec_init ;				//等待500ms
+
+extern u8 g_Init_OK_Motec;
+
+
+
+
+
+
+
 
 										 							 				    
 u8 CAN1_Mode_Init(u8 tsjw,u8 tbs2,u8 tbs1,u16 brp,u8 mode);//CAN初始化
@@ -45,7 +55,7 @@ void AGV_CanOpen_Send2(void);
 void AGV_CanOpen_Send3(u8 node_id,int speed);
 void Motec_init(void);
 
-
+void check_Motec_init(void);
 
 
 

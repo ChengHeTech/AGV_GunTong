@@ -92,13 +92,13 @@ void PrintCom(u8 *DAT,u16 len)
 * 说    明： 本函数只用于文本合成，具备背景音乐选择。默认波特率9600bps。					 
 * 调用方法：例： SYN_FrameInfo（“飞音云电子”）；
 **********************************************************/
-void speek(u8 *HZdata)
+void speek(char *HZdata)
 {
 /****************需要发送的文本**********************************/ 
 		u8 Frame_Info[100]; //定义的文本长度
 		u16 HZ_Length;  
 
-		HZ_Length =strlen((char*)HZdata); 			//需要发送文本的长度
+		HZ_Length =strlen(HZdata); 			//需要发送文本的长度
  		 
 /*****************帧固定配置信息**************************************/           
 		 Frame_Info[0] = 0xFD ; 			//构造帧头FD

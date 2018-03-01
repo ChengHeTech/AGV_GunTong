@@ -93,10 +93,18 @@ void motec_pulse(u8 speed);	//0~100
 
 
 
-void qianlun_Go(u16 temp_speed);			//前轮前进
-void qianlun_Back(u16 temp_speed);		//前轮后退
-void houlun_Go(u16 temp_speed);			//后轮前进
-void houlun_Back(u16 temp_speed);		//后轮后退
+
+void LunZi_Go(u8 ID,u16 temp_speed);
+void LunZi_Back(u8 ID,u16 temp_speed);
+	
+
+
+
+
+
+
+
+
 
 
 

@@ -51,7 +51,10 @@ extern u8 YIN_DIAO7[];//7
 extern u8 YIN_DIAO8[];//8
 extern u8 YIN_DIAO9[];//9
 
-void speek(u8 *HZdata);
+
+void PrintCom(u8 *DAT,u16 len);
+
+void speek(char *HZdata);
 void speek03(u8 *HZdata);
 void YS_XFS_Set(u8 *Info_data);
 
@@ -59,6 +62,8 @@ void rensheng(u8 num);//人声选择
 void yinling(u8 num);//音量选择
 void yusu(u8 num);//语速选择
 void yudiao(u8 num);//语调选择
+
+
 
 #endif
 
