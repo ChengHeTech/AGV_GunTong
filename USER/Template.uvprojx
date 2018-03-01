@@ -336,7 +336,7 @@
               <MiscControls></MiscControls>
               <Define>STM32F40_41xxx,USE_STDPERIPH_DRIVER,__FPU_USED=1</Define>
               <Undefine></Undefine>
-              <IncludePath>..\CORE;..\SYSTEM\delay;..\SYSTEM\sys;..\SYSTEM\usart;..\FWLIB\STM32F4xx_StdPeriph_Driver\inc;..\USER;..\HARDWARE\LED;..\UCOSIII\uC-CPU;..\UCOSIII\uC-LIB;..\UCOSIII\uCOS-III;..\UCOSIII\UCOS_BSP;..\UCOSIII\uCOS_CONFIG;..\UCOSIII\uCOS-III\Source;..\UCOSIII\uC-CPU\ARM-Cortex-M4\RealView;..\UCOSIII\uC-LIB\Ports\ARM-Cortex-M4\RealView;..\UCOSIII\uCOS-III\Ports\ARM-Cortex-M4\Generic\RealView;..\HARDWARE\ADC;..\HARDWARE\PWM;..\HARDWARE\SPI;..\HARDWARE\W25QXX;..\HARDWARE\GUNTONG;..\HARDWARE\battery;..\HARDWARE;..\HARDWARE\BEEP;..\HARDWARE\MOTOR;..\HARDWARE\ETHERNET;..\HARDWARE\chumoping485;..\HARDWARE\DIANWEIQI;..\HARDWARE\SPEAKER;..\HARDWARE\BUTTON;..\HARDWARE\RGB;..\HARDWARE\EXTI;..\HARDWARE\modbus_slave;..\HARDWARE\PID;..\HARDWARE\myNVIC;..\HARDWARE\CDHData;..\HARDWARE\ROUTE;..\HARDWARE\USER;..\HARDWARE\CAN;..\HARDWARE\dma;..\HARDWARE\modbus_slave;..\HARDWARE\AGV</IncludePath>
+              <IncludePath>..\CORE;..\SYSTEM\delay;..\SYSTEM\sys;..\SYSTEM\usart;..\FWLIB\STM32F4xx_StdPeriph_Driver\inc;..\USER;..\HARDWARE\LED;..\UCOSIII\uC-CPU;..\UCOSIII\uC-LIB;..\UCOSIII\uCOS-III;..\UCOSIII\UCOS_BSP;..\UCOSIII\uCOS_CONFIG;..\UCOSIII\uCOS-III\Source;..\UCOSIII\uC-CPU\ARM-Cortex-M4\RealView;..\UCOSIII\uC-LIB\Ports\ARM-Cortex-M4\RealView;..\UCOSIII\uCOS-III\Ports\ARM-Cortex-M4\Generic\RealView;..\HARDWARE\ADC;..\HARDWARE\PWM;..\HARDWARE\SPI;..\HARDWARE\W25QXX;..\HARDWARE\GUNTONG;..\HARDWARE\battery;..\HARDWARE;..\HARDWARE\BEEP;..\HARDWARE\MOTOR;..\HARDWARE\ETHERNET;..\HARDWARE\chumoping485;..\HARDWARE\DIANWEIQI;..\HARDWARE\SPEAKER;..\HARDWARE\BUTTON;..\HARDWARE\RGB;..\HARDWARE\EXTI;..\HARDWARE\modbus_slave;..\HARDWARE\PID;..\HARDWARE\myNVIC;..\HARDWARE\CDHData;..\HARDWARE\ROUTE;..\HARDWARE\USER;..\HARDWARE\CAN;..\HARDWARE\dma;..\HARDWARE\modbus_slave;..\HARDWARE\AGV;..\HARDWARE\control</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -529,6 +529,11 @@
               <FileName>agv.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\HARDWARE\AGV\agv.c</FilePath>
+            </File>
+            <File>
+              <FileName>control.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\HARDWARE\control\control.c</FilePath>
             </File>
           </Files>
         </Group>

@@ -607,9 +607,7 @@ void PID_task(void *p_arg)			//自动模式--后轮PID
 	}
 }
 
-
-
-void Manual_task(void *p_arg)  //手动任务
+void Manual_task(void *p_arg)  		//手动任务
 {
 	//OS_ERR err;
 	p_arg = p_arg;
@@ -1801,50 +1799,149 @@ void Screen_task(void *p_arg)    	//触摸屏界面操作
 //2.启动按键被按下磁导航寻轨
 //3.前后都上轨才能go
 
-char iii[10];
-void Control_task(void *p_arg)		//暂未使用
+void Control_task(void *p_arg)		// 执行路径或执行流程 -- 应用层控制任务
 {
+	u16 i=0;
+	u16 j=0; 
+	u16 k=0;
+	
 	OS_ERR err;
 	p_arg = p_arg;
+
 	while(1)
-	{	
+    {
+        //if(g_AGV_Car_mode == 0 && g_Start_flag.Start_Auto_PID == 1) //自动模式并且启动
+//        {
+//            //执行路径
+//            if(HmiTask == 1)							//任务动作 0:无任务 1:执行路径 2:执行流程
+//            {
+//               
+//                HmiRfidNum = 0; 						//清除当前地标
+//                HmiStationSerialNum = 0;				//站点序号清0
+//                //根据所选路径，执行相应动作
+//                for(i = 0; i < HmiStationNum; i++)
+//                {
+//                    StationAction(i);
+//                }
+//                HmiTask = 0;
 
 
-//		g_AGV_RFID_ID=0;
-//		
-//		while(g_AGV_RFID_ID==0)
-//		{
-//			OSTimeDlyHMSM(0,0,0,10,OS_OPT_TIME_HMSM_STRICT,&err);
-//		}		
-//		AGV_System_Stop();
-//		delay_rtos(0,0,2,0);
-//		g_AGV_Car_dir = 1;
-//		AGV_System_Start();
-//		
-//		delay_rtos(0,0,1,0);
-//		
-//		g_AGV_RFID_ID=0;
-//		
-//		while(g_AGV_RFID_ID==0)
-//		{
-//			OSTimeDlyHMSM(0,0,0,10,OS_OPT_TIME_HMSM_STRICT,&err);
-//		}		
-//		AGV_System_Stop();
-//		delay_rtos(0,0,2,0);
-//		g_AGV_Car_dir = 0;
-//		AGV_System_Start();
-		
+//            }
+//            else
+//            {
+//                //执行流程
+//                if(HmiTask == 2)
+//                {
 
-		
+//                    
+//                    HmiRfidNum = 0;						//清除当前地标
+//                    HmiProcessSerialNum = 0;			//流程序号清0
+//                    for(i = 0; i < HmiStepNum; i++)
+//                    {
+//                        HmiProcessSerialNum++;			//流程序号自加
+//                        switch(NowProcessInfor[i][1])
+//                        {
+//							case 0://单次执行
+//								//更新路径号
+//								HmiRouteNum = NowProcessInfor[i][0];
+//								//获取路径包含站点数
+//								GetRouteStationNum(HmiRouteNum);
+//								//获取当前路径信息
+//								GetRouteData(HmiRouteNum);
+
+//								HmiStationSerialNum = 0;
+//								//根据所选路径，执行相应动作
+//								for(j = 0; j < HmiStationNum; j++)
+//								{
+//									StationAction(j);
+//								}
+//								break;
+//							case 1://顺序执行
+//								for(k = NowProcessInfor[i][0]; k <= NowProcessInfor[i][2]; k++)
+//								{
+//									//更新路径号
+//									HmiRouteNum = k;
+//									//获取路径包含站点数
+//									GetRouteStationNum(HmiRouteNum);
+//									//获取当前路径信息
+//									GetRouteData(HmiRouteNum);
+
+//									HmiStationSerialNum = 0;
+//									//根据所选路径，执行相应动作
+//									for(j = 0; j < HmiStationNum; j++)
+//									{
+//										StationAction(j);
+//									}
+//								}
+//								break;
+//							case 2://倒序执行
+//								for(k = NowProcessInfor[i][0]; k >= NowProcessInfor[i][2]; k--)
+//								{
+//									//更新路径号
+//									HmiRouteNum = k;
+//									//获取路径包含站点数
+//									GetRouteStationNum(HmiRouteNum);
+//									//获取当前路径信息
+//									GetRouteData(HmiRouteNum);
+
+//									HmiStationSerialNum = 0;
+//									//根据所选路径，执行相应动作
+//									for(j = 0; j < HmiStationNum; j++)
+//									{
+//										StationAction(j);
+//									}
+//								}
+//								break;
+//							case 3://循环执行
+//								//更新路径号
+//								HmiRouteNum = NowProcessInfor[i][0];
+//								//获取路径包含站点数
+//								GetRouteStationNum(HmiRouteNum);
+//								//获取当前路径信息
+//								GetRouteData(HmiRouteNum);
+//								for(k = 0; k < NowProcessInfor[i][2]; k++)
+//								{
+//									HmiStationSerialNum = 0;
+//									//根据所选路径，执行相应动作
+//									for(j = 0; j < HmiStationNum; j++)
+//									{
+//										StationAction(j);
+//									}
+//								}
+//								break;
+//							default:
+//								break;
+//                        }
+//                    }
+//                    HmiTask = 0;
+//					
+//					
+//					
+
+
+//                    //HmiScreenSetGet = 16;//跳到用户首页
+
+////					if(lastscreenNum!=0)
+////					{
+//////						HmiScreenSetGet = lastscreenNum;
+////						HmiScreenSetGet = 16;//跳到用户首页
+////						lastscreenNum = 0;
+////					}
+//                }
+//            }
+//        }
+        OSTimeDlyHMSM(0,0,0,10,OS_OPT_TIME_HMSM_STRICT,&err); //延时nms
+    }	
 	
-		OSTimeDlyHMSM(0,0,0,10,OS_OPT_TIME_HMSM_STRICT,&err);
-	}
 }
 
 
 
 void WIFI_task(void *p_arg)			//暂未使用 
 {
+	
+	u8 temp_i=0;
+	
 	OS_ERR err;
 	p_arg = p_arg;
 	while(1)
@@ -1904,10 +2001,12 @@ void guntong_task(void *p_arg)
 //g_After_filter[i]
 void DCv_task(void *p_arg)											//电压采集	
 {
-	u8 temp_i=0;
-	u8 temp_j=0;
+	u16 temp_i=0;
+	u16 temp_j=0;
 	u16 temp_k=0;
-	u8 temp_p=0;
+	u16 temp_p=0;
+	
+	u16 temp_m=0;
 	
 
 	
@@ -1916,35 +2015,68 @@ void DCv_task(void *p_arg)											//电压采集
 	
 	GET_Battery();	//获取电池信息
 	
-	//	 Car_LED_Blue 	=1;
-	//    // Car_LED_Yellow
-	//	
-	//	Car_LED_Qian_Enable	 =0;
-	//	Car_LED_Hou_Enable		=0;	
-	//行车灯信号线接错
-	//前后机械避障有问题
+		 Car_LED_Blue 	=1;
+		 //Car_LED_Yellow =1;
+		
+		Car_LED_Qian_Enable	 =0;
+		Car_LED_Hou_Enable  =0;	
+	
 
 	
 
 	while(1)
 	{		
-		sprintf(g_warning,"电量少于百分之%d,请及时充电",Battery_Warining.Warining_Val_NoBattery);
-		
-	
-		
-		temp_k++;
-		if(temp_k > 1200)	//60s
+		if(!AGV_SYS.Key_RGB_LED)
 		{
-			GET_Battery();	//获取电池信息
+			temp_m++;
+			if(temp_m == 1)
+			{
+				Car_LED_Blue 	= 1 ;
+				
+			}
+			if(temp_m == 50)
+			{
+				Car_LED_Blue 	= 0 ;
+				
+			}
+			if(temp_m == 200)
+			{
+				
+				temp_m = 0;
+				
+			}			
+		}
+		else
+		{
+			Car_LED_Blue 	= 0 ;
+		}
+			
+		
+			
+
+				 
 
 			
-			temp_k = 0;				
-		}	
+		
+		
+		temp_k++;
 
-		if(Sys_battery < Battery_Warining.Warining_Val_NoBattery)		// <10AH,报警
+		if(temp_k > 100)		//1s
 		{
+			GET_Battery();	//获取电池信息
+		
+			temp_k = 0;				
+		}			
+		
+
+
+
+		if(Sys_battery != 0 && Sys_battery <= Battery_Warining.Warining_Val_NoBattery)		// <10AH,报警
+		{
+			sprintf(g_warning,"电量少于百分之%d,请及时充电",Battery_Warining.Warining_Val_NoBattery);		
+			
 			temp_p++;
-			if(temp_p > 100)				//5s
+			if(temp_p > 500)				//5s
 			{
 				if(!AGV_SYS.Key_yuyin)
 				{
@@ -1952,7 +2084,8 @@ void DCv_task(void *p_arg)											//电压采集
 				}
 				temp_p = 0;
 			}
-		}
+		 }
+		
 		
 
 		
@@ -1961,7 +2094,7 @@ void DCv_task(void *p_arg)											//电压采集
 		{
 			BEEP = 1;
 			temp_j++;
-			if(temp_j == 5)
+			if(temp_j == 25)
 			{
 				BEEP = 0;
 				g_flag_RFID_beep = 0;	
@@ -1975,15 +2108,15 @@ void DCv_task(void *p_arg)											//电压采集
 		{
 			BEEP = 1;
 			temp_j++;
-			if(temp_j == 2)
+			if(temp_j == 10)
 			{
 				BEEP = 0;
 			}
-			else if(temp_j == 3)
+			else if(temp_j == 20)
 			{
 				BEEP = 1;
 			}
-			else if(temp_j == 4)
+			else if(temp_j == 30)
 			{
 				BEEP = 0;
 				
@@ -1995,12 +2128,12 @@ void DCv_task(void *p_arg)											//电压采集
 		
 		//触摸屏通信指示灯和板子运行指示灯LED1		//500ms闪烁
 		temp_i++;
-		if(temp_i == 10)
+		if(temp_i == 50)
 		{
 			LED1 = 0;
 			P_RUN_LED = 1;
 		}
-		if(temp_i == 20)
+		if(temp_i == 100)
 		{
 			LED1 = 1;
 			P_RUN_LED = 0;
@@ -2008,7 +2141,7 @@ void DCv_task(void *p_arg)											//电压采集
 		}
 		
 		
-		OSTimeDlyHMSM(0,0,0,50,OS_OPT_TIME_HMSM_STRICT,&err);	
+		OSTimeDlyHMSM(0,0,0,10,OS_OPT_TIME_HMSM_STRICT,&err);	
 	}
 }
 

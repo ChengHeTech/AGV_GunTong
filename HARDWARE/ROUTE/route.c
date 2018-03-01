@@ -511,9 +511,9 @@ void UserConfigInit(void)
         SystemParameter[54] = 100;	//手动Ki
         SystemParameter[55] = 0;	//手动Kd
         SystemParameter[56] = 10;	//PID控制时间
-        SystemParameter[57] = 59;	//前轮左值
-        SystemParameter[58] = 102;	//前轮中值
-        SystemParameter[59] = 146;  	//前轮右值
+        SystemParameter[57] = 54;	//前轮左值
+        SystemParameter[58] = 114;	//前轮中值
+        SystemParameter[59] = 163;  	//前轮右值
 
         SystemParameter[60] = 49; 	//后轮左值
         SystemParameter[61] = 90; 	//后轮中值
@@ -684,11 +684,382 @@ void UserConfigInit(void)
 }
 
 
+////执行站点动作
+//void StationAction(u16 num)
+//{
+// 
+//    while(g_AGV_Car_mode  || !g_Start_flag.Start_Auto_PID )	 //非启动或者非自动
+//    {
+//        osdelay_ms(20);
+//    }
+
+//    HmiStationSerialNum++;
+//    //清空地标
+//    g_AGV_RFID_ID = 0;
+
+
+//	
+//	
+//    //目标地标显示
+//    HmiNextRfidNum = NowRouteInfor[num][5];								//4x90
+
+//    //等待目标地标
+//    while(g_AGV_RFID_ID==0 || g_AGV_RFID_ID != NowRouteInfor[num][5])	//扫到地标，是目标值的话则跳出while
+//    {
+//        osdelay_ms(10);
+//    }
+
+//    HmiRfidNum = g_AGV_RFID_ID;	//监测到地标后更新当前地标				//4x130
+
+
+//	
+//    //延时到站
+//    if(NowRouteInfor[num][1] > 0)
+//    {
+//        osdelay_s(NowRouteInfor[num][1] / 10);
+//        osdelay_ms((NowRouteInfor[num][1] % 10) * 100);
+//    }
+
+//    switch(NowRouteInfor[num][6])//停止、前进、后退左、后退右、左旋、右旋
+//    {
+//		case 0:
+//			break;	//保持上次信息
+//		case 1:		//停止
+//		case 2:		//前进
+//		case 3:		//后退左
+//		case 4:		//后退右
+//		case 6:		//左旋
+//		case 7:		//右旋
+//		{
+//			Ting_Zhi();			//到站停止			
+//		}
+//			break;
+//		case 5:
+//			break;	//通过
+//    }
+//    switch(NowRouteInfor[num][4])//速度档位判断
+//    {
+//		case 0:
+//			break;//保持上次信息
+//		case 1://低速
+//		{
+//			speek("1挡");
+//			
+//			
+///////////////////////////////////////////////到这里了			
+//			
+//			
+//			speed = HmiDiSu;
+//			osdelay_ms(SPEEKTIME);
+//		}
+//		break;
+//		case 2://中速
+//		{
+//			speek("2挡");
+//			speed = HmiZhongSu;
+//			osdelay_ms(SPEEKTIME);
+//		}
+//		break;
+//		case 3://高速
+//		{
+//			speek("3挡");
+//			speed = HmiGaoSu;
+//			osdelay_ms(SPEEKTIME);
+//		}
+//		break;
+//		case 4://对接低速
+//		{
+//			speek("对接低速");
+//			speed = 235;
+//			osdelay_ms(SPEEKTIME);
+//		}
+//		break;
+//    }
+//    switch(NowRouteInfor[num][0])//雷达避障开关判断
+//    {
+//		case 0:
+//			break;//保持上次信息
+//		case 1://开
+//		{
+//			LDBZ_flag = 0;
+//			speek("雷达打开");
+//			osdelay_ms(SPEEKTIME);
+//		}
+//		break;
+//		case 2://关
+//		{
+//			LDBZ_flag = 1;
+//			speek("雷达关闭");
+//			osdelay_ms(SPEEKTIME);
+//		}
+//		break;
+//    }
+//    switch(NowRouteInfor[num][19])//叉臂红外开关判断
+//    {
+//		case 0:
+//			break;//保持上次信息
+//		case 1://开
+//		{
+//			HBZ_flag = 0;
+//			speek("后开");
+//			osdelay_ms(SPEEKTIME);
+//		}
+//		break;
+//		case 2://关
+//		{
+//			HBZ_flag = 1;
+//			speek("后关");
+//			osdelay_ms(SPEEKTIME);
+//		}
+//		break;
+//    }
+
+//    switch(NowRouteInfor[num][2])//分叉判断
+//    {
+//		case 0:
+//			break;//保持上次信息
+//		case 1://左分叉
+//		{
+//			Zuo_Fen();
+//			osdelay_ms(SPEEKTIME);
+//		}
+//		break;
+//		case 2://右分叉
+//		{
+//			You_Fen();
+//			osdelay_ms(SPEEKTIME);
+//		}
+//		break;
+//    }
+
+
+//    switch(NowRouteInfor[num][3])//叉臂上下判断
+//    {
+//		case 0:
+//			break;//保持上次信息
+//		case 1://叉臂上升
+//		{
+//			osdelay_s(1);
+//			Cha_Sheng();
+//		}
+//		break;
+//		case 2://叉臂下降
+//		{
+//			osdelay_s(1);
+//			Cha_Jiang();
+//		}
+//		break;
+
+//    }
+
+////	//判断是否需要延时
+////	if(NowRouteInfor[num][8]!=0)
+////		osdelay_s(NowRouteInfor[num][8]);
+
+////    switch(NowRouteInfor[num][11])//与机械手设备通信
+////    {
+////    case 0:
+////        //没有请求进入
+////        PLC2_Data[32] = 0;
+////        break;//没有与设备交互
+////    case 1://和一号设备交互
+////    {
+////        Ting_Zhi();
+////        //向设备发送请求进入信号
+////        PLC2_Data[32] = NowRouteInfor[num][11];
+////        yuyin_flag = 22; //请求进入语音
+////        //等待准入信号
+////        while(PLC2_Data[33] != 1)
+////        {
+////            osdelay_ms(10);
+////        }
+////        Qi_Dong();
+////        yuyin_flag = 23; //允许进入语音
+////        //清除请求进入信号
+////        PLC2_Data[32] = 0;
+////        //清空准入信号
+////        PLC2_Data[33] = 0;
+////    }
+////    break;
+////    case 2://和二号设备交互
+////    {
+////        Ting_Zhi();
+////        //向设备发送请求进入信号
+////        PLC2_Data[32] = NowRouteInfor[num][11];
+////        yuyin_flag = 22; //请求进入语音
+////        //等待准入信号
+////        while(PLC2_Data[34] != 1)
+////        {
+////            osdelay_ms(10);
+////        }
+////        Qi_Dong();
+////        yuyin_flag = 23; //允许进入语音
+
+////        //清除请求进入信号
+////        PLC2_Data[32] = 0;
+////        //清空准入信号
+////        PLC2_Data[34] = 0;
+////    }
+////    break;
+////    case 3://和三号设备交互
+////    {
+////        Ting_Zhi();
+////        //向设备发送请求进入信号
+////        PLC2_Data[32] = NowRouteInfor[num][11];
+////        yuyin_flag = 22; //请求进入语音
+////        //等待准入信号
+////        while(PLC2_Data[35] != 1)
+////        {
+////            osdelay_ms(10);
+////        }
+////        Qi_Dong();
+////        yuyin_flag = 23; //允许进入语音
+
+////        //清除请求进入信号
+////        PLC2_Data[32] = 0;
+////        //清空准入信号
+////        PLC2_Data[35] = 0;
+////    }
+////    break;
+////    case 4://和四号设备交互
+////    {
+////        Ting_Zhi();
+////        //向设备发送请求进入信号
+////        PLC2_Data[32] = NowRouteInfor[num][11];
+////        yuyin_flag = 22; //请求进入语音
+////        //等待准入信号
+////        while(PLC2_Data[36] != 1)
+////        {
+////            osdelay_ms(10);
+////        }
+////        Qi_Dong();
+////        yuyin_flag = 23; //允许进入语音
+////        //清除请求进入信号
+////        PLC2_Data[32] = 0;
+////        //清空准入信号
+////        PLC2_Data[36] = 0;
+////    }
+////    break;
+////    }
+
+////    switch(NowRouteInfor[num][7])//进入设备工作区
+////    {
+////    case 0:
+////        PLC2_Data[38] = 0;
+////        PLC2_Data[39] = 0;
+////        PLC2_Data[40] = 0;
+////        PLC2_Data[41] = 0;
+////        break;
+////    case 1:
+////        PLC2_Data[38] = 1;
+////        break;
+////    case 2:
+////        PLC2_Data[39] = 1;
+////        break;
+////    case 3:
+////        PLC2_Data[40] = 1;
+////        break;
+////    case 4:
+////        PLC2_Data[41] = 1;
+////        break;
+////    }
+
+
+////    //AGV对电梯的使用情况
+////    switch(NowRouteInfor[num][10])
+////    {
+////    case 0:
+////        break;//电梯不使用
+////    case 1://AGV去一楼
+////    {
+////        AGV_QuYiLou();
+////    }
+////    break;
+////    case 2://AGV去三楼
+////    {
+////        AGV_QuSanLou();
+////    }
+////    break;
+////    }
+
+//    switch(NowRouteInfor[num][6])//动作执行再判断
+//	{
+//		case 0:
+//			break;//保持上次信息
+//		case 1:
+//			break;//停止
+//		case 2://前进
+//		{
+//			Qian_Jin();
+//			osdelay_ms(SPEEKTIME);
+//			Qi_Dong();
+//			osdelay_ms(SPEEKTIME);
+//		}
+//		break;
+//		case 3://后退左
+//		{
+//			Hou_Zuo();
+//			osdelay_ms(SPEEKTIME);
+//			Qi_Dong();
+//			osdelay_ms(SPEEKTIME);
+
+//		}
+//		break;
+//		case 4://后退右
+//		{
+//			Hou_You();
+//			osdelay_ms(SPEEKTIME);
+//			Qi_Dong();
+//			osdelay_ms(SPEEKTIME);
+//		}
+//		break;
+//		case 6://左旋
+//		{
+//			Xuan_Zhuang_Ci_Shu = NowRouteInfor[num][9];
+//			Xuan_Zhuang_Kuai_Su_time = NowRouteInfor[num][8];
+//			last_flag = FX_flag;
+//			osdelay_ms(SPEEKTIME);
+//			QD_flag = 1;
+//			//旋转后方向
+//			if(NowRouteInfor[num][18] == 0) //保持
+//			{
+//				zuoxuan(last_flag);
+//			}
+//			else
+//			{
+//				zuoxuan(NowRouteInfor[num][18]);
+//			}
+//		}
+//		break;
+//		case 7://右旋
+//		{
+//			Xuan_Zhuang_Ci_Shu = NowRouteInfor[num][9];
+//			Xuan_Zhuang_Kuai_Su_time = NowRouteInfor[num][8];
+//			last_flag = FX_flag;
+//			osdelay_ms(SPEEKTIME);
+//			QD_flag = 1;
+//			//旋转后方向
+//			if(NowRouteInfor[num][18] == 0) //保持
+//			{
+//				youxuan(last_flag);
+//			}
+//			else
+//			{
+//				youxuan(NowRouteInfor[num][18]);
+//			}
+//		}
+//		break;
+//    }
+//}
 
 
 
 
 
+
+//
+//
+//
 AGV_station agv_routr2station[StationNum];		//
 
 

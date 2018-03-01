@@ -8,7 +8,7 @@ u16 g_AGV_shoudong_dir;			//0:停止1:前进 2:后退 3:左转 4:右转 5左上 6右上 7左下 
 u8  g_AGV_Car_dir;				//全局唯一//0:前进    1:后退
 
 u8  g_AGV_Car_fencha_dir;		//全局唯一//0:左分叉  1:右分叉
-u8  g_AGV_Car_mode = 1;				//0:自动  1:手动
+u8  g_AGV_Car_mode = 1;			//0:自动  1:手动
 
 
 
@@ -265,8 +265,8 @@ void DwqXunZheng_QH(void)
 	MotoStop(4);	
 
 	g_XZ_Ok = 1;
-	//g_XZ_Beep = 1;
-	BEEP = 0;
+	g_XZ_Beep = 1;
+	//BEEP = 0;
 
 }
 

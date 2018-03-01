@@ -40,7 +40,7 @@ void DMA_Uart3_Init(void);  //锂电池电量监测232转TTL
 
 void Uart3_Start_DMA_Tx(u16 size);
 void GET_Battery(void);
-
+void GET_Battery_once(void);
 
 
 

@@ -131,9 +131,9 @@ extern u16 HmiProcessCopiedNumTemp;//被复制流程号临时变量
 
 
 
-//#define HmiScreenControlMode PLC_Data[95]   //操作模式
-//#define HmiScreenRunState    PLC_Data[96]   //运行状态  启动，停止
-//#define HmiCarLocation       PLC_Data[38]   //AGV当前位置
+#define HmiScreenControlMode PLC_Data[95]   //操作模式
+#define HmiScreenRunState    PLC_Data[96]   //运行状态  启动，停止
+#define HmiCarLocation       PLC_Data[38]   //AGV当前位置
 
 
 //系统参数
@@ -392,6 +392,12 @@ extern void	DeleteProcessData(void);
 //自动界面显示信息重载
 extern void HmiAutoReload(void);
 
+
+
+
+void UserConfigInit(void);
+//执行站点动作
+void StationAction(u16 num);
 
 
 #endif
