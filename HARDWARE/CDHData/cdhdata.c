@@ -496,10 +496,10 @@ int DWQ4_Inc;
 
 PIDspeed PID__SD_speed;
 u8 g_Trun_Val = 10;			//手动转向角度
-void PID_SD_Adjust(u16 j_speed,float kp,float ki,float kd)
+void PID_SD_Adjust(u16 j_speed,float kp,u16 ki,float kd)
 {
-	PID2.Kp = PID.Kp = kp;
-	PID2.Ki = PID.Ki = j_speed / 10;
+	PID2.Kp = PID.Kp = j_speed * kp /1000;
+	PID2.Ki = PID.Ki = j_speed * ki /1000;
 	PID2.Kd = PID.Kd = kd; 
 	
 	//0:停止1:前进 2:后退 3:左转 4:右转 5左上 6右上 7左下 8右下 9左旋 10右旋 	

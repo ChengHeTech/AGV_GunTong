@@ -169,6 +169,7 @@ void CAN1_RX0_IRQHandler(void)			//磁导航采集
 	int i=0;
 	u8 temp_dir=0;
 	u16 temp_speed=0;
+	int temp_jd=0;
 	
     CAN_Receive(CAN1, CAN_FIFO0, &RxMessage);
 
@@ -243,7 +244,17 @@ void CAN1_RX0_IRQHandler(void)			//磁导航采集
 			//temp_dir = 1;
 			//temp_speed = -g_SD_buff[2];
 			
-			g_AGV_yaokong.jiaodu = (4 * g_SD_buff[2])/10;
+			g_AGV_yaokong.jiaodu = (5 * g_SD_buff[2])/10 - 10;
+			
+			temp_jd = (5 * g_SD_buff[2])/10 + 10;
+			if(temp_jd >= 0)
+			{
+				g_AGV_yaokong.jiaodu  = 0;
+			}
+			else
+			{
+				g_AGV_yaokong.jiaodu = temp_jd;
+			}			
 			
 		}
 		else if(g_SD_buff[2] == 0)		//停止
@@ -256,7 +267,17 @@ void CAN1_RX0_IRQHandler(void)			//磁导航采集
 		{
 			//temp_dir = 2;
 			//temp_speed = g_SD_buff[2];
-			g_AGV_yaokong.jiaodu = (4 * g_SD_buff[2])/10;
+			
+			temp_jd = (5 * g_SD_buff[2])/10 - 10;
+			if(temp_jd <= 0)
+			{
+				g_AGV_yaokong.jiaodu  = 0;
+			}
+			else
+			{
+				g_AGV_yaokong.jiaodu = temp_jd;
+			}
+			
 		}
 		
 		g_AGV_yaokong.SD_ir = temp_dir;	

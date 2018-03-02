@@ -35,6 +35,12 @@ int PosPIDCalc(int NextTarget)
 	//PID.Error = NextTarget;
 	
 	PID.SumError +=PID.Error;							//SumError比例
+
+
+	if(PID.Ki*PID.SumError>1000)
+	{
+		PID.SumError = 1000/PID.Ki;
+	}
 	
 	Error1 = PID.Error - PID.LastError;					//[E(n)-E(n-1)]微分
 
@@ -53,6 +59,11 @@ int PosPIDCalc2(int NextTarget)
 	//PID.Error = NextTarget;
 	
 	PID2.SumError +=PID2.Error;							//SumError比例
+
+	if(PID2.Ki*PID2.SumError>1000)
+	{
+		PID2.SumError = 1000/PID2.Ki;
+	}
 	
 	Error1 = PID2.Error - PID2.LastError;					//[E(n)-E(n-1)]微分
 
