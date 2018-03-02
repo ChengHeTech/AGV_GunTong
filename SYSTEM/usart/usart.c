@@ -153,7 +153,7 @@ int fputc(int ch, FILE *f)
 //}
 
 
-void USART_OUT(USART_TypeDef* USARTx, char *Data,uint8_t len)
+void USART_OUT(USART_TypeDef* USARTx, char *Data,u16 len)
 { 
 	USART_GetFlagStatus(USARTx, USART_FLAG_TC);
 	while(len--)

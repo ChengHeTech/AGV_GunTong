@@ -47,9 +47,9 @@ void USART3_Configuration(u32 bound)
 	
 	USART_ITConfig(USART3, USART_IT_IDLE, ENABLE);
 	USART_Cmd(USART3, ENABLE);  //使能串口1 
-	USART_ClearFlag(USART1, USART_FLAG_TC);
+	USART_ClearFlag(USART3, USART_FLAG_TC);
 	USART_DMACmd(USART3, USART_DMAReq_Rx, ENABLE);
-	USART_DMACmd(USART3, USART_DMAReq_Tx, ENABLE);
+//	USART_DMACmd(USART3, USART_DMAReq_Tx, ENABLE);
 	
    
 }
@@ -101,6 +101,8 @@ void DMA_Uart3_Init(void)
     /* DMA clock enable */
     RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_DMA1, ENABLE);
 
+	
+
 	/*--- LUMMOD_UART_Tx_DMA_Channel DMA Config ---*/
  
 //    DMA_Cmd(DMA1_Stream3, DISABLE);
@@ -126,6 +128,9 @@ void DMA_Uart3_Init(void)
 	
 /*--- LUMMOD_UART_Rx_DMA_Channel DMA Config ---*/
  
+ 
+ 
+ 
     DMA_Cmd(DMA1_Stream1, DISABLE);
     DMA_DeInit(DMA1_Stream1);
 	DMA_InitStructure.DMA_Channel = DMA_Channel_4;
@@ -145,12 +150,19 @@ void DMA_Uart3_Init(void)
 	DMA_InitStructure.DMA_PeripheralBurst = DMA_PeripheralBurst_Single;//外设突发单次传输
     DMA_Init(DMA1_Stream1, &DMA_InitStructure);
     DMA_Cmd(DMA1_Stream1, ENABLE); 
-	
-	NVIC_InitStructure.NVIC_IRQChannel = DMA1_Stream3_IRQn;  
+
+
+
+
+	NVIC_InitStructure.NVIC_IRQChannel = DMA1_Stream1_IRQn;  
     NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 2;
-    NVIC_InitStructure.NVIC_IRQChannelSubPriority = 5;
+    NVIC_InitStructure.NVIC_IRQChannelSubPriority = 3;
     NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
     NVIC_Init(&NVIC_InitStructure);
+	
+	
+	
+	
 	
 }
 //void Uart3_Start_DMA_Tx(u16 size)

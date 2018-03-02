@@ -9,7 +9,7 @@ void USART4_Configuration(u32 bound);
 void USART6_Configuration(u32 bound);
 void USART2_Configuration(u32 bound);
 int fputc(int ch, FILE *f);
-void USART_OUT(USART_TypeDef* USARTx, char *Data,uint8_t len);
+void USART_OUT(USART_TypeDef* USARTx, char *Data,u16 len);
 #endif
 
 

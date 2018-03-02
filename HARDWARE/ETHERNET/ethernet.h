@@ -22,8 +22,9 @@ void Uart2_Start_DMA_Tx(u16 size);
 
 
 
-
-
+void WIFI_Send(char *str,u16 len);
+void WIFI_delay(void);
+void WIFI_init(u8 ID);
 
 
 

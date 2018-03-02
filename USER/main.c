@@ -1,4 +1,5 @@
 #include "my_include.h"
+#include "dbus.h"
 
 //将这些优先级分配给了UCOSIII的5个系统内部任务
 //优先级0：中断服务服务管理任务 OS_IntQTask()
@@ -144,9 +145,27 @@ CPU_STK DCv_TASK_STK[DCv_STK_SIZE];
 //任务函数
 void DCv_task(void *p_arg);							//电压采集
 
+//任务优先级
+#define HEARTBEAT_TASK_PRIO		15
+//任务堆栈大小	
+#define HEARTBEAT_STK_SIZE 		512
+//任务控制块
+OS_TCB HEARTBEATTaskTCB;
+//任务堆栈	
+CPU_STK HEARTBEAT_TASK_STK[HEARTBEAT_STK_SIZE];
+//任务函数
+void heartbeat_task(void *p_arg);							//心跳
 
-
-
+//任务优先级
+#define OPENBOX_TASK_PRIO		16
+//任务堆栈大小	
+#define OPENBOX_STK_SIZE 		1024
+//任务控制块
+OS_TCB OPENBOXTaskTCB;
+//任务堆栈	
+CPU_STK OPENBOX_TASK_STK[OPENBOX_STK_SIZE];
+//任务函数
+void openbox_task(void *p_arg);							//解包
 
 int main(void)
 {
@@ -164,13 +183,13 @@ int main(void)
 	guntong_init();
 	
 	DMA_adc1_Init();    				//电位器
-	DMA_Uart2_Init();					//以太网转串口
+	DMA_Uart2_Init();					//以太网转串口	//@@屏蔽掉这句会导致电池通信接收失败@@//
 	DMA_Uart3_Init();					//锂电池通信
 	DMA_Uart4_Init();					//触摸屏	
 	
 	ADC1_Configuration();				//电位器采集
 	USART1_Configuration(9600); 		//串口1 PA9PA10 现在换成喇叭线
-	USART2_Configuration(9600);			//以太网转串口的接口
+	USART2_Configuration(115200);			//以太网转串口的接口
 	USART3_Configuration(9600);			//现在是锂电池电量检测的口 -- 232转TTL串口
 	uart4_init(9600);					//触摸屏485
 	//USART6_Configuration(115200);		
@@ -186,7 +205,9 @@ int main(void)
 	
 	UserConfigInit();				//用户参数初始化	
 
+	WIFI_init(AGV_SYS.ID); 
 	
+
 	
 
 	OSInit(&err);		//初始化UCOSIII
@@ -398,6 +419,38 @@ void start_task(void *p_arg)
                  (OS_OPT      )OS_OPT_TASK_STK_CHK|OS_OPT_TASK_STK_CLR, 
                  (OS_ERR 	* )&err);					 
 				 
+	//电压采集		
+	OSTaskCreate((OS_TCB 	* )&HEARTBEATTaskTCB,					//15 heartbeat
+				 (CPU_CHAR	* )"heartbeat task", 		
+                 (OS_TASK_PTR )heartbeat_task, 			
+                 (void		* )0,					
+                 (OS_PRIO	  )HEARTBEAT_TASK_PRIO,     	
+                 (CPU_STK   * )&HEARTBEAT_TASK_STK[0],	
+                 (CPU_STK_SIZE)HEARTBEAT_STK_SIZE/10,	
+                 (CPU_STK_SIZE)HEARTBEAT_STK_SIZE,		
+                 (OS_MSG_QTY  )0,					
+                 (OS_TICK	  )0,					
+                 (void   	* )0,				
+                 (OS_OPT      )OS_OPT_TASK_STK_CHK|OS_OPT_TASK_STK_CLR, 
+                 (OS_ERR 	* )&err);		
+
+
+	//电压采集		
+	OSTaskCreate((OS_TCB 	* )&OPENBOXTaskTCB,					//16
+				 (CPU_CHAR	* )"openbox task", 		
+                 (OS_TASK_PTR )openbox_task, 			
+                 (void		* )0,					
+                 (OS_PRIO	  )OPENBOX_TASK_PRIO,     	
+                 (CPU_STK   * )&OPENBOX_TASK_STK[0],	
+                 (CPU_STK_SIZE)OPENBOX_STK_SIZE/10,	
+                 (CPU_STK_SIZE)OPENBOX_STK_SIZE,		
+                 (OS_MSG_QTY  )0,					
+                 (OS_TICK	  )0,					
+                 (void   	* )0,				
+                 (OS_OPT      )OS_OPT_TASK_STK_CHK|OS_OPT_TASK_STK_CLR, 
+                 (OS_ERR 	* )&err);	
+
+
 				 
 				 
 				 
@@ -411,7 +464,7 @@ void start_task(void *p_arg)
 
 void Transducer_task(void *p_arg)  	//开关量输入采集及行车灯状态
 {
-	u8 temp_l=0;
+	//u8 temp_l=0;
 	OS_ERR err;
 	p_arg = p_arg;	
 	
@@ -464,14 +517,14 @@ void Transducer_task(void *p_arg)  	//开关量输入采集及行车灯状态
 void float_task(void *p_arg)		//红外和机械避障
 {
 	OS_ERR err;
-	u8 temp_i=0;
-	u8 temp_j=0;
-	u8 temp_k=0;
-	u8 temp_flag[]={0,0,0,0};
+	//u8 temp_i=0;
+	//u8 temp_j=0;
+	//u8 temp_k=0;
+	//u8 temp_flag[]={0,0,0,0};
 	
 
-	u8 temp_Tiaojian[] = {0,0,0,0};					//条件
-	u8 *temp_Jieguo[]  = {&g_Start_flag.Start_IR,&g_Start_flag.Start_jixie,&g_Start_flag.Start_IR,&g_Start_flag.Start_jixie};		//结果
+	//u8 temp_Tiaojian[] = {0,0,0,0};					//条件
+	//u8 *temp_Jieguo[]  = {&g_Start_flag.Start_IR,&g_Start_flag.Start_jixie,&g_Start_flag.Start_IR,&g_Start_flag.Start_jixie};		//结果
 	
 	g_Start_flag.Start_IR=1;
 	g_Start_flag.Start_jixie=1;
@@ -584,7 +637,7 @@ void float_task(void *p_arg)		//红外和机械避障
 
 void motec_task(void *p_arg)			//初始化驱动器
 {
-	OS_ERR err;
+	//OS_ERR err;
 	p_arg = p_arg;
 
 	while(1)
@@ -1803,6 +1856,7 @@ void Screen_task(void *p_arg)    	//触摸屏界面操作
 				}
 
 				W25QXX_Write_16(SystemParameter+30, 30, 9);	//将当前屏幕参数写入到flash中
+				Dbus.Init(AGV_SYS.ID);
 			}
 			break; 
 			//用户界面程序段
@@ -1853,9 +1907,9 @@ void Screen_task(void *p_arg)    	//触摸屏界面操作
 
 void Control_task(void *p_arg)		// 执行路径或执行流程 -- 应用层控制任务
 {
-	u16 i=0;
-	u16 j=0; 
-	u16 k=0;
+//	u16 i=0;
+//	u16 j=0; 
+//	u16 k=0;
 	
 	OS_ERR err;
 	p_arg = p_arg;
@@ -1992,7 +2046,7 @@ void Control_task(void *p_arg)		// 执行路径或执行流程 -- 应用层控制任务
 void WIFI_task(void *p_arg)			//暂未使用 
 {
 	
-	u8 temp_i=0;
+	//u8 temp_i=0;
 	
 	OS_ERR err;
 	p_arg = p_arg;
@@ -2132,7 +2186,7 @@ void DCv_task(void *p_arg)											//电压采集
 			{
 				if(!AGV_SYS.Key_yuyin)
 				{
-					speek((u8*)g_warning);
+					speek(g_warning);
 				}
 				temp_p = 0;
 			}
@@ -2198,9 +2252,39 @@ void DCv_task(void *p_arg)											//电压采集
 }
 
 
+void heartbeat_task(void *p_arg)
+{
+	OS_ERR err;
+	p_arg = p_arg;
 
+	while(1)
+	{
+        
+		delay_ms(1000);		
+	}
+}
 
-
+void openbox_task(void *p_arg)
+{
+	u8 temp_i=0;
+	OS_ERR err;
+	p_arg = p_arg;
+	
+	//Heart(1);
+	while(1)
+	{
+		temp_i++;
+        //收到结束符触发解包函 
+        Dbus.OpenBox();
+		if(temp_i > 100)
+		{
+			Dbus.Heart(0);
+			temp_i = 0;
+		}
+		
+		delay_ms(10);
+	}
+}
 
 
 

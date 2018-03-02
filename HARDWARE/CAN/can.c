@@ -9,11 +9,12 @@ u8 g_cinavi4_RXbuff[16];	//后磁导航
 
 u16 g_AGV_RFID_ID;//地标  //
 u8  g_flag_RFID_beep;
-u8 g_watie_Motec_init = 6;				//等待
-u8 g_watie_Motec_zijian ;			//等待500ms
 
+u8 g_watie_Motec_init = 110;				//等待
+u8 g_watie_Motec_zijian_enable ;			//等待500ms
+u8 g_watie_Motec_zijian_shangdian ;			//等待500ms
 
-
+yaokong g_yaokong_jiaodu;
 
 
 //CAN初始化
@@ -159,19 +160,22 @@ u8 CAN2_Mode_Init(u8 tsjw,u8 tbs2,u8 tbs1,u16 brp,u8 mode) //PB5  PB6
  
 
 u8 g_Ct_chugui[4];
-u16 g_SD_buff[16];
+int g_SD_buff[16];
 #if CAN1_RX0_INT_ENABLE	//使能RX0中断   
 //中断服务函数			    
 void CAN1_RX0_IRQHandler(void)			//磁导航采集
 {
   	CanRxMsg RxMessage;
 	int i=0;
+	u8 temp_dir=0;
+	u16 temp_speed=0;
+	
     CAN_Receive(CAN1, CAN_FIFO0, &RxMessage);
 
 	if(RxMessage.StdId == 16)			//地标传感器ID: 16
 	{
 		for(i=0;i<RxMessage.DLC;i++)
-		g_Get_RFID_buff[i]=RxMessage.Data[i]; 
+		g_Get_RFID_buff[i] = RxMessage.Data[i]; 
 		g_AGV_RFID_ID = g_Get_RFID_buff[1]<<8|g_Get_RFID_buff[0];
 		g_flag_RFID_beep = 1;
 		
@@ -181,27 +185,86 @@ void CAN1_RX0_IRQHandler(void)			//磁导航采集
 	//1:   //速度 0-100
 	//2:   //按键
 
+	//X 	--		0	(-100-0-100)
+	//Y 	-- 		1
+	//Z 	-- 		2
+	//按键 	-- 		3
 	if(RxMessage.StdId == 22)			//手持摇杆遥控器  //10ms一次
 	{
 		for(i=0;i<RxMessage.DLC;i++)
-		g_SD_buff[i]=RxMessage.Data[i]; 
-		
-//		if(g_SD_buff[0]!=3 && g_SD_buff[0]!=4)		//屏蔽左右转
-//		{
-			g_AGV_shoudong_dir 	 = g_SD_buff[0];
-			
-			if(g_SD_buff[0]==9 || g_SD_buff[0]==10)	//屏蔽左右旋的速度
+		{
+			if(RxMessage.Data[i] > 100)
 			{
-				AGV_SYS.Car_SD_Speed = 0;
+				g_SD_buff[i] = RxMessage.Data[i] - 255; 
 			}
 			else
 			{
-				AGV_SYS.Car_SD_Speed = g_SD_buff[1] * 30 * AGV_SYS.SD_Speed_bili/10;		//0-100*30//0-3000		
-			}
+				g_SD_buff[i] = RxMessage.Data[i] ; 
+			}		
+		}
+
 		
+		
+//		if(g_SD_buff[0] < 0)				//左
+//		{		
+//			temp_dir = 3;
+//			temp_speed = -g_SD_buff[0];
+//		}
+//		else if(g_SD_buff[0] == 0)		//停止
+//		{
+//			temp_dir = 0;
+//			temp_speed = 0;
+//		}
+//		else if(g_SD_buff[0] > 0)		//右
+//		{
+//			temp_dir = 4;
+//			temp_speed = g_SD_buff[0];
+//		}		
+		
+	
+		if(g_SD_buff[1] > 0)				//前进
+		{		
+			temp_dir = 1;
+			temp_speed = g_SD_buff[1];
+		}
+		else if(g_SD_buff[1] == 0)		//停止
+		{
+			temp_dir = 0;
+			temp_speed = 0;
+		}
+		else if(g_SD_buff[1] < 0)		//后退
+		{
+			temp_dir = 2;
+			temp_speed = -g_SD_buff[1];
+		}	
+
+//		if(g_SD_buff[2] < 0)				//左旋
+//		{		
+//			//temp_dir = 1;
+//			//temp_speed = -g_SD_buff[2];
+//			
+//			g_yaokong_jiaodu.jiaodu = 1.4 * 
+//			
+//		}
+//		else if(g_SD_buff[2] == 0)		//停止
+//		{
+////			temp_dir = 0;
+////			temp_speed = 0;
+//		}
+//		else if(g_SD_buff[2] > 0)		//右旋
+//		{
+//			//temp_dir = 2;
+//			//temp_speed = g_SD_buff[2];
 //		}
 		
-//		memset(g_SD_buff,0,sizeof(g_SD_buff));	//清零数组
+		g_AGV_shoudong_dir = temp_dir;	
+		AGV_SYS.Car_SD_Speed = temp_speed * 30 * AGV_SYS.SD_Speed_bili/10;		//0-100*30//0-3000				
+		
+		
+			
+
+		
+
 		
 	}  	
 
@@ -254,8 +317,8 @@ void CAN1_RX0_IRQHandler(void)			//磁导航采集
 #endif
 
 
-u8 g_succese_Motec_init;
-u16 g_CANOPEN_RX_buff[5][8];
+u8 g_succese_Motec_init[5];
+u16 g_CANOPEN_RX_buff[5][9];
 CanRxMsg CANOPEN_RxMessage;
 
 
@@ -272,9 +335,15 @@ void CAN2_RX0_IRQHandler(void)  //电机驱动
 		for(i=0;i<RxMessage.DLC;i++)
 		g_CANOPEN_RX_buff[1][i]=RxMessage.Data[i]; 
 		
-		g_succese_Motec_init = 1;
+		if(g_CANOPEN_RX_buff[1][0] == 0x05)
+		{
+			//g_succese_Motec_init[1] = 1;
+			g_watie_Motec_zijian_enable = g_watie_Motec_init;
+		}
 
-		g_watie_Motec_zijian = g_watie_Motec_init;
+			g_watie_Motec_zijian_shangdian = g_watie_Motec_init;
+		
+
 		
 	}  	
 	if(RxMessage.StdId == 0x702)			//
@@ -282,18 +351,32 @@ void CAN2_RX0_IRQHandler(void)  //电机驱动
 		for(i=0;i<RxMessage.DLC;i++)
 		g_CANOPEN_RX_buff[2][i]=RxMessage.Data[i]; 
 		
+		if(g_CANOPEN_RX_buff[2][0] == 0x05)
+		{
+			//g_succese_Motec_init[2] = 1;
+			g_watie_Motec_zijian_enable = g_watie_Motec_init;
+		}
 
-		g_succese_Motec_init = 1;
-		g_watie_Motec_zijian = g_watie_Motec_init;
+			g_watie_Motec_zijian_shangdian = g_watie_Motec_init;
+		
+
 	}  
 	if(RxMessage.StdId == 0x703)			//
 	{
 		for(i=0;i<RxMessage.DLC;i++)
 		g_CANOPEN_RX_buff[3][i]=RxMessage.Data[i]; 
 		
+		if(g_CANOPEN_RX_buff[3][0] == 0x05)
+		{
+			//g_succese_Motec_init[3] = 1;
+			g_watie_Motec_zijian_enable = g_watie_Motec_init;
+		}
 
-		g_succese_Motec_init = 1;
-		g_watie_Motec_zijian = g_watie_Motec_init;
+			g_watie_Motec_zijian_shangdian = g_watie_Motec_init;
+		
+		
+		
+		
 	}  
 	if(RxMessage.StdId == 0x704)			//
 	{
@@ -301,8 +384,18 @@ void CAN2_RX0_IRQHandler(void)  //电机驱动
 		g_CANOPEN_RX_buff[4][i]=RxMessage.Data[i]; 
 		
 
-		g_succese_Motec_init = 1;
-		g_watie_Motec_zijian = g_watie_Motec_init;
+		if(g_CANOPEN_RX_buff[4][0] == 0x05)
+		{
+			//g_succese_Motec_init[4] = 1;
+			g_watie_Motec_zijian_enable = g_watie_Motec_init;
+		}
+//		else if(g_CANOPEN_RX_buff[4][0] == 0x7F)
+//		{
+			g_watie_Motec_zijian_shangdian = g_watie_Motec_init;
+//		}
+		
+		
+		
 	}  	
 	
 }
@@ -471,12 +564,12 @@ void AGV_CanOpen_Send2(void)
 void Motec_init(void)		
 {
 
-	delay_rtos(0,0,2,0);
+	delay_rtos(0,0,1,100);
 	AGV_CanOpen_Send();
 	AGV_CanOpen_Send1();
 	AGV_CanOpen_Send2();
 		
-	delay_rtos(0,0,0,50);
+	delay_rtos(0,0,1,100);
 	//g_flag_Motec_init = 1;		//初始化完成标志	
 
 }
@@ -509,60 +602,63 @@ u8 g_Init_OK_Motec;
 
 void check_Motec_init(void)
 {
+	u8 temp_i = 0;
+	
+	g_Init_OK_Motec = 0;
+	
 	Motec_init();					//初始化驱动
 	
 	
 	PrintCom(YIN_LIANG2,9);		//音量2 
-	osdelay_ms(10);
+	
 	while(1)
 	{
-		if(g_watie_Motec_zijian)
+		
+		
+		if(g_watie_Motec_zijian_enable)			//驱动器使能
 		{
 			PrintCom(YIN_LIANG2,9);		//音量2 
 			osdelay_ms(10);
-			speek("驱动上电");
+			speek("驱动使能");
 			delay_rtos(0,0,1,0);
 			PrintCom(YIN_LIANG8,9);		//音量8 
 			osdelay_ms(10);
-			
-			
 			g_Init_OK_Motec = 1;
 			
-			DwqXunZheng_QH();				//电位器寻正
 		}
 		else
 		{
 			PrintCom(YIN_LIANG2,9);		//音量2 
 			osdelay_ms(10);
-			speek("驱动掉电");
+			speek("驱动断电");
 			delay_rtos(0,0,1,0);
 			PrintCom(YIN_LIANG8,9);		//音量8 
 			osdelay_ms(10);
+			g_Init_OK_Motec = 0;
+			g_watie_Motec_zijian_shangdian = 0;
 		}
-		while(g_watie_Motec_zijian)		//驱动器上电
+		while(g_watie_Motec_zijian_enable)		//驱动器使能的循环
 		{
-			g_watie_Motec_zijian--;
-			delay_rtos(0,0,1,0);
-		
+			g_watie_Motec_zijian_enable--;
+			delay_rtos(0,0,0,10);	
 		}
-		g_watie_Motec_zijian = 0;
+		g_watie_Motec_zijian_enable = 0;		//驱动自减为0
 		
 		PrintCom(YIN_LIANG2,9);		//音量2 
 		osdelay_ms(10);
-		speek("驱动掉电");
+		speek("驱动断电");
 		delay_rtos(0,0,1,0);
 		PrintCom(YIN_LIANG8,9);		//音量8 
 		osdelay_ms(10);		
-		
-		
 		g_Init_OK_Motec = 0;
+		g_watie_Motec_zijian_shangdian = 0;
 		
 		//驱动器掉电		
-		while(!g_watie_Motec_zijian)		//等待驱动器上电
+		while(!g_watie_Motec_zijian_shangdian)		//等待驱动器上电 -- 0x7F
 		{
-			
-			delay_rtos(0,0,0,20);
 		
+			delay_rtos(0,0,0,10);
+
 		}	
 		Motec_init();	
 		

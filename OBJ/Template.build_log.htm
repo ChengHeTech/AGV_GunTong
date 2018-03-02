@@ -1,0 +1,195 @@
+<html>
+<body>
+<pre>
+<h1>礦ision Build Log</h1>
+<h2>Tool Versions:</h2>
+IDE-Version: μVision V5.25.0.0
+Copyright (C) 2017 ARM Ltd and ARM Germany GmbH. All rights reserved.
+License Information: zz Microsoft, Microsoft, LIC=8MZ45-GSS0J-PFTIX-H6Y1Z-97MGD-H5RK3
+ 
+Tool Versions:
+Toolchain:       MDK-ARM Professional  Version: 5.25.0.0
+Toolchain Path:  C:\Keil_v5\ARM\ARMCC\Bin
+C Compiler:      Armcc.exe V5.06 update 6 (build 750)
+Assembler:       Armasm.exe V5.06 update 6 (build 750)
+Linker/Locator:  ArmLink.exe V5.06 update 6 (build 750)
+Library Manager: ArmAr.exe V5.06 update 6 (build 750)
+Hex Converter:   FromElf.exe V5.06 update 6 (build 750)
+CPU DLL:         SARMCM3.DLL V5.25.0.0
+Dialog DLL:      DCM.DLL V1.17.0.0
+Target DLL:      Segger\JL2CM3.dll V2.99.20.0
+Dialog DLL:      TCM.DLL V1.34.0.0
+ 
+<h2>Project:</h2>
+D:\Work\Github\AGV_GunTong\USER\Template.uvprojx
+Project File Date:  03/01/2018
+
+<h2>Output:</h2>
+*** Using Compiler 'V5.06 update 6 (build 750)', folder: 'C:\Keil_v5\ARM\ARMCC\Bin'
+Build target 'Template'
+compiling stm32f4xx_it.c...
+compiling main.c...
+main.c(414): warning:  #177-D: variable "temp_l"  was declared but never referenced
+  	u8 temp_l=0;
+main.c(467): warning:  #177-D: variable "temp_i"  was declared but never referenced
+  	u8 temp_i=0;
+main.c(468): warning:  #177-D: variable "temp_j"  was declared but never referenced
+  	u8 temp_j=0;
+main.c(469): warning:  #177-D: variable "temp_k"  was declared but never referenced
+  	u8 temp_k=0;
+main.c(470): warning:  #177-D: variable "temp_flag"  was declared but never referenced
+  	u8 temp_flag[]={0,0,0,0};
+main.c(473): warning:  #177-D: variable "temp_Tiaojian"  was declared but never referenced
+  	u8 temp_Tiaojian[] = {0,0,0,0};					//条件
+main.c(474): warning:  #177-D: variable "temp_Jieguo"  was declared but never referenced
+  	u8 *temp_Jieguo[]  = {&g_Start_flag.Start_IR,&g_Start_flag.Start_jixie,&g_Start_flag.Start_IR,&g_Start_flag.Start_jixie};		//结果
+main.c(587): warning:  #177-D: variable "err"  was declared but never referenced
+  	OS_ERR err;
+main.c(1995): warning:  #177-D: variable "temp_i"  was declared but never referenced
+  	u8 temp_i=0;
+main.c(2135): warning:  #167-D: argument of type "u8 *" is incompatible with parameter of type "char *"
+  					speek((u8*)g_warning);
+main.c: 10 warnings, 0 errors
+compiling dbus.c...
+compiling myNVIC.c...
+compiling beep.c...
+compiling led.c...
+compiling rgb.c...
+compiling button.c...
+compiling pwm.c...
+compiling motor.c...
+compiling guntong.c...
+compiling w25qxx.c...
+compiling ethernet.c...
+compiling dianweiqi.c...
+compiling battery.c...
+compiling speaker.c...
+compiling can.c...
+compiling cdhdata.c...
+compiling pid.c...
+compiling route.c...
+..\HARDWARE\ROUTE\route.c(734): warning:  #223-D: function "Ting_Zhi" declared implicitly
+  			Ting_Zhi();			//到站停止			
+..\HARDWARE\ROUTE\route.c(781): error:  #29: expected an expression
+  			 = 0;
+..\HARDWARE\ROUTE\route.c(788): error:  #20: identifier "LDBZ_flag" is undefined
+  			LDBZ_flag = 1;
+..\HARDWARE\ROUTE\route.c(800): error:  #20: identifier "HBZ_flag" is undefined
+  			HBZ_flag = 0;
+..\HARDWARE\ROUTE\route.c(807): error:  #20: identifier "HBZ_flag" is undefined
+  			HBZ_flag = 1;
+..\HARDWARE\ROUTE\route.c(820): warning:  #223-D: function "Zuo_Fen" declared implicitly
+  			Zuo_Fen();
+..\HARDWARE\ROUTE\route.c(826): warning:  #223-D: function "You_Fen" declared implicitly
+  			You_Fen();
+..\HARDWARE\ROUTE\route.c(840): warning:  #223-D: function "Cha_Sheng" declared implicitly
+  			Cha_Sheng();
+..\HARDWARE\ROUTE\route.c(846): warning:  #223-D: function "Cha_Jiang" declared implicitly
+  			Cha_Jiang();
+..\HARDWARE\ROUTE\route.c(860): error:  #20: identifier "PLC2_Data" is undefined
+          PLC2_Data[32] = 0;
+..\HARDWARE\ROUTE\route.c(864): warning:  #223-D: function "Ting_Zhi" declared implicitly
+          Ting_Zhi();
+..\HARDWARE\ROUTE\route.c(867): error:  #20: identifier "yuyin_flag" is undefined
+          yuyin_flag = 22; //请求进入语音
+..\HARDWARE\ROUTE\route.c(873): warning:  #223-D: function "Qi_Dong" declared implicitly
+          Qi_Dong();
+..\HARDWARE\ROUTE\route.c(883): warning:  #223-D: function "Ting_Zhi" declared implicitly
+          Ting_Zhi();
+..\HARDWARE\ROUTE\route.c(886): error:  #20: identifier "yuyin_flag" is undefined
+          yuyin_flag = 22; //请求进入语音
+..\HARDWARE\ROUTE\route.c(892): warning:  #223-D: function "Qi_Dong" declared implicitly
+          Qi_Dong();
+..\HARDWARE\ROUTE\route.c(903): warning:  #223-D: function "Ting_Zhi" declared implicitly
+          Ting_Zhi();
+..\HARDWARE\ROUTE\route.c(906): error:  #20: identifier "yuyin_flag" is undefined
+          yuyin_flag = 22; //请求进入语音
+..\HARDWARE\ROUTE\route.c(912): warning:  #223-D: function "Qi_Dong" declared implicitly
+          Qi_Dong();
+..\HARDWARE\ROUTE\route.c(923): warning:  #223-D: function "Ting_Zhi" declared implicitly
+          Ting_Zhi();
+..\HARDWARE\ROUTE\route.c(926): error:  #20: identifier "yuyin_flag" is undefined
+          yuyin_flag = 22; //请求进入语音
+..\HARDWARE\ROUTE\route.c(932): warning:  #223-D: function "Qi_Dong" declared implicitly
+          Qi_Dong();
+..\HARDWARE\ROUTE\route.c(945): error:  #20: identifier "PLC2_Data" is undefined
+          PLC2_Data[38] = 0;
+..\HARDWARE\ROUTE\route.c(972): warning:  #223-D: function "AGV_QuYiLou" declared implicitly
+          AGV_QuYiLou();
+..\HARDWARE\ROUTE\route.c(977): warning:  #223-D: function "AGV_QuSanLou" declared implicitly
+          AGV_QuSanLou();
+..\HARDWARE\ROUTE\route.c(990): warning:  #223-D: function "Qian_Jin" declared implicitly
+  			Qian_Jin();
+..\HARDWARE\ROUTE\route.c(991): error:  #20: identifier "SPEEKTIME" is undefined
+  			osdelay_ms(SPEEKTIME);
+..\HARDWARE\ROUTE\route.c(992): warning:  #223-D: function "Qi_Dong" declared implicitly
+  			Qi_Dong();
+..\HARDWARE\ROUTE\route.c(998): warning:  #223-D: function "Hou_Zuo" declared implicitly
+  			Hou_Zuo();
+..\HARDWARE\ROUTE\route.c(999): error:  #20: identifier "SPEEKTIME" is undefined
+  			osdelay_ms(SPEEKTIME);
+..\HARDWARE\ROUTE\route.c(1000): warning:  #223-D: function "Qi_Dong" declared implicitly
+  			Qi_Dong();
+..\HARDWARE\ROUTE\route.c(1007): warning:  #223-D: function "Hou_You" declared implicitly
+  			Hou_You();
+..\HARDWARE\ROUTE\route.c(1008): error:  #20: identifier "SPEEKTIME" is undefined
+  			osdelay_ms(SPEEKTIME);
+..\HARDWARE\ROUTE\route.c(1009): warning:  #223-D: function "Qi_Dong" declared implicitly
+  			Qi_Dong();
+..\HARDWARE\ROUTE\route.c(1015): error:  #20: identifier "Xuan_Zhuang_Ci_Shu" is undefined
+  			Xuan_Zhuang_Ci_Shu = NowRouteInfor[num][9];
+..\HARDWARE\ROUTE\route.c(1016): error:  #20: identifier "Xuan_Zhuang_Kuai_Su_time" is undefined
+  			Xuan_Zhuang_Kuai_Su_time = NowRouteInfor[num][8];
+..\HARDWARE\ROUTE\route.c(1017): error:  #20: identifier "last_flag" is undefined
+  			last_flag = FX_flag;
+..\HARDWARE\ROUTE\route.c(1017): error:  #20: identifier "FX_flag" is undefined
+  			last_flag = FX_flag;
+..\HARDWARE\ROUTE\route.c(1018): error:  #20: identifier "SPEEKTIME" is undefined
+  			osdelay_ms(SPEEKTIME);
+..\HARDWARE\ROUTE\route.c(1019): error:  #20: identifier "QD_flag" is undefined
+  			QD_flag = 1;
+..\HARDWARE\ROUTE\route.c(1023): warning:  #223-D: function "zuoxuan" declared implicitly
+  				zuoxuan(last_flag);
+..\HARDWARE\ROUTE\route.c(1027): warning:  #223-D: function "zuoxuan" declared implicitly
+  				zuoxuan(NowRouteInfor[num][18]);
+..\HARDWARE\ROUTE\route.c(1033): error:  #20: identifier "Xuan_Zhuang_Ci_Shu" is undefined
+  			Xuan_Zhuang_Ci_Shu = NowRouteInfor[num][9];
+..\HARDWARE\ROUTE\route.c(1034): error:  #20: identifier "Xuan_Zhuang_Kuai_Su_time" is undefined
+  			Xuan_Zhuang_Kuai_Su_time = NowRouteInfor[num][8];
+..\HARDWARE\ROUTE\route.c(1035): error:  #20: identifier "last_flag" is undefined
+  			last_flag = FX_flag;
+..\HARDWARE\ROUTE\route.c(1035): error:  #20: identifier "FX_flag" is undefined
+  			last_flag = FX_flag;
+..\HARDWARE\ROUTE\route.c(1036): error:  #20: identifier "SPEEKTIME" is undefined
+  			osdelay_ms(SPEEKTIME);
+..\HARDWARE\ROUTE\route.c(1037): error:  #20: identifier "QD_flag" is undefined
+  			QD_flag = 1;
+..\HARDWARE\ROUTE\route.c(1041): warning:  #223-D: function "youxuan" declared implicitly
+  				youxuan(last_flag);
+..\HARDWARE\ROUTE\route.c(1045): warning:  #223-D: function "youxuan" declared implicitly
+  				youxuan(NowRouteInfor[num][18]);
+..\HARDWARE\ROUTE\route.c: 25 warnings, 25 errors
+compiling Modbus_slave.c...
+compiling dma.c...
+compiling uart4.c...
+compiling agv.c...
+compiling control.c...
+"..\OBJ\Template.axf" - 25 Error(s), 35 Warning(s).
+
+<h2>Software Packages used:</h2>
+
+Package Vendor: Keil
+                http://www.keil.com/pack/Keil.STM32F4xx_DFP.1.0.8.pack
+                Keil.STM32F4xx_DFP.1.0.8
+                STMicroelectronics STM32F4 Series Device Support, Drivers and Examples
+
+<h2>Collection of Component include folders:</h2>
+  .\RTE\_Template
+  C:\Keil_v5\ARM\PACK\Keil\STM32F4xx_DFP\1.0.8\Device\Include
+
+<h2>Collection of Component Files used:</h2>
+Target not created.
+Build Time Elapsed:  00:00:16
+</pre>
+</body>
+</html>

@@ -3,6 +3,23 @@
 #include "my_include.h"	    
 
 	
+
+
+typedef struct
+{
+	u16 jiaodu;
+
+	
+
+
+
+}yaokong;
+	
+	
+	
+	
+	
+	
 //CAN1接收RX0中断使能
 #define CAN1_RX0_INT_ENABLE	1		//0,不使能;1,使能.		
 //CAN2接收RX0中断使能
@@ -14,7 +31,7 @@ extern u8 g_cinavi5_RXbuff[16];  //前磁导航
 extern u8 g_cinavi6_RXbuff[16];	//后磁导航
 
 
-extern u16 g_SD_buff[16];
+extern int g_SD_buff[16];
 
 extern u16 g_AGV_RFID_ID;//地标
 
