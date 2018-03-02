@@ -3,11 +3,13 @@
 #include "my_include.h"	    
 
 	
-
+//0:停止1:前进 2:后退 3:左转 4:右转 5左上 6右上 7左下 8右下 9左旋 10右旋 
 
 typedef struct
 {
-	u16 jiaodu;
+	int jiaodu;
+	u8  SD_ir;
+	u16 SD_Speed;
 
 	
 
@@ -47,7 +49,7 @@ extern u8 g_watie_Motec_init ;				//等待500ms
 
 extern u8 g_Init_OK_Motec;
 
-
+extern yaokong g_AGV_yaokong;
 
 
 

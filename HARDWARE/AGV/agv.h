@@ -7,7 +7,7 @@
 typedef struct
 {
 	u8 SD_Speed_bili;
-	u16 Car_SD_Speed;
+	//u16 Car_SD_Speed;
 	
 	u16 ID;
 	

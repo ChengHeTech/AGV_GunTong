@@ -499,48 +499,37 @@ u8 g_Trun_Val = 10;			//手动转向角度
 void PID_SD_Adjust(u16 j_speed,float kp,float ki,float kd)
 {
 	PID2.Kp = PID.Kp = kp;
-	PID2.Ki = PID.Ki = ki;
+	PID2.Ki = PID.Ki = j_speed / 10;
 	PID2.Kd = PID.Kd = kd; 
 	
 	//0:停止1:前进 2:后退 3:左转 4:右转 5左上 6右上 7左下 8右下 9左旋 10右旋 	
 	
 	HmiTaskState = 5;								//正在运行 -- 手动
 
-	switch(g_AGV_shoudong_dir)	//设定目标值
+	switch(g_AGV_yaokong.SD_ir)	//设定目标值
 	{
-		case 1:					//前进
-		case 2:					//后退
-			PID.SetTarget  = g_DWQ.qianlun_zhong_val;		//PID目标值--前_驱动轮电位器中值 0-4096
-			PID2.SetTarget = g_DWQ.houlun_zhong_val;		//PID目标值--后_驱动轮电位器中值 		
-			break;
 		
-		case 5:					//左上
-			PID.SetTarget  = g_DWQ.qianlun_zhong_val - g_Trun_Val;		//PID目标值--前_驱动轮电位器中值 
+		case 1:					//前进
+			PID.SetTarget  = g_DWQ.qianlun_zhong_val + g_AGV_yaokong.jiaodu;		//PID目标值--前_驱动轮电位器中值 
 			PID2.SetTarget = g_DWQ.houlun_zhong_val;		//PID目标值--后_驱动轮电位器中值 						
 			break;	
-		case 6:					//右上
-			PID.SetTarget  = g_DWQ.qianlun_zhong_val + g_Trun_Val;		//PID目标值--前_驱动轮电位器中值 
-			PID2.SetTarget = g_DWQ.houlun_zhong_val;		//PID目标值--后_驱动轮电位器中值 						
-			break;
 		
-		case 8:					//右下
-			PID2.SetTarget = g_DWQ.houlun_zhong_val - g_Trun_Val;		//PID目标值--后_驱动轮电位器中值 	
+		case 2:					//后退
+			PID2.SetTarget = g_DWQ.houlun_zhong_val + g_AGV_yaokong.jiaodu;		//PID目标值--后_驱动轮电位器中值 	
 			PID.SetTarget  = g_DWQ.qianlun_zhong_val;		//PID目标值--前_驱动轮电位器中值 
 				break;	
-		case 7:					//左下
-			PID2.SetTarget = g_DWQ.houlun_zhong_val + g_Trun_Val;		//PID目标值--后_驱动轮电位器中值 	
-			PID.SetTarget  = g_DWQ.qianlun_zhong_val;		//PID目标值--前_驱动轮电位器中值 
-			break;			
-		
+				
 		default:
 			break;
 	}	
 	
-	switch(g_AGV_shoudong_dir)	//实际控制电机的速度			
+	
+	
+
+	switch(g_AGV_yaokong.SD_ir)	//实际控制电机的速度			
 	{
 		case 1:					//前进
-		case 5:					//前进左拐	
-		case 6:					//前进右拐
+
 			DWQ1_Inc = IncPIDCalc(g_After_filter[1]);		//1 位置式PID//输入差值	 0-4096				
 			PID__SD_speed.moter1_speed = j_speed+DWQ1_Inc;
 			PID__SD_speed.moter2_speed = j_speed-DWQ1_Inc;
@@ -551,8 +540,7 @@ void PID_SD_Adjust(u16 j_speed,float kp,float ki,float kd)
 			break;
 		
 		case 2:					//后退
-		case 8:					//后退左拐	
-		case 7:					//后退右拐
+
 			DWQ2_Inc = IncPIDCalc2(g_After_filter[2]);		//1 位置式PID//输入差值	 0-4096				
 			PID__SD_speed.moter4_speed = j_speed+DWQ2_Inc;
 			PID__SD_speed.moter3_speed = j_speed-DWQ2_Inc;
@@ -581,7 +569,7 @@ void PID_SD_Adjust(u16 j_speed,float kp,float ki,float kd)
 	if(PID__SD_speed.moter4_speed<0)	PID__SD_speed.moter4_speed = 0;
 
 
-	switch(g_AGV_shoudong_dir)	//实际控制电机的速度			
+	switch(g_AGV_yaokong.SD_ir)	//实际控制电机的速度			
 	{
 		case 1:					//前进
 		case 5:					//前进左拐	

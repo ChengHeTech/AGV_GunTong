@@ -14,7 +14,7 @@ u8 g_watie_Motec_init = 110;				//µÈ´ý
 u8 g_watie_Motec_zijian_enable ;			//µÈ´ý500ms
 u8 g_watie_Motec_zijian_shangdian ;			//µÈ´ý500ms
 
-yaokong g_yaokong_jiaodu;
+yaokong g_AGV_yaokong;
 
 
 //CAN³õÊ¼»¯
@@ -238,30 +238,31 @@ void CAN1_RX0_IRQHandler(void)			//´Åµ¼º½²É¼¯
 			temp_speed = -g_SD_buff[1];
 		}	
 
-//		if(g_SD_buff[2] < 0)				//×óÐý
-//		{		
-//			//temp_dir = 1;
-//			//temp_speed = -g_SD_buff[2];
-//			
-//			g_yaokong_jiaodu.jiaodu = 1.4 * 
-//			
-//		}
-//		else if(g_SD_buff[2] == 0)		//Í£Ö¹
-//		{
-////			temp_dir = 0;
-////			temp_speed = 0;
-//		}
-//		else if(g_SD_buff[2] > 0)		//ÓÒÐý
-//		{
-//			//temp_dir = 2;
-//			//temp_speed = g_SD_buff[2];
-//		}
-		
-		g_AGV_shoudong_dir = temp_dir;	
-		AGV_SYS.Car_SD_Speed = temp_speed * 30 * AGV_SYS.SD_Speed_bili/10;		//0-100*30//0-3000				
-		
-		
+		if(g_SD_buff[2] < 0)				//×óÐý
+		{		
+			//temp_dir = 1;
+			//temp_speed = -g_SD_buff[2];
 			
+			g_AGV_yaokong.jiaodu = (4 * g_SD_buff[2])/10;
+			
+		}
+		else if(g_SD_buff[2] == 0)		//Í£Ö¹
+		{
+			//temp_dir = 0;
+			//temp_speed = 0;
+			g_AGV_yaokong.jiaodu = 0;
+		}
+		else if(g_SD_buff[2] > 0)		//ÓÒÐý
+		{
+			//temp_dir = 2;
+			//temp_speed = g_SD_buff[2];
+			g_AGV_yaokong.jiaodu = (4 * g_SD_buff[2])/10;
+		}
+		
+		g_AGV_yaokong.SD_ir = temp_dir;	
+		g_AGV_yaokong.SD_Speed = temp_speed * 30 * AGV_SYS.SD_Speed_bili/10;		//0-100*30//0-3000				
+		
+
 
 		
 

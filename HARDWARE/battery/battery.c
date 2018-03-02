@@ -58,6 +58,9 @@ battery g_battery;
 
 void USART3_IRQHandler(void)             
 {
+	u16 temp_b=0;
+	u8  temp_V=0;
+	
 	u8 temp_data3=0;
 #if SYSTEM_SUPPORT_OS 	
 	OSIntEnter();    
@@ -73,11 +76,28 @@ void USART3_IRQHandler(void)
 		if((g_battery_RXbuff[0] == 0xDD)&&(g_battery_RXbuff[1] == 0xA5)&&(g_battery_RXbuff[2] == 0x00)) 
 		{
 			g_battery.dianya 		= 	g_battery_RXbuff[4]<<8  | g_battery_RXbuff[7];
-			g_battery.Realy_mah 	= 	g_battery_RXbuff[8]<<8  | g_battery_RXbuff[9];
+			temp_b					= 	g_battery_RXbuff[8]<<8  | g_battery_RXbuff[9];		
 			g_battery.Std_mah		= 	g_battery_RXbuff[10]<<8 | g_battery_RXbuff[11];
 			g_battery.XunHuan_time 	= 	g_battery_RXbuff[12]<<8 | g_battery_RXbuff[13];
 
-			Sys_battery = g_battery.Realy_mah / (g_battery.Std_mah/100);			//20 00 0	3500
+			if(temp_b < 3500)
+			{
+				g_battery.Realy_mah = temp_b + 1;
+			}	
+			else
+			{
+				g_battery.Realy_mah = 3500;
+			}
+			temp_V = g_battery.Realy_mah / (g_battery.Std_mah/100);			//20 00 0	3500
+			if(temp_V < 100)
+			{
+				Sys_battery  = temp_V + 1;
+			}
+			else
+			{
+				Sys_battery  = 100;
+			}
+			
 			
 		}		
 		

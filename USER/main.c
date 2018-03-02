@@ -547,11 +547,11 @@ void float_task(void *p_arg)		//红外和机械避障
 		else							//手动模式
 		{
 			//0:停止1:前进 2:后退 3:左转 4:右转 5左上 6右上 7左下 8右下 9左旋 10右旋 
-			if(g_AGV_shoudong_dir==1||g_AGV_shoudong_dir==5||g_AGV_shoudong_dir==6)			//前进
+			if(g_AGV_yaokong.SD_ir==1||g_AGV_yaokong.SD_ir==5||g_AGV_yaokong.SD_ir==6)			//前进
 			{
 				temp_j = 0;		
 			}
-			else if(g_AGV_shoudong_dir==2||g_AGV_shoudong_dir==7||g_AGV_shoudong_dir==8)	//后退				//1:后退
+			else if(g_AGV_yaokong.SD_ir==2||g_AGV_yaokong.SD_ir==7||g_AGV_yaokong.SD_ir==8)	//后退				//1:后退
 			{
 				temp_j = 2;
 			}		
@@ -721,13 +721,13 @@ void Manual_task(void *p_arg)  		//手动任务
 		
 			if(g_AGV_Car_mode) //1://手动模式
 			{	
-				if(AGV_SYS.Car_SD_Speed > 50 && g_AGV_shoudong_dir!=0) 	
+				if(g_AGV_yaokong.SD_Speed > 50 && g_AGV_yaokong.SD_ir!=0) 	
 				{
 					if(g_Start_flag.Start_Manu_PID)			//1:启动
 					{
 						g_XZ_Ok = 0;
 						
-						PID_SD_Adjust(AGV_SYS.Car_SD_Speed,AGV_SYS.SD_Kp,AGV_SYS.SD_Ki,AGV_SYS.SD_Kd);	//延时在里面
+						PID_SD_Adjust(g_AGV_yaokong.SD_Speed,AGV_SYS.SD_Kp,AGV_SYS.SD_Ki,AGV_SYS.SD_Kd);	//延时在里面
 					}		
 					else									//0:停止
 					{
@@ -2070,11 +2070,11 @@ void guntong_task(void *p_arg)
 	{
 		if(g_AGV_Car_mode) //1://手动模式
 		{
-			if(g_AGV_shoudong_dir == 9)			//摇杆左旋--滚筒左转
+			if(g_AGV_yaokong.SD_ir == 9)			//摇杆左旋--滚筒左转
 			{
 				guntong_start = 1;
 			}
-			else if(g_AGV_shoudong_dir == 10)	//摇杆右旋--滚筒右转
+			else if(g_AGV_yaokong.SD_ir == 10)	//摇杆右旋--滚筒右转
 			{
 				guntong_fanzhuan = 1;
 			}
