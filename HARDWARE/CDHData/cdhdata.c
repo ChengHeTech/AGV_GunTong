@@ -329,8 +329,8 @@ PIDspeed PID_speed;
 void PID_AUTO_QianLun(u16 j_speed,float kp,float ki,float kd)
 {
 	u8 num = 0;
-	PID.Kp = kp;
-	PID.Ki = ki;
+	PID.Kp = j_speed * kp /1000;
+	PID.Ki = j_speed * ki /1000;
 	PID.Kd = kd; 
 	
 	PID.SetTarget = 0;		//PID目标值
@@ -414,9 +414,10 @@ void PID_AUTO_QianLun(u16 j_speed,float kp,float ki,float kd)
 void PID_AUTO_HouLun(u16 j_speed2,float kp2,float ki2,float kd2)	//后轮的PID调节
 {
 	u8 num2 = 0;
-	PID2.Kp = kp2;
-	PID2.Ki = ki2;
+	PID2.Kp = j_speed2 * kp2 /1000;
+	PID2.Ki = j_speed2 * ki2 /1000;
 	PID2.Kd = kd2; 
+
 	
 	PID2.SetTarget = 0;		//PID2目标值
 	
@@ -511,7 +512,7 @@ u8 g_Trun_Val = 10;			//手动转向角度
 void PID_SD_Adjust(u16 j_speed,float kp,u16 ki,float kd)
 {
 	PID2.Kp = PID.Kp = j_speed * kp /1000;
-	PID2.Ki = PID.Ki = j_speed * ki /1000;
+	PID2.Ki = PID.Ki = j_speed * ki /1000; 
 	PID2.Kd = PID.Kd = kd; 
 	
 	//0:停止1:前进 2:后退 3:左转 4:右转 5左上 6右上 7左下 8右下 9左旋 10右旋 	

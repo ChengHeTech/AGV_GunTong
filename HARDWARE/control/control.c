@@ -106,23 +106,69 @@ void You_Fen(void)
 
 }
 
+u16 g_RuanQi_Speed = 100;
+//速度PWM赋值判断函数
+//speed_min1：如果设定速度小于改量则直接将速度值赋值给PWM
+//speed_zhi： 欲赋速度值
+void Ruan_Qi(u16 speed_min1,u16 * speed_zhi)
+{	
+	u16 temp_speed=0;
+	u16 temp_cha=0;
+	u16 temp_cha2=0;
+	u8 temp_i=0;
+	
+	temp_speed = *speed_zhi;
+	
+	temp_cha = abs(*speed_zhi-speed_min1);
+	
+	if(temp_cha < 500)
+	{
+		if(*speed_zhi > speed_min1)
+		{
+			temp_cha2 = temp_cha/10;
+			for(temp_i=0;temp_i<10;temp_i++)
+			{
+				if(temp_cha2 > temp_speed)
+				{
+					temp_cha2 = temp_speed;
+				}	
+				*speed_zhi = temp_cha2;
+				temp_cha2 += temp_cha2;
+				delay_rtos(0,0,0,100);			//1秒加速				
+			}		
+		}
+		else
+		{
+			*speed_zhi = temp_speed;
+		}
 
-////速度PWM赋值判断函数
-////speed_min1：如果设定速度小于改量则直接将速度值赋值给PWM
-////speed_zhi： 欲赋速度值
-//void Ruan_Qi(u16 speed_min1,u16 speed_zhi)
-//{	
-//		if(speed_zhi>speed_min1)		 //软启动
-//		{
-//			PWM_val(TIM4,2,speed_min1);
-//			osdelay_ms(20);
-//			PWM_val(TIM4,2,speed_zhi);
-//		}
-//		else												 //速度低时直接赋值
-//		{	
-//			PWM_val(TIM4,2,speed_zhi);//当按启动时将屏幕设定速度再赋值给车。	
-//		}
-//}
+	}
+	else
+	{
+		
+		if(*speed_zhi > speed_min1)
+		{
+			temp_cha2 = temp_cha/20;
+			for(temp_i=0;temp_i<20;temp_i++)
+			{
+				if(temp_cha2 > temp_speed)
+				{
+					temp_cha2 = temp_speed;
+				}	
+				*speed_zhi = temp_cha2;
+				temp_cha2 += temp_cha2;
+				delay_rtos(0,0,0,100);			//2秒加速
+			}		
+		}
+		else
+		{
+			*speed_zhi = temp_speed;
+		}	
+	
+	}
+	
+
+}
 
 
 

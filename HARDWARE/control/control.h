@@ -11,7 +11,7 @@ extern u8 FC_flag;					//0:中分叉 1:左分叉 2：右分叉
 extern u8 yuyin_flag;
 extern u8 road_mode;
 extern u16 speed;
-
+extern u16 g_RuanQi_Speed ;
 
 //上层的行走方向控制函数
 void Zi_Dong(void);
@@ -29,6 +29,6 @@ void You_Fen(void);
 void Cha_Sheng(void);
 void Cha_Jiang(void);
 
-void Ruan_Qi(u16 speed_min,u16 speed_zhi);
+void Ruan_Qi(u16 speed_min,u16 *speed_zhi);
 
 #endif

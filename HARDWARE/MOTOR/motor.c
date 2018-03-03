@@ -323,7 +323,7 @@ void CtXunZheng_qian(u8 cidaohang_id,u16 xunzheng_speed0)
 	
 	if(cidaohang_id == 1)		//前1磁导航
 	{
-		while(g_CDH8_qian_1.Num<4)		//少于4个亮点		
+		while(g_CDH8_qian_1.Num<2)		//少于4个亮点		
 		{									
 					
 			temp_dianweiqi_1 = g_After_filter[1];	//前驱动电位器
@@ -381,7 +381,7 @@ void CtXunZheng_qian(u8 cidaohang_id,u16 xunzheng_speed0)
 	}
 	else if(cidaohang_id == 2)		//前2磁导航
 	{
-		while(g_CDH8_qian_2.Num<4)		//检测到2个亮点		
+		while(g_CDH8_qian_2.Num<2)		//检测到2个亮点		
 		{									
 					
 			temp_dianweiqi_1 = g_After_filter[1];	//前驱动电位器
@@ -609,7 +609,15 @@ void check_CtXunZ_OK(u16 XunZ_speed)
 	}
 	//g_CtXunZheng.XunZ_OK_AGV = temp_Val;
 	g_Start_flag.Start_Auto_PID = temp_Val;	//1:找到磁条 0:未找到
+	if(temp_Val)
+	{
+		Ruan_Qi(g_RuanQi_Speed,&AGV_SYS.Car_Auto_Speed);
+	}
 
+		
+	
+	
+	
 
 }
 
@@ -733,9 +741,9 @@ void AGV_Stop2Start(void)
 			
 
 			if(g_glag_bizhang == 1)
-			{
-				g_glag_bizhang = 0;	
-				check_CtXunZ_OK(AGV_SYS.XZ_CiTiao_Speed);		//g_Start_flag.Start_Auto_PID在这里置一;								
+			{				
+				check_CtXunZ_OK(AGV_SYS.XZ_CiTiao_Speed);		//g_Start_flag.Start_Auto_PID在这里置一;	
+				g_glag_bizhang = 0;					
 			}
 			
 //			if(g_CtXunZheng.XunZ_OK_AGV == 1)		//改成检测寻轨动作而不是成功

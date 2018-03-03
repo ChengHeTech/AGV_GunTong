@@ -120,6 +120,7 @@
         <SetRegEntry>
           <Number>0</Number>
           <Key>DLGUARM</Key>
+          <Name>革0</Name>
         </SetRegEntry>
         <SetRegEntry>
           <Number>0</Number>
@@ -178,6 +179,11 @@
           <count>5</count>
           <WinNumber>1</WinNumber>
           <ItemText>g_AGV_Car_mode,0x0A</ItemText>
+        </Ww>
+        <Ww>
+          <count>6</count>
+          <WinNumber>1</WinNumber>
+          <ItemText>AGV_SYS.Car_Auto_Speed,0x0A</ItemText>
         </Ww>
       </WatchWindow1>
       <WatchWindow2>
