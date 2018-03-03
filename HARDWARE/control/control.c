@@ -2,114 +2,136 @@
 
 
 //上层的行走方向控制函数开始
-void Zi_Dong(void)
+void Zi_Dong(void)					//切到自动程序
 {
-//	Mode_flag = 1;			//切到自动程序
-//	yuyin_flag=1;
-//	HmiScreenControlMode = Mode_flag;
-//	
-//	osdelay_ms(g_Speaker_delay);
+	g_AGV_Sta.Car_Auto2Manu_mode = 0;
+	//HmiScreenControlMode = g_AGV_Sta.Car_Auto2Manu_mode;		////操作模式--暂时没显示到触摸屏上
+	
+	speek("自动");
+	delay_rtos(0,0,0,g_Speaker_delay);
+	
 }
 void Shou_Dong(void)
 {
-//	QD_flag=0;					//切到手动前先发个停止
-//	Mode_flag = 0;			//切到手动程序
-//	yuyin_flag=2;
-//	HmiScreenControlMode = Mode_flag;
-//	HmiScreenRunState = 0;
-//	
-//	osdelay_ms(g_Speaker_delay);
+	AGV_System_Stop();
+
+	g_AGV_Sta.Car_Auto2Manu_mode = 1;
+
+	//HmiScreenControlMode = g_AGV_Sta.Car_Auto2Manu_mode;
+	//	HmiScreenRunState = 0;		//运行状态指示
+	
+	speek("手动");	
+	delay_rtos(0,0,0,g_Speaker_delay);
 }
 void Qian_Jin(void)
 {
-//	FX_flag=1;					//由屏上的前进按钮确定控制叉车的行驶方向标志FX_flag
-//	yuyin_flag=3;
-//	HmiScreenRunState = 1;
-//	
-//	osdelay_ms(g_Speaker_delay);
+	g_AGV_Sta.Car_dir = 0;
+
+	//	HmiScreenRunState = 1;
+	
+	speek("前进");
+	delay_rtos(0,0,0,g_Speaker_delay);
 }
-void Hou_Zuo(void)
+void Hou_Tui(void)
 {
-//	FX_flag=2;					//由屏上的后退左按钮确定控制叉车的行驶方向标志FX_flag
-//	yuyin_flag=4;
-//	HmiScreenRunState = 1;
-//	
-//	osdelay_ms(g_Speaker_delay);
+	g_AGV_Sta.Car_dir = 1;
+				
+	
+	//	HmiScreenRunState = 1;
+	speek("后退");
+	delay_rtos(0,0,0,g_Speaker_delay);
 }
-void Hou_You(void)
-{
-//	FX_flag=3;					//由屏上的后退右按钮确定控制叉车的行驶方向标志FX_flag
-//	yuyin_flag=5;
-//	HmiScreenRunState = 1;
-//	
-//	osdelay_ms(g_Speaker_delay);
-}
+
 void Ting_Zhi(void)
 {
-//	QD_flag=0;					//启动标志清0
-//	yuyin_flag=6;
-//	
-//	HmiScreenRunState = 0;
-//	
-//	osdelay_ms(g_Speaker_delay);
-	
 	AGV_System_Stop();
-	HmiTaskState = 4;				//停止
+	HmiTaskState = 4;					//停止
+	
+	//	HmiScreenRunState = 0;
+	speek("停止");
+	delay_rtos(0,0,0,g_Speaker_delay);
 	
 }
 void Qi_Dong(void)
 {
-	//	//如果没有任务，弹出提示界面
-	//	if(HmiTask==0)
-	//	{
-	//		HmiScreenSetGet = QiDongTiShiJieMian;
-	//	}
-	//	else
-	//	{
-		//QD_flag=1;				//启动标志置1
-		//PID.SumError=0;   //当再次启动是将PID的I项清零
-	//		PID1.SumError=0;
-		//yuyin_flag=7;
-		//Ruan_Qi(SPEED_min,0);	//设定速度PWM赋值给车
-	//		PWM_val(TIM4,2,speed);//当按启动时将屏幕设定速度再赋值给车。
-		//任务状态为正在运行
+
 		
-		AGV_System_Start();
-		
-		HmiTaskState = 5;				//正在运行
-		//HmiScreenRunState = 1;
+	AGV_System_Start();
 	
-		osdelay_ms(g_Speaker_delay);
-	//}
+	HmiTaskState = 5;				//正在运行
+	//HmiScreenRunState = 1;
+	speek("启动");
+	delay_rtos(0,0,0,g_Speaker_delay);
 }
 void Zuo_Fen(void)
 {
-//	FC_flag=1;				//分叉标志
-//	yuyin_flag=8;
+	g_AGV_Sta.Car_fencha_dir = 0;			//分叉标志
 
-//	
-//	osdelay_ms(g_Speaker_delay);
+	speek("左分叉");
+	delay_rtos(0,0,0,g_Speaker_delay);
 }
-void Zhong_Fen(void)
-{
-//	FC_flag=0;				//分叉标志
-//	yuyin_flag=9;
-//	
-//	osdelay_ms(g_Speaker_delay);
-}
+
 void You_Fen(void)
 {
-//	FC_flag=2;				//分叉标志
-//	yuyin_flag=10;
-//	
-//	osdelay_ms(g_Speaker_delay);
+	g_AGV_Sta.Car_fencha_dir = 1;			//分叉标志
+	speek("右分叉");
+	delay_rtos(0,0,0,g_Speaker_delay);
 
 }
 
+void GunTong_R(u8 enable)
+{
+	
+	if(enable)
+	{
+		guntong_start = 1;						//滚筒左转
+		speek("滚筒右转");
+		delay_rtos(0,0,0,g_Speaker_delay);
+		
+		
+	}
+	else
+	{
+		guntong_start = 0;						//滚筒左转
+	}
+	
+	//delay_rtos(0,0,0,g_Speaker_delay);
+}
+
+void GunTong_L(u8 enable)
+{
+	if(enable)
+	{
+		guntong_start = 1;	
+		guntong_fanzhuan = 1;					//滚筒右转
+		speek("滚筒左转");
+		delay_rtos(0,0,0,g_Speaker_delay);
+	}
+	else
+	{
+		guntong_start = 0;	
+		guntong_fanzhuan = 0;					//滚筒右转
+	}
+	
+	
+	//delay_rtos(0,0,0,g_Speaker_delay);
+}
+
+void SD_Trun_L(void)
+{
+											//车左转向
+	delay_rtos(0,0,0,g_Speaker_delay);
+}
+
+void SD_Trun_R(void)
+{
+											//车右转向
+	
+	delay_rtos(0,0,0,g_Speaker_delay);
+}
+
+
 u16 g_RuanQi_Speed = 100;
-//速度PWM赋值判断函数
-//speed_min1：如果设定速度小于改量则直接将速度值赋值给PWM
-//speed_zhi： 欲赋速度值
 void Ruan_Qi(u16 speed_min1,u16 * speed_zhi)
 {	
 	u16 temp_speed=0;
@@ -134,7 +156,7 @@ void Ruan_Qi(u16 speed_min1,u16 * speed_zhi)
 				}	
 				*speed_zhi = temp_cha2;
 				temp_cha2 += temp_cha2;
-				delay_rtos(0,0,0,100);			//1秒加速				
+				delay_rtos(0,0,0,125);			//1.25秒加速				
 			}		
 		}
 		else
@@ -157,7 +179,7 @@ void Ruan_Qi(u16 speed_min1,u16 * speed_zhi)
 				}	
 				*speed_zhi = temp_cha2;
 				temp_cha2 += temp_cha2;
-				delay_rtos(0,0,0,100);			//2秒加速
+				delay_rtos(0,0,0,125);			//2.5秒加速
 			}		
 		}
 		else

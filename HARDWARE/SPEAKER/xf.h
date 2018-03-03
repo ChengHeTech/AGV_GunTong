@@ -2,6 +2,7 @@
 #define __XF_H
 #include "sys.h"
 #include "usart.h"	
+#include "my_include.h"	
 
 extern u8 XFS_StopCom[];//停止合成
 extern u8 XFS_SuspendCom[];//暂停合成

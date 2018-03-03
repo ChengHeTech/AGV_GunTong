@@ -688,7 +688,7 @@ void UserConfigInit(void)
 	//void StationAction(u16 num)
 	//{
 	// 
-	//    while(g_AGV_Car_mode  || !g_Start_flag.Start_Auto_PID )	 //非启动或者非自动
+	//    while(g_AGV_Sta.Car_Auto2Manu_mode  || !g_Start_flag.Start_Auto_PID )	 //非启动或者非自动
 	//    {
 	//        osdelay_ms(20);
 	//    }
@@ -1068,7 +1068,7 @@ AGV_station agv_routr2station[StationNum];		//
 void StationAction(u16 num)
 {
  
-    while(g_AGV_Car_mode  || !g_Start_flag.Start_Auto_PID )	 //非启动或者非自动
+    while(g_AGV_Sta.Car_Auto2Manu_mode  || !g_Start_flag.Start_Auto_PID )	 //非启动或者非自动
     {
         osdelay_ms(20);
     }
@@ -1121,33 +1121,30 @@ void StationAction(u16 num)
 			break;//保持上次信息
 		case 1://低速
 		{
-			speek("1挡");
+			//speek("1挡");
 			
 			AGV_SYS.Car_Auto_Speed = HmiDiSu;
 			osdelay_ms(g_Speaker_delay);
-			
-			
-		
-			
+
 		}
 		break;
 		case 2://中速
 		{
-			speek("2挡");
+			//speek("2挡");
 			AGV_SYS.Car_Auto_Speed = HmiZhongSu;
 			osdelay_ms(g_Speaker_delay);
 		}
 		break;
 		case 3://高速
 		{
-			speek("3挡");
+			//speek("3挡");
 			AGV_SYS.Car_Auto_Speed = HmiGaoSu;
 			osdelay_ms(g_Speaker_delay);
 		}
 		break;
 		case 4://对接低速
 		{
-			speek("对接低速");
+			//speek("对接低速");
 			AGV_SYS.Car_Auto_Speed = AGV_SYS.duijie_speed;
 			osdelay_ms(g_Speaker_delay);
 		}
@@ -1161,20 +1158,23 @@ void StationAction(u16 num)
 			break;//保持上次信息
 		case 1://开
 		{
-//			g_Senser_Enable.IR_qian_yuan = 1;
-//			g_Senser_Enable.IR_hou_yuan  = 1;
+			g_Senser_Enable.IR_qian_yuan = 1;
+			g_Senser_Enable.IR_hou_yuan  = 1;
 			
 //			speek("远红外打开");
 //			osdelay_ms(g_Speaker_delay);
+			
+
 		}
 		break;
 		case 2://关
 		{
-//			g_Senser_Enable.IR_qian_yuan = 0;
-//			g_Senser_Enable.IR_hou_yuan  = 0;
+			g_Senser_Enable.IR_qian_yuan = 0;
+			g_Senser_Enable.IR_hou_yuan  = 0;
 			
 //			speek("远红外关闭");
 //			osdelay_ms(g_Speaker_delay);
+
 		}
 		break;
     }
@@ -1184,8 +1184,8 @@ void StationAction(u16 num)
 			break;//保持上次信息
 		case 1://开
 		{
-//			g_Senser_Enable.IR_qian_jin = 1;
-//			g_Senser_Enable.IR_hou_jin  = 1;
+			g_Senser_Enable.IR_qian_jin = 1;
+			g_Senser_Enable.IR_hou_jin  = 1;
 //			
 //			speek("近红外打开");
 //			osdelay_ms(g_Speaker_delay);
@@ -1193,8 +1193,8 @@ void StationAction(u16 num)
 		break;
 		case 2://关
 		{
-//			g_Senser_Enable.IR_qian_jin = 0;
-//			g_Senser_Enable.IR_hou_jin  = 0;
+			g_Senser_Enable.IR_qian_jin = 0;
+			g_Senser_Enable.IR_hou_jin  = 0;
 			
 //			speek("近红外关闭");
 //			osdelay_ms(g_Speaker_delay);
@@ -1202,195 +1202,196 @@ void StationAction(u16 num)
 		break;
     }
 
-//    switch(NowRouteInfor[num][2])//分叉判断
-//    {
-//		case 0:
-//			break;//保持上次信息
-//		case 1://左分叉
-//		{
-//			Zuo_Fen();
-//			osdelay_ms(g_Speaker_delay);
-//		}
-//		break;
-//		case 2://右分叉
-//		{
-//			You_Fen();
-//			osdelay_ms(g_Speaker_delay);
-//		}
-//		break;
-//    }
+    switch(NowRouteInfor[num][2])//分叉判断
+    {
+		case 0:
+			break;//保持上次信息
+		case 1://左分叉
+		{
+			Zuo_Fen();
+			osdelay_ms(g_Speaker_delay);
+		}
+		break;
+		case 2://右分叉
+		{
+			You_Fen();
+			osdelay_ms(g_Speaker_delay);
+		}
+		break;
+    }
 
 
-//    switch(NowRouteInfor[num][3])//滚筒动作
-//    {
-//		case 0:
-//			break;//不转
-//		case 1://左转卸货
-//		{
-//			osdelay_s(1);
-//			GunTong_Trun_L_DOWN();
-//		}
-//		break;
-//		case 2://左转装货
-//		{
-//			osdelay_s(1);
-//			GunTong_Trun_R_UP();
-//		}
-//		case 3://右转卸货
-//		{
-//			osdelay_s(1);
-//			GunTong_Trun_L_DOWN();
-//		}
-//		break;
-//		case 4://右转装货
-//		{
-//			osdelay_s(1);
-//			GunTong_Trun_R_UP();
-//		}		
-//		break;
+    switch(NowRouteInfor[num][3])//滚筒动作
+    {
+		case 0:
+			break;//不转
+		case 1://左侧卸货
+		{
+			speek("左侧卸货");
+			osdelay_s(1);
+			GunTong_Trun_L_DOWN();
+		}
+		break;
+		case 2://左侧装货
+		{
+			speek("左侧装货");
+			osdelay_s(1);
+			GunTong_Trun_L_UP();
+		}
+		case 3://右侧卸货
+		{
+			speek("右侧卸货");
+			osdelay_s(1);
+			GunTong_Trun_R_DOWN();
+		}
+		break;
+		case 4://右侧装货
+		{
+			speek("右侧装货");
+			osdelay_s(1);
+			GunTong_Trun_R_UP();
+		}		
+		break;
 
-//    }
+    }
+	
+//@@
+//备用接口
 //	
-//	//	//@@
-//	//	//备用接口
-//	//	//	
-//	//	#if 0
-//	//		//判断是否需要延时
-//	//		if(NowRouteInfor[num][8]!=0)
-//	//			osdelay_s(NowRouteInfor[num][8]);
+#if 0
+	//判断是否需要延时
+	if(NowRouteInfor[num][8]!=0)
+		osdelay_s(NowRouteInfor[num][8]);
 
-//	//		switch(NowRouteInfor[num][11])//与机械手设备通信
-//	//		{
-//	//		case 0:
-//	//			//没有请求进入
-//	//			PLC2_Data[32] = 0;
-//	//			break;//没有与设备交互
-//	//		case 1://和一号设备交互
-//	//		{
-//	//			Ting_Zhi();
-//	//			//向设备发送请求进入信号
-//	//			PLC2_Data[32] = NowRouteInfor[num][11];
-//	//			g_AGV_Status.Car_Speaker_flag = 22; //请求进入语音
-//	//			//等待准入信号
-//	//			while(PLC2_Data[33] != 1)
-//	//			{
-//	//				osdelay_ms(10);
-//	//			}
-//	//			Qi_Dong();
-//	//			g_AGV_Status.Car_Speaker_flag = 23; //允许进入语音
-//	//			//清除请求进入信号
-//	//			PLC2_Data[32] = 0;
-//	//			//清空准入信号
-//	//			PLC2_Data[33] = 0;
-//	//		}
-//	//		break;
-//	//		case 2://和二号设备交互
-//	//		{
-//	//			Ting_Zhi();
-//	//			//向设备发送请求进入信号
-//	//			PLC2_Data[32] = NowRouteInfor[num][11];
-//	//			g_AGV_Status.Car_Speaker_flag = 22; //请求进入语音
-//	//			//等待准入信号
-//	//			while(PLC2_Data[34] != 1)
-//	//			{
-//	//				osdelay_ms(10);
-//	//			}
-//	//			Qi_Dong();
-//	//			g_AGV_Status.Car_Speaker_flag = 23; //允许进入语音
+	switch(NowRouteInfor[num][11])//与机械手设备通信
+	{
+	case 0:
+		//没有请求进入
+		PLC2_Data[32] = 0;
+		break;//没有与设备交互
+	case 1://和一号设备交互
+	{
+		Ting_Zhi();
+		//向设备发送请求进入信号
+		PLC2_Data[32] = NowRouteInfor[num][11];
+		g_AGV_Status.Car_Speaker_flag = 22; //请求进入语音
+		//等待准入信号
+		while(PLC2_Data[33] != 1)
+		{
+			osdelay_ms(10);
+		}
+		Qi_Dong();
+		g_AGV_Status.Car_Speaker_flag = 23; //允许进入语音
+		//清除请求进入信号
+		PLC2_Data[32] = 0;
+		//清空准入信号
+		PLC2_Data[33] = 0;
+	}
+	break;
+	case 2://和二号设备交互
+	{
+		Ting_Zhi();
+		//向设备发送请求进入信号
+		PLC2_Data[32] = NowRouteInfor[num][11];
+		g_AGV_Status.Car_Speaker_flag = 22; //请求进入语音
+		//等待准入信号
+		while(PLC2_Data[34] != 1)
+		{
+			osdelay_ms(10);
+		}
+		Qi_Dong();
+		g_AGV_Status.Car_Speaker_flag = 23; //允许进入语音
 
-//	//			//清除请求进入信号
-//	//			PLC2_Data[32] = 0;
-//	//			//清空准入信号
-//	//			PLC2_Data[34] = 0;
-//	//		}
-//	//		break;
-//	//		case 3://和三号设备交互
-//	//		{
-//	//			Ting_Zhi();
-//	//			//向设备发送请求进入信号
-//	//			PLC2_Data[32] = NowRouteInfor[num][11];
-//	//			g_AGV_Status.Car_Speaker_flag = 22; //请求进入语音
-//	//			//等待准入信号
-//	//			while(PLC2_Data[35] != 1)
-//	//			{
-//	//				osdelay_ms(10);
-//	//			}
-//	//			Qi_Dong();
-//	//			g_AGV_Status.Car_Speaker_flag = 23; //允许进入语音
+		//清除请求进入信号
+		PLC2_Data[32] = 0;
+		//清空准入信号
+		PLC2_Data[34] = 0;
+	}
+	break;
+	case 3://和三号设备交互
+	{
+		Ting_Zhi();
+		//向设备发送请求进入信号
+		PLC2_Data[32] = NowRouteInfor[num][11];
+		g_AGV_Status.Car_Speaker_flag = 22; //请求进入语音
+		//等待准入信号
+		while(PLC2_Data[35] != 1)
+		{
+			osdelay_ms(10);
+		}
+		Qi_Dong();
+		g_AGV_Status.Car_Speaker_flag = 23; //允许进入语音
 
-//	//			//清除请求进入信号
-//	//			PLC2_Data[32] = 0;
-//	//			//清空准入信号
-//	//			PLC2_Data[35] = 0;
-//	//		}
-//	//		break;
-//	//		case 4://和四号设备交互
-//	//		{
-//	//			Ting_Zhi();
-//	//			//向设备发送请求进入信号
-//	//			PLC2_Data[32] = NowRouteInfor[num][11];
-//	//			g_AGV_Status.Car_Speaker_flag = 22; //请求进入语音
-//	//			//等待准入信号
-//	//			while(PLC2_Data[36] != 1)
-//	//			{
-//	//				osdelay_ms(10);
-//	//			}
-//	//			Qi_Dong();
-//	//			g_AGV_Status.Car_Speaker_flag = 23; //允许进入语音
-//	//			//清除请求进入信号
-//	//			PLC2_Data[32] = 0;
-//	//			//清空准入信号
-//	//			PLC2_Data[36] = 0;
-//	//		}
-//	//		break;
-//	//		}
+		//清除请求进入信号
+		PLC2_Data[32] = 0;
+		//清空准入信号
+		PLC2_Data[35] = 0;
+	}
+	break;
+	case 4://和四号设备交互
+	{
+		Ting_Zhi();
+		//向设备发送请求进入信号
+		PLC2_Data[32] = NowRouteInfor[num][11];
+		g_AGV_Status.Car_Speaker_flag = 22; //请求进入语音
+		//等待准入信号
+		while(PLC2_Data[36] != 1)
+		{
+			osdelay_ms(10);
+		}
+		Qi_Dong();
+		g_AGV_Status.Car_Speaker_flag = 23; //允许进入语音
+		//清除请求进入信号
+		PLC2_Data[32] = 0;
+		//清空准入信号
+		PLC2_Data[36] = 0;
+	}
+	break;
+	}
 
-//	//		switch(NowRouteInfor[num][7])//进入设备工作区
-//	//		{
-//	//		case 0:
-//	//			PLC2_Data[38] = 0;
-//	//			PLC2_Data[39] = 0;
-//	//			PLC2_Data[40] = 0;
-//	//			PLC2_Data[41] = 0;
-//	//			break;
-//	//		case 1:
-//	//			PLC2_Data[38] = 1;
-//	//			break;
-//	//		case 2:
-//	//			PLC2_Data[39] = 1;
-//	//			break;
-//	//		case 3:
-//	//			PLC2_Data[40] = 1;
-//	//			break;
-//	//		case 4:
-//	//			PLC2_Data[41] = 1;
-//	//			break;
-//	//		}
+	switch(NowRouteInfor[num][7])//进入设备工作区
+	{
+	case 0:
+		PLC2_Data[38] = 0;
+		PLC2_Data[39] = 0;
+		PLC2_Data[40] = 0;
+		PLC2_Data[41] = 0;
+		break;
+	case 1:
+		PLC2_Data[38] = 1;
+		break;
+	case 2:
+		PLC2_Data[39] = 1;
+		break;
+	case 3:
+		PLC2_Data[40] = 1;
+		break;
+	case 4:
+		PLC2_Data[41] = 1;
+		break;
+	}
 
 
-//	//		//AGV对电梯的使用情况
-//	//		switch(NowRouteInfor[num][10])
-//	//		{
-//	//		case 0:
-//	//			break;//电梯不使用
-//	//		case 1://AGV去一楼
-//	//		{
-//	//			AGV_QuYiLou();
-//	//		}
-//	//		break;
-//	//		case 2://AGV去三楼
-//	//		{
-//	//			AGV_QuSanLou();
-//	//		}
-//	//		break;
-//	//		}
-//	//	#endif
-//	//	//
-//	//	//备用接口
-//	//	//@@	
-
-
-
+	//AGV对电梯的使用情况
+	switch(NowRouteInfor[num][10])
+	{
+	case 0:
+		break;//电梯不使用
+	case 1://AGV去一楼
+	{
+		AGV_QuYiLou();
+	}
+	break;
+	case 2://AGV去三楼
+	{
+		AGV_QuSanLou();
+	}
+	break;
+	}
+#endif
+//
+//备用接口
+//@@	
 
     switch(NowRouteInfor[num][6])//动作执行再判断	//到站动作	 0：保持	1：停止	2:前进	3：工位对接  4：后退 
 	{
@@ -1400,10 +1401,9 @@ void StationAction(u16 num)
 			break;//停止
 		case 2://前进
 		{
-//			Qian_Jin(); 
-//			osdelay_ms(g_Speaker_delay);
-//			Qi_Dong();
-//			osdelay_ms(g_Speaker_delay);
+			g_AGV_Sta.Car_dir = g_AGV_Sta.Car_dir;
+			Qi_Dong();			
+			
 		}
 		break;
 		case 3://工位对接
@@ -1417,12 +1417,7 @@ void StationAction(u16 num)
 		break;
 		case 4://后退
 		{
-//			Hou_Tui();
-//			osdelay_ms(g_Speaker_delay);
-//			Qi_Dong();
-//			osdelay_ms(g_Speaker_delay);
-			
-			g_AGV_Car_dir = !g_AGV_Car_dir;
+			g_AGV_Sta.Car_dir = !g_AGV_Sta.Car_dir;
 			Qi_Dong();
 			
 		}
@@ -1452,7 +1447,7 @@ void ActiveProcess(void)
     //加载自动界面信息
     HmiAutoReload();
 
-    g_AGV_Car_dir = 0; //方向切换到前进
+    g_AGV_Sta.Car_dir = 0; //方向切换到前进
 
     //跳转到自动界面
     HmiScreenSetGet = ZiDongJieMian;

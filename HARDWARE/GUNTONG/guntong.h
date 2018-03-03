@@ -21,6 +21,13 @@ void guntong_init(void);
 void guntong1(void);
 
 
+void GunTong_Trun_L_DOWN(void);	//左转卸货
+
+void GunTong_Trun_L_UP(void);	//左转上货
+
+void GunTong_Trun_R_DOWN(void);	//右转卸货
+
+void GunTong_Trun_R_UP(void);	//右转上货
 
 
 

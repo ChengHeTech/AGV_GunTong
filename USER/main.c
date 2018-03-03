@@ -548,9 +548,9 @@ void float_task(void *p_arg)		//红外和机械避障
 	{	
 		#if 0
 		
-		if(!g_AGV_Car_mode)				//自动模式
+		if(!g_AGV_Sta.Car_Auto2Manu_mode)				//自动模式
 		{
-			if(!g_AGV_Car_dir)	//0:前进
+			if(!g_AGV_Sta.Car_dir)	//0:前进
 			{
 				temp_j = 0;
 			}
@@ -673,7 +673,7 @@ void Auto_task(void *p_arg)			//自动模式--前轮PID
 	//speek("任务");
 	while(1)
 	{
-		if(AGV_SYS.Car_Auto_Speed>0 && g_AGV_Car_mode == 0) 
+		if(AGV_SYS.Car_Auto_Speed>0 && g_AGV_Sta.Car_Auto2Manu_mode == 0) 
 		{
 			if(g_Start_flag.Start_Auto_PID)		//1:找到磁条
 			{
@@ -698,7 +698,7 @@ void PID_task(void *p_arg)			//自动模式--后轮PID
 	
 	while(1)
 	{
-		if(AGV_SYS.Car_Auto_Speed>0 && g_AGV_Car_mode == 0) 
+		if(AGV_SYS.Car_Auto_Speed>0 && g_AGV_Sta.Car_Auto2Manu_mode == 0) 
 		{
 			if(g_Start_flag.Start_Auto_PID)		//1:找到磁条
 			{
@@ -734,7 +734,7 @@ void Manual_task(void *p_arg)  		//手动任务
 			//后退左右转 -- 前轮打直,后轮负责转向
 		
 		
-			if(g_AGV_Car_mode) //1://手动模式
+			if(g_AGV_Sta.Car_Auto2Manu_mode) //1://手动模式
 			{	
 				if(g_AGV_yaokong.SD_Speed > 50 && g_AGV_yaokong.SD_ir!=0) 	
 				{
@@ -813,74 +813,60 @@ void Screen_task(void *p_arg)    	//触摸屏界面操作
 					
 					 if(g_shoudong_manual == 1)						//屏幕的手动按键按下时
 					 {
-							//Shou_Dong();		//切到手动程序
-						 
-							g_AGV_Car_mode = 1;
-							speek("手动");
-							delay_rtos(0,0,0,500);
+							Shou_Dong();							//切到手动程序					 
 					 }
-					 else if(g_shoudong_auto == 1)				//屏幕的自动按键按下时
+					 else if(g_shoudong_auto == 1)					//屏幕的自动按键按下时
 					 {
-							//Zi_Dong();			//切到自动程序
-							g_AGV_Car_mode = 0;
-							speek("自动");
-						 delay_rtos(0,0,0,500);
+							Zi_Dong();								//切到自动程序
 					 }
-					 else if(g_shoudong_guntong_zuozhuan == 1)				//辊筒左转
+
+					  if(g_shoudong_guntong_youzhuan == 1)				//辊筒右转
 					 {
-							//Cha_Sheng();
-							guntong_start = 1;		//高电平有效
-							speek("辊筒左转");
-						 delay_rtos(0,0,0,500);
+							guntong_start = 1;
+							guntong_fanzhuan = 1;
 					 }
-					 else if(g_shoudong_guntong_youzhuan == 1)				//辊筒右转
+					 else if(g_shoudong_guntong_youzhuan == 0)
 					 {
-							//Cha_Jiang();
-							guntong_fanzhuan = 1;	//高电平有效
-							speek("辊筒右转");
-						 delay_rtos(0,0,0,500);
+							guntong_start = 0;
+							guntong_fanzhuan = 0;
 					 }
-					 else if(g_shoudong_turn_left == 1)				//左转
+					 
+					 if(g_shoudong_guntong_zuozhuan == 1)				//辊筒左转
 					 {
-							//Zuo_Fen();
-							speek("左转向");
-						 delay_rtos(0,0,0,500);
+							guntong_start = 1;	
+		
 					 }
-					 else if(g_shoudong_turn_right == 1)				//右转
-					 {
-							//You_Fen();
-							speek("右转向");
-						 delay_rtos(0,0,0,500);
-					 }
-					 if(g_AGV_Car_mode == 0)				//0:自动模式 1:自动模式
+	
+					// if(g_shoudong_turn_left == 1)						//手动模式左转
+					// {
+					//		//SD_Trun_L();
+					// }
+					// else if(g_shoudong_turn_right == 1)					//手动模式右转
+					// {
+					//		//SD_Trun_R();
+					// }
+					 
+					 
+					 if(g_AGV_Sta.Car_Auto2Manu_mode == 0)				//0:自动模式 1:自动模式
 					 {
 							if(g_shoudong_start == 1)			//启动
 							{
-								//Qi_Dong();		//启动的语音
-								g_shoudong_start = 1;
-								speek("启动");
-								delay_rtos(0,0,0,500);
+								Qi_Dong();		
+
 							}
 							if(g_shoudong_stop == 1)		 	//停止
 							{
-								//Ting_Zhi();		//停止的语音
-								g_shoudong_stop = 1;
-								speek("停止");
-								delay_rtos(0,0,0,500);
+								Ting_Zhi();		
+
 							}
-							else if(g_shoudong_goto == 1)		//设置前进方向,自动模式下,设置行走方向
+							else if(g_shoudong_goto == 1)		//自动模式下,设置行走方向
 							{
-								//Qian_Jin();		//前进模式
-								g_AGV_Car_dir = 0;
-								speek("方向前进");
-								delay_rtos(0,0,0,500);
+								Qian_Jin();		
+
 							}
-							else if(g_shoudong_goback == 1) 	//设置后退方向,自动模式下,设置行走方向
+							else if(g_shoudong_goback == 1) 	//自动模式下,设置行走方向
 							{
-								//Hou_You();		//后退模式
-								g_AGV_Car_dir = 1;
-								speek("方向后退");
-								delay_rtos(0,0,0,500);
+								Hou_Tui();	
 							}
 					 }
 
@@ -1540,7 +1526,7 @@ void Screen_task(void *p_arg)    	//触摸屏界面操作
 
 							HmiTask = 1;
 
-							g_AGV_Car_dir = 0; //方向切换到前进
+							g_AGV_Sta.Car_dir = 0; //方向切换到前进
 
 							//跳转到自动界面
 							HmiScreenSetGet = ZiDongJieMian;
@@ -1568,28 +1554,28 @@ void Screen_task(void *p_arg)    	//触摸屏界面操作
 				{
 					 if(PLC_OutPut[4] == 1)						//屏幕的手动按键按下时
 					 {
-							//Shou_Dong();		//切到手动程序
-							g_AGV_Car_mode = 1;
+							Shou_Dong();		//切到手动程序
+							
 					 }
 					 else if(PLC_OutPut[5] == 1)				//屏幕的自动按键按下时
 					 {
-							//Zi_Dong();			//切到自动程序
-							g_AGV_Car_mode = 0;			 
+							Zi_Dong();			//切到自动程序
+									 
 					 }
-					 if(g_AGV_Car_mode == 0)				//0:自动模式 1:手动模式
+					 if(g_AGV_Sta.Car_Auto2Manu_mode == 0)				//0:自动模式 1:手动模式
 					 {
 							if(PLC_OutPut[11] == 1)			//启动
 							{
-								//Qi_Dong();
-								g_shoudong_start = 1;
+								Qi_Dong();
+								
 							}
 							if(PLC_OutPut[12] == 1)		 	//停止
 							{
-								//Ting_Zhi();
-								g_shoudong_stop = 1;
+								Ting_Zhi();
+								
 							}
 					 }
-					 osdelay_ms(20);
+					 osdelay_ms(10);
 				}
 			}
 			break;
@@ -1612,7 +1598,7 @@ void Screen_task(void *p_arg)    	//触摸屏界面操作
 							
 
 							//切换方向标识为前进
-							g_AGV_Car_dir = 0;
+							g_AGV_Sta.Car_dir = 0;
 
 						
 
@@ -1926,7 +1912,7 @@ void Task5_task(void *p_arg)		// 执行路径或执行流程 -- 应用层控制任务
 
 	while(1)
     {
-        if(g_AGV_Car_mode == 0 && g_Start_flag.Start_Auto_PID == 1) //自动模式并且启动
+        if(g_AGV_Sta.Car_Auto2Manu_mode == 0 && g_Start_flag.Start_Auto_PID == 1) //自动模式并且启动
         {
             //执行路径
             if(HmiTask == 1)							//任务动作 0:无任务 1:执行路径 2:执行流程
@@ -2063,8 +2049,7 @@ void WIFI_task(void *p_arg)			//暂未使用
 	while(1)
 	{
 		
-		
-		
+
 		
 		
 		
@@ -2078,23 +2063,23 @@ void guntong_task(void *p_arg)
 	p_arg = p_arg;
 	while(1)
 	{
-		if(g_AGV_Car_mode) //1://手动模式
-		{
-			if(g_AGV_yaokong.SD_ir == 9)			//摇杆左旋--滚筒左转
-			{
-				guntong_start = 1;
-			}
-			else if(g_AGV_yaokong.SD_ir == 10)	//摇杆右旋--滚筒右转
-			{
-				guntong_fanzhuan = 1;
-			}
-			else
-			{
-				guntong_start = 0;
-				guntong_fanzhuan = 0;
-			}
-		
-		}
+//		if(g_AGV_Sta.Car_Auto2Manu_mode) //1://手动模式
+//		{
+//			if(g_AGV_yaokong.SD_ir == 9)			//摇杆左旋--滚筒左转
+//			{
+//				guntong_start = 1;
+//			}
+//			else if(g_AGV_yaokong.SD_ir == 10)	//摇杆右旋--滚筒右转
+//			{
+//				guntong_fanzhuan = 1;
+//			}
+//			else
+//			{
+//				guntong_start = 0;
+//				guntong_fanzhuan = 0;
+//			}
+//		
+//		}
 		
 	
 		

@@ -41,12 +41,27 @@ typedef struct
 	
 }AGV_System;
 
+	
+typedef struct
+{
+	u8 Car_dir;						//全局唯一//0:前进    1:后退
+	u8 Car_fencha_dir;              //全局唯一//0:左分叉  1:右分叉
+                                    
+	u8 Car_Auto2Manu_mode;          //0:自动  1:手动
+
+	u8 gunt_IR_L;
+	u8 gunt_IR_R;
+
+}AGV_status;
+
+
+
 
 
 
 extern AGV_System AGV_SYS;
 
-
+extern AGV_status g_AGV_Sta;
 
 
 

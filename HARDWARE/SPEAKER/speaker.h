@@ -3,7 +3,7 @@
 
 #include "my_include.h"
 
-extern u8 g_Speaker_delay;
+extern u16 g_Speaker_delay;
 
 
 

@@ -107,9 +107,14 @@ void speek(char *HZdata)
 		 Frame_Info[3] = 0x01 ; 			//构造命令字：合成播放命令		 		 
 		 Frame_Info[4] = 0x01;        //文本编码格式：GBK 
 	
-/*******************发送帧信息***************************************/		  
-     memcpy(&Frame_Info[5], HZdata, HZ_Length);
-		 PrintCom(Frame_Info,5+HZ_Length); //发送帧配置
+/*******************发送帧信息***************************************/		
+
+		if(!AGV_SYS.Key_yuyin)
+		{
+			 memcpy(&Frame_Info[5], HZdata, HZ_Length);
+			 PrintCom(Frame_Info,5+HZ_Length); //发送帧配置
+		}	
+
 }
 									
 

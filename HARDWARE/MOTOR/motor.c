@@ -5,10 +5,7 @@
 
 
 			
-u8  g_AGV_Car_dir;				//全局唯一//0:前进    1:后退
 
-u8  g_AGV_Car_fencha_dir;		//全局唯一//0:左分叉  1:右分叉
-u8  g_AGV_Car_mode = 1;			//0:自动  1:手动
 
 
 
@@ -243,19 +240,17 @@ u8 g_XZ_Beep;
 
 void DwqXunZheng_QH(void)
 {
-	//OS_ERR err;
+	u8 temp_i=60;
+	u8 temp_j=60;
 	int temp_cha[2]={0,0};
 	
-	
 
-	
-	
 	g_xz_dwq[0] = g_After_filter[1];	
 	temp_cha[0] = g_xz_dwq[0] - g_DWQ.qianlun_zhong_val;
 	
 	BEEP = 1;
 	
-	while( abs(temp_cha[0]) > 2)
+	while( abs(temp_cha[0]) > 3 && temp_i--)
 	{
 		
 		if(g_xz_dwq[0] > g_DWQ.qianlun_zhong_val)		//驱动偏右,左转
@@ -272,13 +267,15 @@ void DwqXunZheng_QH(void)
 		g_xz_dwq[0] =  g_After_filter[1];		
 		temp_cha[0] = g_xz_dwq[0] - g_DWQ.qianlun_zhong_val;
 		
+		
+		
 	}
 	MotoStop(1);	
 	MotoStop(2);	
 	
 	g_xz_dwq[1] = g_After_filter[2];	
 	temp_cha[1] = g_xz_dwq[1] - g_DWQ.houlun_zhong_val;
-	while( abs(temp_cha[1]) > 2)
+	while( abs(temp_cha[1]) > 3 && temp_j--)
 	{
 		if(g_xz_dwq[1]>g_DWQ.houlun_zhong_val)		//驱动偏右,左转
 		{
@@ -572,7 +569,7 @@ void check_CtXunZ_OK(u16 XunZ_speed)
 {
 	u8 temp_Val=0;
 	
-	if(!g_AGV_Car_dir)	//0:前进
+	if(!g_AGV_Sta.Car_dir)	//0:前进
 	{
 		CtXunZheng_qian(1,XunZ_speed);
 		CtXunZheng_hou (1,XunZ_speed);		
@@ -625,13 +622,13 @@ void AGV_System_Stop(void)
 {
 	//MotoStop(0);
 	g_Start_flag.Stop_AGV_SysCode = 1;
-	delay_rtos(0,0,1,0);
+	delay_rtos(0,0,0,100);
 
 }	
 void AGV_System_Start(void)
 {
 	g_Start_flag.Start_AGV_SysCode = 1;
-	delay_rtos(0,0,1,0);
+	delay_rtos(0,0,0,100);
 }
 
 
@@ -650,6 +647,8 @@ void AGV_Stop2Start(void)
 	if(AGV_input_24V_buff[1]==1 && AGV_input_24V_buff[0]==0)	
 	{
 		g_Start_flag.Start_button_Car = 1;	//短触发--车辆面板启动按键
+		
+		
 	}
 	if(g_Start_flag.Start_AGV_SysCode)		//长触发--程序调用这个变量来启动停止 //1启动
 	{
@@ -682,6 +681,7 @@ void AGV_Stop2Start(void)
 	if(AGV_input_24V_buff[0]==1)			//短触发--车辆面板停止按键 -- 系统程序中停车也用这个变量停
 	{
 		g_Start_flag.Stop_button_Car = 1;
+	
 	}	
 	if(g_Start_flag.Stop_AGV_SysCode)		//长触发--程序调用这个变量来启动停止 //1启动
 	{
@@ -720,7 +720,7 @@ void AGV_Stop2Start(void)
 //	}
 	
 
-	if(!g_AGV_Car_mode)	//0:自动
+	if(!g_AGV_Sta.Car_Auto2Manu_mode)	//0:自动
 	{
 		//AGV磁条寻正
 		if(g_Start_flag.Start_button_Car==1 && g_Start_flag.button_Start==1)	

@@ -50,8 +50,7 @@ typedef struct
 
 
 
-extern u8  g_AGV_Car_dir;				//0:前进  1:后退
-extern u8  g_AGV_Car_fencha_dir;		//全局唯一//0:左分叉  1:右分叉
+
 
 extern float g_qianlun_L2R_val[2] ;		//前轮左右转向极限值
 extern float g_houlun_L2R_val[2]  ;		//后轮左右转向极限值
@@ -59,7 +58,7 @@ extern float g_houlun_L2R_val[2]  ;		//后轮左右转向极限值
 
 extern AGV_CtXunZheng g_CtXunZheng;
 extern AGV_Start_flag g_Start_flag;
-extern u8  g_AGV_Car_mode;				//0:自动  1:手动
+
 extern u8 g_XZ_Ok;
 extern u8 g_XZ_Beep;
 

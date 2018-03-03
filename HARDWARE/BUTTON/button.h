@@ -4,6 +4,27 @@
 #include "my_include.h"
 
 
+typedef struct
+{
+	
+	u8 IR_qian_yuan;
+    u8 IR_hou_yuan;
+
+	u8 IR_qian_jin;
+    u8 IR_hou_jin;
+	
+	u8 jixie_qian;
+	u8 jixie_hou;
+
+
+}Senser_Enable;
+
+extern Senser_Enable g_Senser_Enable;
+
+
+
+
+
 //PF4 -- Í£Ö¹
 //PF5 -- Æô¶¯
 //PF6 -- ×ó_¹öÍ²ºìÍâ¶ÔÉä 	-- (Ô­¼±Í£)

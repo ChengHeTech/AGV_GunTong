@@ -1,5 +1,15 @@
 #include "button.h"
 
+Senser_Enable g_Senser_Enable;
+
+
+
+
+
+
+
+
+
 //PF4 -- 停止
 //PF5 -- 启动
 //PF6 -- 左_滚筒红外对射 	-- (原急停)
@@ -65,11 +75,16 @@ u8 AGV_input_24V_buff[16];
 u8 g_AGV_Car_STOP = 1;		//AGV默认停止	
 //u8 g_AGV_Car_START;
 
+
 void agv_24V_input(void)	//未做按键消抖,后面做
 {
 	if(!g_button_stop)						//g_jixieKEy_stop
 	{
 		AGV_input_24V_buff[0] = 1;
+
+		speek("停止");
+	
+		
 	}
 	else
 	{
@@ -79,85 +94,140 @@ void agv_24V_input(void)	//未做按键消抖,后面做
 	if(!g_button_start)					//g_jixieKEY_start
 	{
 		AGV_input_24V_buff[1] = 1;
+
+		speek("启动");
+	
+		
 	}
 	else
 	{
 		AGV_input_24V_buff[1] = 0;
 	}		
 	
-	if(!g_flag_IR_qian_yuan)					//前远红外  	//g_IR_yuan_CAR_qian
+	if(g_Senser_Enable.IR_qian_yuan)
 	{
-		AGV_input_24V_buff[2] =  1;
+		if(!g_flag_IR_qian_yuan)					//前远红外  	//g_IR_yuan_CAR_qian
+		{
+			AGV_input_24V_buff[2] =  1;
+		}
+		else
+		{
+			AGV_input_24V_buff[2] =  0;
+		}		
 	}
 	else
 	{
-		AGV_input_24V_buff[2] =  0;
+		AGV_input_24V_buff[2] =  0;			//1:触发
+	
+	}
+
+
+	if(g_Senser_Enable.IR_hou_yuan)
+	{
+		if(!g_flag_IR_hou_yuan)						//后远红外		//g_IR_yuan_CAR_hou
+		{
+			AGV_input_24V_buff[3] =  1;
+		}
+		else
+		{
+			AGV_input_24V_buff[3] = 0;
+		}			
+	}	
+	else
+	{
+			AGV_input_24V_buff[3] = 0;
+		
 	}	
 
-	
-	if(!g_flag_IR_hou_yuan)						//后远红外		//g_IR_yuan_CAR_hou
-	{
-		AGV_input_24V_buff[3] =  1;
+	if(g_Senser_Enable.jixie_qian)
+	{	
+		if(!g_flag_fangzhuang_qian)			//g_jiexie_qian
+		{
+			AGV_input_24V_buff[4] =  1;
+		}
+		else
+		{
+			AGV_input_24V_buff[4] = 0;
+		}		
 	}
 	else
 	{
-		AGV_input_24V_buff[3] = 0;
-	}	
-	
-	if(!g_flag_fangzhuang_qian)			//g_jiexie_qian
+			AGV_input_24V_buff[4] = 0;
+	}
+
+	if(g_Senser_Enable.jixie_qian)
 	{
-		AGV_input_24V_buff[4] =  1;
+		if(!g_flag_fangzhuang_hou)			//g_jiexie_hou
+		{
+			AGV_input_24V_buff[5] = 1;
+		}
+		else
+		{
+			AGV_input_24V_buff[5] = 0;
+		}		
 	}
 	else
 	{
-		AGV_input_24V_buff[4] = 0;
+			AGV_input_24V_buff[5] = 0;
 	}
 		
-	if(!g_flag_fangzhuang_hou)			//g_jiexie_hou
-	{
-		AGV_input_24V_buff[5] = 1;
-	}
-	else
-	{
-		AGV_input_24V_buff[5] = 0;
-	}		
+	
 	
 	if(!g_flag_guntong_zuo)				//g_IR_guntong_left
 	{
 		AGV_input_24V_buff[6] = 1;
+		g_AGV_Sta.gunt_IR_L = 1; 
 	}
 	else
 	{
 		AGV_input_24V_buff[6] = 0;
+		g_AGV_Sta.gunt_IR_L = 0; 
 	}	
 	
 	if(!g_flag_guntong_you)				//g_IR_guntong_right
 	{
 		AGV_input_24V_buff[7] = 1;
+		g_AGV_Sta.gunt_IR_R = 1;
 	}
 	else
 	{
 		AGV_input_24V_buff[7] = 0;
-	}	
-	
-	
-	if(!g_flag_IR_qian_jin)					//前近红外  	//g_IR_jin_CAR_qian
-	{
-		AGV_input_24V_buff[8] =  1; 
-	}
-	else
-	{
-		AGV_input_24V_buff[8] = 0;
-	}	
+		g_AGV_Sta.gunt_IR_R = 0;
 
-	if(!g_flag_IR_hou_jin)					//后近红外  	//g_IR_jin_CAR_hou
+	}	
+	
+	if(g_Senser_Enable.IR_qian_jin)
 	{
-		AGV_input_24V_buff[9] = 1; 
+		if(!g_flag_IR_qian_jin)					//前近红外  	//g_IR_jin_CAR_qian
+		{
+			AGV_input_24V_buff[8] =  1; 
+		}
+		else
+		{
+			AGV_input_24V_buff[8] = 0;
+		}		
+	}	
+	else
+	{
+			AGV_input_24V_buff[8] = 0;
+	}	
+	
+	if(g_Senser_Enable.IR_hou_jin)
+	{
+		if(!g_flag_IR_hou_jin)					//后近红外  	//g_IR_jin_CAR_hou
+		{
+			AGV_input_24V_buff[9] = 1; 
+		}
+		else
+		{
+			AGV_input_24V_buff[9] =  0;
+		}	
 	}
 	else
 	{
-		AGV_input_24V_buff[9] =  0;
-	}	
+			AGV_input_24V_buff[9] =  0;
+	}
+
 
 
 

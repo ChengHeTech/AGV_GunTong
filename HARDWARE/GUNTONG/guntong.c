@@ -136,9 +136,120 @@ void guntong1(void)
 	
 
 
+void GunTong_Trun_L_DOWN(void)	//左侧卸货
+{
+
+	
+	if(g_AGV_Sta.gunt_IR_L)				//触发
+	{
+		GunTong_L(1);
+		while(g_AGV_Sta.gunt_IR_L)
+		{
+			delay_rtos(0,0,0,20);
+		}
+		GunTong_L(0);
+	}
+	else								//未触发
+	{
+		GunTong_L(1);
+		while(!g_AGV_Sta.gunt_IR_L)
+		{
+			delay_rtos(0,0,0,20);
+		}
+		delay_rtos(0,0,0,100);
+		while(g_AGV_Sta.gunt_IR_L)
+		{
+			delay_rtos(0,0,0,20);
+		}		
+		GunTong_L(0);
+	}
+	
+	delay_rtos(0,0,2,0);
 
 
+}
+void GunTong_Trun_L_UP(void)	//左侧上货
+{
+	u8 temp_i = 50;				//对中延时
+	
+	GunTong_R(1);
+	while(!g_AGV_Sta.gunt_IR_L)
+	{
+		delay_rtos(0,0,0,20);
+	}
+	while(g_AGV_Sta.gunt_IR_L)
+	{
+		if(g_AGV_Sta.gunt_IR_R)
+		{
+			GunTong_R(0);
+			break;
+		}
+		delay_rtos(0,0,0,20);
+	}
+	while(!g_AGV_Sta.gunt_IR_R && temp_i--)
+	{
+		delay_rtos(0,0,0,10);		
+	}
 
+	GunTong_R(0);
+	
+	delay_rtos(0,0,2,0);
+}
+void GunTong_Trun_R_DOWN(void)	//右侧卸货
+{
+	if(g_AGV_Sta.gunt_IR_R)				//已被触发
+	{
+		GunTong_R(1);
+		while(g_AGV_Sta.gunt_IR_R)
+		{
+			delay_rtos(0,0,0,20);
+		}
+		GunTong_R(0);
+	}
+	else								//未触发
+	{
+		GunTong_R(1);
+		while(!g_AGV_Sta.gunt_IR_R)
+		{
+			delay_rtos(0,0,0,20);
+		}
+		delay_rtos(0,0,0,100);
+		while(g_AGV_Sta.gunt_IR_R)
+		{
+			delay_rtos(0,0,0,20);
+		}		
+		GunTong_R(0);
+	}
+	
+	delay_rtos(0,0,2,0);
+}
+void GunTong_Trun_R_UP(void)	//右侧上货
+{
+	u8 temp_i = 50;				//对中延时
+	
+	GunTong_L(1);
+	while(!g_AGV_Sta.gunt_IR_R)	//等待右被触发
+	{
+		delay_rtos(0,0,0,20);
+	}
+	while(g_AGV_Sta.gunt_IR_R)	//等待右不被触发
+	{
+		if(g_AGV_Sta.gunt_IR_L)	//同事判断左被触发
+		{
+			GunTong_L(0);		//货物在左侧偏左
+			break;
+		}
+		delay_rtos(0,0,0,20);
+	}
+	while(!g_AGV_Sta.gunt_IR_L && temp_i--)
+	{
+		delay_rtos(0,0,0,10);		
+	}
+
+	GunTong_L(0);				//货物在中间
+	
+	delay_rtos(0,0,2,0);
+}
 
 
 

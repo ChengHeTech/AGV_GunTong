@@ -190,6 +190,9 @@ void CAN1_RX0_IRQHandler(void)			//磁导航采集
 	//Y 	-- 		1
 	//Z 	-- 		2
 	//按键 	-- 		3
+
+	//按住按键左转滚筒左转, //按住按键右转滚筒右转
+	
 	if(RxMessage.StdId == 22)			//手持摇杆遥控器  //10ms一次
 	{
 		for(i=0;i<RxMessage.DLC;i++)
@@ -294,7 +297,7 @@ void CAN1_RX0_IRQHandler(void)			//磁导航采集
 	{
 		for(i=0;i<RxMessage.DLC;i++)
 		g_cinavi1_RXbuff[i]=RxMessage.Data[i];
-		g_CDH8_qian_1 = FindSpace1(g_cinavi1_RXbuff[0],8,g_AGV_Car_fencha_dir);
+		g_CDH8_qian_1 = FindSpace1(g_cinavi1_RXbuff[0],8,g_AGV_Sta.Car_fencha_dir); 
 //		if(g_CDH8_qian_1.Distance)	//非0存
 //		{
 //			g_Ct_chugui[0] = g_CDH8_qian_1.Distance;
@@ -306,7 +309,7 @@ void CAN1_RX0_IRQHandler(void)			//磁导航采集
 	{
 		for(i=0;i<RxMessage.DLC;i++)
 		g_cinavi2_RXbuff[i]=RxMessage.Data[i]; 
-		g_CDH8_qian_2 = FindSpace1(g_cinavi2_RXbuff[0],8,g_AGV_Car_fencha_dir);
+		g_CDH8_qian_2 = FindSpace1(g_cinavi2_RXbuff[0],8,g_AGV_Sta.Car_fencha_dir);
 //		if(g_CDH8_qian_2.Distance)	//非0存
 //		{
 //			g_Ct_chugui[1] = g_CDH8_qian_2.Distance;
@@ -317,7 +320,7 @@ void CAN1_RX0_IRQHandler(void)			//磁导航采集
 	{
 		for(i=0;i<RxMessage.DLC;i++)
 		g_cinavi3_RXbuff[i]=RxMessage.Data[i]; 
-		g_CDH8_hou_1 = FindSpace1(g_cinavi3_RXbuff[0],8,g_AGV_Car_fencha_dir);
+		g_CDH8_hou_1 = FindSpace1(g_cinavi3_RXbuff[0],8,g_AGV_Sta.Car_fencha_dir);
 //		if(g_CDH8_qian_2.Distance)	//非0存
 //		{
 //			g_Ct_chugui[1] = g_CDH8_qian_2.Distance;
@@ -327,7 +330,7 @@ void CAN1_RX0_IRQHandler(void)			//磁导航采集
 	{
 		for(i=0;i<RxMessage.DLC;i++)
 		g_cinavi4_RXbuff[i]=RxMessage.Data[i]; 
-		g_CDH8_hou_2 = FindSpace1(g_cinavi4_RXbuff[0],8,g_AGV_Car_fencha_dir);
+		g_CDH8_hou_2 = FindSpace1(g_cinavi4_RXbuff[0],8,g_AGV_Sta.Car_fencha_dir);
 //		if(g_CDH8_qian_2.Distance)	//非0存
 //		{
 //			g_Ct_chugui[1] = g_CDH8_qian_2.Distance;

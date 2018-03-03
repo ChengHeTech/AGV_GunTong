@@ -1,6 +1,6 @@
 #include "speaker.h"
 
-u8 g_Speaker_delay = 10;
+u16 g_Speaker_delay = 500;
 
 void USART1_Configuration(u32 bound)
 {

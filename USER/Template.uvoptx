@@ -120,7 +120,7 @@
         <SetRegEntry>
           <Number>0</Number>
           <Key>DLGUARM</Key>
-          <Name>革0</Name>
+          <Name>????趏~g</Name>
         </SetRegEntry>
         <SetRegEntry>
           <Number>0</Number>
@@ -184,6 +184,11 @@
           <count>6</count>
           <WinNumber>1</WinNumber>
           <ItemText>AGV_SYS.Car_Auto_Speed,0x0A</ItemText>
+        </Ww>
+        <Ww>
+          <count>7</count>
+          <WinNumber>1</WinNumber>
+          <ItemText>g_key_speaker,0x0A</ItemText>
         </Ww>
       </WatchWindow1>
       <WatchWindow2>
