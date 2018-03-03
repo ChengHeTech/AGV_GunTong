@@ -1,103 +1,161 @@
 #include "control.h" 
 
 
-////上层的行走方向控制函数开始
-//void Zi_Dong(void)
-//{
-//	Mode_flag = 1;			//切到自动程序
-//	yuyin_flag=1;
-//	HmiScreenControlMode = Mode_flag;
-//	
-//	osdelay_ms(g_Speaker_delay);
-//}
-//void Shou_Dong(void)
-//{
-//	QD_flag=0;					//切到手动前先发个停止
-//	Mode_flag = 0;			//切到手动程序
-//	yuyin_flag=2;
-//	HmiScreenControlMode = Mode_flag;
-//	HmiScreenRunState = 0;
-//	
-//	osdelay_ms(g_Speaker_delay);
-//}
-//void Qian_Jin(void)
-//{
-//	FX_flag=1;					//由屏上的前进按钮确定控制叉车的行驶方向标志FX_flag
-//	yuyin_flag=3;
-//	HmiScreenRunState = 1;
-//	
-//	osdelay_ms(g_Speaker_delay);
-//}
-//void Hou_Zuo(void)
-//{
-//	FX_flag=2;					//由屏上的后退左按钮确定控制叉车的行驶方向标志FX_flag
-//	yuyin_flag=4;
-//	HmiScreenRunState = 1;
-//	
-//	osdelay_ms(g_Speaker_delay);
-//}
-//void Hou_You(void)
-//{
-//	FX_flag=3;					//由屏上的后退右按钮确定控制叉车的行驶方向标志FX_flag
-//	yuyin_flag=5;
-//	HmiScreenRunState = 1;
-//	
-//	osdelay_ms(g_Speaker_delay);
-//}
-//void Ting_Zhi(void)
-//{
-//	QD_flag=0;					//启动标志清0
-//	yuyin_flag=6;
-//	
-//	HmiScreenRunState = 0;
-//	
-//	osdelay_ms(g_Speaker_delay);
-//}
-////void Qi_Dong(void)
-////{
-////	//如果没有任务，弹出提示界面
-//////	if(HmiTask==0)
-//////	{
-//////		HmiScreenSetGet = QiDongTiShiJieMian;
-//////	}
-//////	else
-//////	{
-////		QD_flag=1;				//启动标志置1
-////		PID.SumError=0;   //当再次启动是将PID的I项清零
-////		PID1.SumError=0;
-////		yuyin_flag=7;
-////		Ruan_Qi(SPEED_min,0);	//设定速度PWM赋值给车
-//////		PWM_val(TIM4,2,speed);//当按启动时将屏幕设定速度再赋值给车。
-////		//任务状态为正在运行
-////		HmiTaskState = 5;
-////		HmiScreenRunState = 1;
-////	
-////		osdelay_ms(g_Speaker_delay);
-//////	}
-////}
-//void Zuo_Fen(void)
-//{
-//	FC_flag=1;				//分叉标志
-//	yuyin_flag=8;
+//上层的行走方向控制函数开始
+void Zi_Dong(void)
+{
+	g_AGV_Status.Car_mode = 0;			//切到自动程序
+	g_AGV_Status.Car_Speaker_flag=1;
+	HmiScreenControlMode = g_AGV_Status.Car_mode;
+	
+	osdelay_ms(g_Speaker_delay);
+}
+void Shou_Dong(void)
+{
+	AGV_System_Stop();					//切到手动前先发个停止
+	g_AGV_Status.Car_mode = 1;			//切到手动程序
+	g_AGV_Status.Car_Speaker_flag=2;
+	HmiScreenControlMode = g_AGV_Status.Car_mode;
+	HmiScreenRunState = 0;
+	
+	osdelay_ms(g_Speaker_delay);
+}
+void Qian_Jin(void)
+{
+	g_AGV_Status.Car_dir = 0;					//
+	g_AGV_Status.Car_Speaker_flag=3;
+	HmiScreenRunState = 1;
+	
+	osdelay_ms(g_Speaker_delay);
+}
 
-//	
-//	osdelay_ms(g_Speaker_delay);
-//}
-//void Zhong_Fen(void)
-//{
-//	FC_flag=0;				//分叉标志
-//	yuyin_flag=9;
-//	
-//	osdelay_ms(g_Speaker_delay);
-//}
-//void You_Fen(void)
-//{
-//	FC_flag=2;				//分叉标志
-//	yuyin_flag=10;
-//	
-//	osdelay_ms(g_Speaker_delay);
+void gongwei_duijie(void)							//工位对接
+{
+	//g_AGV_Status.Car_dir = 1;				//
+	g_AGV_Status.Car_Speaker_flag=4;
+	HmiScreenRunState = 1;
+	
+	osdelay_ms(g_Speaker_delay);
+}
+void Hou_Tui(void)
+{
+	g_AGV_Status.Car_dir = 1;				//后退
+	g_AGV_Status.Car_Speaker_flag=5;
+	HmiScreenRunState = 1;
+	
+	osdelay_ms(g_Speaker_delay);
+}
 
-//}
+void Ting_Zhi(void)
+{
+	AGV_System_Stop();
+	g_AGV_Status.Car_Speaker_flag=6;
+	
+	HmiScreenRunState = 0;
+	
+	osdelay_ms(g_Speaker_delay);
+}
+
+void Qi_Dong(void)
+{
+	//如果没有任务，弹出提示界面
+//	if(HmiTask==0)
+//	{
+//		HmiScreenSetGet = QiDongTiShiJieMian;
+//	}
+//	else
+//	{
+		AGV_System_Start();
+
+		g_AGV_Status.Car_Speaker_flag=7;
+		
+
+		//任务状态为正在运行
+		HmiTaskState = 5;
+		HmiScreenRunState = 1;
+	
+		osdelay_ms(g_Speaker_delay);
+//	}
+}
+void Zuo_Fen(void)
+{
+	g_AGV_Status.Car_fencha_dir=0;				//分叉标志
+	g_AGV_Status.Car_Speaker_flag=8;
+
+	
+	osdelay_ms(g_Speaker_delay);
+}
+	//void Zhong_Fen(void)
+	//{
+	//	g_AGV_Status.Car_fencha_dir=0;				//分叉标志
+	//	g_AGV_Status.Car_Speaker_flag=9;
+	//	
+	//	osdelay_ms(g_Speaker_delay);
+	//}
+void You_Fen(void)
+{
+	g_AGV_Status.Car_fencha_dir=1;				//分叉标志
+	g_AGV_Status.Car_Speaker_flag=10;
+	
+	osdelay_ms(g_Speaker_delay);
+
+}
+
+void GunTong_Trun_L_UP(void)					//左转上货
+{
+	
+	agv_routr2station.guntong_L = 1;
+	agv_routr2station.guntong_R = 0;
+	g_AGV_Status.Car_Speaker_flag=11;
+	
+	osdelay_ms(g_Speaker_delay);
+	
+
+	
+
+
+}
+void GunTong_Trun_L_DOWN(void)					//左转卸货
+{
+	
+	agv_routr2station.guntong_L = 1;
+	agv_routr2station.guntong_R = 0;
+	g_AGV_Status.Car_Speaker_flag=11;
+	
+	osdelay_ms(g_Speaker_delay);
+	
+	
+	
+
+
+}
+void GunTong_Trun_R_UP(void)					//右转上货
+{
+	
+	agv_routr2station.guntong_R = 1;
+	agv_routr2station.guntong_L = 0;
+	g_AGV_Status.Car_Speaker_flag=12;
+	
+	
+	osdelay_ms(g_Speaker_delay);
+
+
+}
+
+
+void GunTong_Trun_R_DOWN(void)
+{
+	
+	agv_routr2station.guntong_R = 1;
+	agv_routr2station.guntong_L = 0;
+	g_AGV_Status.Car_Speaker_flag=12;
+	
+	
+	osdelay_ms(g_Speaker_delay);
+
+
+}
+
 
 
 ////速度PWM赋值判断函数

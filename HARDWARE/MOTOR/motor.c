@@ -3,16 +3,6 @@
 
 
 
-
-			
-u8  g_AGV_Car_dir;				//全局唯一//0:前进    1:后退
-
-u8  g_AGV_Car_fencha_dir;		//全局唯一//0:左分叉  1:右分叉
-u8  g_AGV_Car_mode = 1;			//0:自动  1:手动
-
-
-
-
 #if 0
 ////电机驱动器
 ////使能信号,方向信号,引脚初始化
@@ -572,7 +562,7 @@ void check_CtXunZ_OK(u16 XunZ_speed)
 {
 	u8 temp_Val=0;
 	
-	if(!g_AGV_Car_dir)	//0:前进
+	if(!g_AGV_Status.Car_dir)	//0:前进
 	{
 		CtXunZheng_qian(1,XunZ_speed);
 		CtXunZheng_hou (1,XunZ_speed);		
@@ -710,7 +700,7 @@ void AGV_Stop2Start(void)
 //	}
 	
 
-	if(!g_AGV_Car_mode)	//0:自动
+	if(!g_AGV_Status.Car_mode)	//0:自动
 	{
 		//AGV磁条寻正
 		if(g_Start_flag.Start_button_Car==1 && g_Start_flag.button_Start==1)	

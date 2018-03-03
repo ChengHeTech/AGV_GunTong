@@ -147,7 +147,24 @@
           <Name></Name>
         </SetRegEntry>
       </TargetDriverDllRegistry>
-      <Breakpoint/>
+      <Breakpoint>
+        <Bp>
+          <Number>0</Number>
+          <Type>0</Type>
+          <LineNumber>61</LineNumber>
+          <EnabledFlag>1</EnabledFlag>
+          <Address>134226312</Address>
+          <ByteObject>0</ByteObject>
+          <HtxType>0</HtxType>
+          <ManyObjects>0</ManyObjects>
+          <SizeOfObject>0</SizeOfObject>
+          <BreakByAccess>0</BreakByAccess>
+          <BreakIfRCount>1</BreakIfRCount>
+          <Filename>..\HARDWARE\DIANWEIQI\dianweiqi.c</Filename>
+          <ExecCommand></ExecCommand>
+          <Expression>\\Template\../HARDWARE/DIANWEIQI/dianweiqi.c\61</Expression>
+        </Bp>
+      </Breakpoint>
       <WatchWindow1>
         <Ww>
           <count>0</count>
@@ -163,6 +180,11 @@
           <count>2</count>
           <WinNumber>1</WinNumber>
           <ItemText>PID2,0x0A</ItemText>
+        </Ww>
+        <Ww>
+          <count>3</count>
+          <WinNumber>1</WinNumber>
+          <ItemText>g_AGV_Status,0x0A</ItemText>
         </Ww>
       </WatchWindow1>
       <WatchWindow2>

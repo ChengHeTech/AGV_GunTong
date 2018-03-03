@@ -3,6 +3,25 @@
 
 #include "my_include.h"
 
+typedef struct
+{
+	//前红外
+	u8 IR_qian_jin;
+	u8 IR_qian_yuan;
+	//后红外
+	u8 IR_hou_jin;
+	u8 IR_hou_yuan;
+	//前机械
+	u8 JIXIE_qian;
+	//后机械
+	u8 JIXIE_hou;
+
+}AGV_Senser_Enable;
+
+extern AGV_Senser_Enable g_Senser_Enable;
+
+
+
 
 //PF4 -- 停止
 //PF5 -- 启动

@@ -13,11 +13,13 @@ typedef struct
 	
 	u8  fencha;					//分叉动作
 	u8  IR_bizhang;				//红外避障开关
-	u8  guntong;				//辊筒动作
+	u8  guntong_L;				//辊筒动作		// 1:触发
+	u8  guntong_R;				//辊筒动作		// 1:触发
+
 
 }AGV_station;
 
-
+extern AGV_station agv_routr2station;	
 
 
 
@@ -33,7 +35,7 @@ extern u16 SystemParameter[SystemParaNum];//系统参数
 #define StationNum 		100  //每条路径包含站点数
 #define StaiionInfor 	20 	 //每个站点包含信息数
 
-extern AGV_station agv_routr2station[StationNum];		//路径到站点的二维数组
+
 
 #define RouteStationNumAdress(n) SystemParaNum+n-1  //每条路径包含站点数信息地址
 #define NowRouteInforAdress(n)       RouteStationNumAdress(RouteNum)+1+StationNum*StaiionInfor*(n-1)  //当前路径信息地址
@@ -177,13 +179,13 @@ extern u16 HmiProcessCopiedNumTemp;//被复制流程号临时变量
 //站点动作
 #define HmiRoadData5         PLC_Data[130] 	//地标	
 
-#define HmiRoadData6         PLC_Data[36] 	//到站动作	 0：停止	1：前进	2:后左	3：后右  4：通过
+#define HmiRoadData6         PLC_Data[36] 	//到站动作	 0：保持	1：停止	2:前进	3：工位对接  4：后退 
 #define HmiRoadData4         PLC_Data[27] 	//到站速度 档位默认选择慢速 0：保持 1：慢速 2：中速 3：快速  
 #define HmiRoadData1         PLC_Data[26] 	//到站延时
 
 #define HmiRoadData2         PLC_Data[30] 	//岔路口左分叉 0：保持1：左分叉 2：右分叉
 #define HmiRoadData0         PLC_Data[25] 	//远程红外 默认为0 0：保持1：开2：关
-//#define HmiRoadData19        PLC_Data[51] //近程红外 默认为0 0：保持1：开2：关
+#define HmiRoadData19        PLC_Data[44] //近程红外 默认为0 0：保持1：开2：关
 #define HmiRoadData3         PLC_Data[31] 	//辊筒 0：保持 1：左转 2：右转
 
 
@@ -398,6 +400,7 @@ extern void HmiAutoReload(void);
 void UserConfigInit(void);
 //执行站点动作
 void StationAction(u16 num);
-
+//执行流程
+void ActiveProcess(void);
 
 #endif

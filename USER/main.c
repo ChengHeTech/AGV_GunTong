@@ -75,7 +75,31 @@ CPU_STK PID_TASK_STK[PID_STK_SIZE];
 void PID_task(void *p_arg);							//PID任务
 
 //任务优先级
-#define Manual_TASK_PRIO		9
+#define Screen_TASK_PRIO		9
+//任务堆栈大小	
+#define Screen_STK_SIZE 		512
+//任务控制块
+OS_TCB ScreenTaskTCB;
+//任务堆栈	
+CPU_STK Screen_TASK_STK[Screen_STK_SIZE];
+//任务函数
+void Screen_task(void *p_arg);						//屏幕任务
+
+//任务优先级
+#define Task5_TASK_PRIO		10
+//任务堆栈大小	
+#define Task5_STK_SIZE 		512
+//任务控制块
+OS_TCB Task5_TaskTCB;
+//任务堆栈	
+CPU_STK Task5_TASK_STK[Task5_STK_SIZE];
+//任务函数
+void Task5_task(void *p_arg);						//自动执行路径或流程
+
+
+
+//任务优先级
+#define Manual_TASK_PRIO		11
 //任务堆栈大小	
 #define Manual_STK_SIZE 		512
 //任务控制块
@@ -88,31 +112,9 @@ void Manual_task(void *p_arg);						//手动模式任务
 
 
 //任务优先级
-#define Screen_TASK_PRIO		10
-//任务堆栈大小	
-#define Screen_STK_SIZE 		512
-//任务控制块
-OS_TCB ScreenTaskTCB;
-//任务堆栈	
-CPU_STK Screen_TASK_STK[Screen_STK_SIZE];
-//任务函数
-void Screen_task(void *p_arg);						//屏幕任务
-
-//任务优先级
-#define Control_TASK_PRIO		11
-//任务堆栈大小	
-#define Control_STK_SIZE 		512
-//任务控制块
-OS_TCB ControlTaskTCB;
-//任务堆栈	
-CPU_STK Control_TASK_STK[Control_STK_SIZE];
-//任务函数
-void Control_task(void *p_arg);						//控制任务
-
-//任务优先级
 #define WIFI_TASK_PRIO		12
 //任务堆栈大小	
-#define WIFI_STK_SIZE 		512
+#define WIFI_STK_SIZE 		128
 //任务控制块
 OS_TCB WIFITaskTCB;
 //任务堆栈	
@@ -159,7 +161,7 @@ void heartbeat_task(void *p_arg);							//心跳
 //任务优先级
 #define OPENBOX_TASK_PRIO		16
 //任务堆栈大小	
-#define OPENBOX_STK_SIZE 		1024
+#define OPENBOX_STK_SIZE 		512
 //任务控制块
 OS_TCB OPENBOXTaskTCB;
 //任务堆栈	
@@ -328,8 +330,39 @@ void start_task(void *p_arg)
                  (OS_OPT      )OS_OPT_TASK_STK_CHK|OS_OPT_TASK_STK_CLR, 
                  (OS_ERR 	* )&err);
 				 
+	//创建触摸屏任务
+	OSTaskCreate((OS_TCB 	* )&ScreenTaskTCB,				//9
+				 (CPU_CHAR	* )"Screen task", 		
+                 (OS_TASK_PTR )Screen_task, 			
+                 (void		* )0,					
+                 (OS_PRIO	  )Screen_TASK_PRIO,     	
+                 (CPU_STK   * )&Screen_TASK_STK[0],	
+                 (CPU_STK_SIZE)Screen_STK_SIZE/10,	
+                 (CPU_STK_SIZE)Screen_STK_SIZE,		
+                 (OS_MSG_QTY  )0,					
+                 (OS_TICK	  )0,					
+                 (void   	* )0,				
+                 (OS_OPT      )OS_OPT_TASK_STK_CHK|OS_OPT_TASK_STK_CLR, 
+                 (OS_ERR 	* )&err);				 
+				 
+	//创建路径流程任务
+	OSTaskCreate((OS_TCB 	* )&Task5_TaskTCB,				//10
+				 (CPU_CHAR	* )"Task5 task", 		
+				 (OS_TASK_PTR )Task5_task, 			
+				 (void		* )0,					
+				 (OS_PRIO	  )Task5_TASK_PRIO,     	
+				 (CPU_STK   * )&Task5_TASK_STK[0],	
+				 (CPU_STK_SIZE)Task5_STK_SIZE/10,	
+				 (CPU_STK_SIZE)Task5_STK_SIZE,		
+				 (OS_MSG_QTY  )0,					
+				 (OS_TICK	  )0,					
+				 (void   	* )0,				
+				 (OS_OPT      )OS_OPT_TASK_STK_CHK|OS_OPT_TASK_STK_CLR, 
+				 (OS_ERR 	* )&err);
+
+				 
 	//创建手动任务
-	OSTaskCreate((OS_TCB 	* )&ManualTaskTCB,				//9
+	OSTaskCreate((OS_TCB 	* )&ManualTaskTCB,				//11
 				 (CPU_CHAR	* )"Manual task", 		
                  (OS_TASK_PTR )Manual_task, 			
                  (void		* )0,					
@@ -344,36 +377,10 @@ void start_task(void *p_arg)
                  (OS_ERR 	* )&err);
 				 
 	
+	
 
-	//创建触摸屏任务
-	OSTaskCreate((OS_TCB 	* )&ScreenTaskTCB,				//10
-				 (CPU_CHAR	* )"Screen task", 		
-                 (OS_TASK_PTR )Screen_task, 			
-                 (void		* )0,					
-                 (OS_PRIO	  )Screen_TASK_PRIO,     	
-                 (CPU_STK   * )&Screen_TASK_STK[0],	
-                 (CPU_STK_SIZE)Screen_STK_SIZE/10,	
-                 (CPU_STK_SIZE)Screen_STK_SIZE,		
-                 (OS_MSG_QTY  )0,					
-                 (OS_TICK	  )0,					
-                 (void   	* )0,				
-                 (OS_OPT      )OS_OPT_TASK_STK_CHK|OS_OPT_TASK_STK_CLR, 
-                 (OS_ERR 	* )&err);	
 
-	//控制
-	OSTaskCreate((OS_TCB 	* )&ControlTaskTCB,				//11
-				 (CPU_CHAR	* )"Control task", 		
-                 (OS_TASK_PTR )Control_task, 			
-                 (void		* )0,					
-                 (OS_PRIO	  )Control_TASK_PRIO,     	
-                 (CPU_STK   * )&Control_TASK_STK[0],	
-                 (CPU_STK_SIZE)Control_STK_SIZE/10,	
-                 (CPU_STK_SIZE)Control_STK_SIZE,		
-                 (OS_MSG_QTY  )0,					
-                 (OS_TICK	  )0,					
-                 (void   	* )0,				
-                 (OS_OPT      )OS_OPT_TASK_STK_CHK|OS_OPT_TASK_STK_CLR, 
-                 (OS_ERR 	* )&err);				 
+					 
 	//WIFI
 	OSTaskCreate((OS_TCB 	* )&WIFITaskTCB,				//12
 				 (CPU_CHAR	* )"WIFI task", 		
@@ -533,9 +540,9 @@ void float_task(void *p_arg)		//红外和机械避障
 	{	
 		#if 0
 		
-		if(!g_AGV_Car_mode)				//自动模式
+		if(!g_AGV_Status.Car_mode)				//自动模式
 		{
-			if(!g_AGV_Car_dir)	//0:前进
+			if(!g_AGV_Status.Car_dir)	//0:前进
 			{
 				temp_j = 0;
 			}
@@ -658,7 +665,7 @@ void Auto_task(void *p_arg)			//自动模式--前轮PID
 	//speek("任务");
 	while(1)
 	{
-		if(AGV_SYS.Car_Auto_Speed>0 && g_AGV_Car_mode == 0) 
+		if(AGV_SYS.Car_Auto_Speed>0 && g_AGV_Status.Car_mode == 0) 
 		{
 			if(g_Start_flag.Start_Auto_PID)		//1:找到磁条
 			{
@@ -683,7 +690,7 @@ void PID_task(void *p_arg)			//自动模式--后轮PID
 	
 	while(1)
 	{
-		if(AGV_SYS.Car_Auto_Speed>0 && g_AGV_Car_mode == 0) 
+		if(AGV_SYS.Car_Auto_Speed>0 && g_AGV_Status.Car_mode == 0) 
 		{
 			if(g_Start_flag.Start_Auto_PID)		//1:找到磁条
 			{
@@ -719,7 +726,7 @@ void Manual_task(void *p_arg)  		//手动任务
 			//后退左右转 -- 前轮打直,后轮负责转向
 		
 		
-			if(g_AGV_Car_mode) //1://手动模式
+			if(g_AGV_Status.Car_mode) //1://手动模式
 			{	
 				if(g_AGV_yaokong.SD_Speed > 50 && g_AGV_yaokong.SD_ir!=0) 	
 				{
@@ -775,6 +782,8 @@ void Manual_task(void *p_arg)  		//手动任务
 
 void Screen_task(void *p_arg)    	//触摸屏界面操作
 {
+	u16 i=0, j=0;
+	
 	OS_ERR err;
 	p_arg = p_arg;	
 	
@@ -783,87 +792,83 @@ void Screen_task(void *p_arg)    	//触摸屏界面操作
 	while(1)
 	{
 
-		#if 1
+		#if 0
 		
 	    switch(HmiScreenSetGet)
         {
 
 			//开发者界面程序段
-			case ShouDongJieMian: 		//--3					//3//手动操作界面
+			case ShouDongJieMian: 		//--3					//3//手动操作界面 -- OK 
 			{
 				while(HmiScreenSetGet == ShouDongJieMian)		
 				{
 					
 					 if(g_shoudong_manual == 1)						//屏幕的手动按键按下时
 					 {
-							//Shou_Dong();		//切到手动程序
+							Shou_Dong();		//切到手动程序
 						 
-							g_AGV_Car_mode = 1;
-							speek("手动");
-							delay_rtos(0,0,0,500);
 					 }
 					 else if(g_shoudong_auto == 1)				//屏幕的自动按键按下时
 					 {
-							//Zi_Dong();			//切到自动程序
-							g_AGV_Car_mode = 0;
-							speek("自动");
-						 delay_rtos(0,0,0,500);
+							Zi_Dong();			//切到自动程序
 					 }
-					 else if(g_shoudong_guntong_zuozhuan == 1)				//辊筒左转
+					 
+					 if(g_shoudong_guntong_zuozhuan == 1)				//辊筒左转
 					 {
 							//Cha_Sheng();
 							guntong_start = 1;		//高电平有效
 							speek("辊筒左转");
 						 delay_rtos(0,0,0,500);
 					 }
-					 else if(g_shoudong_guntong_youzhuan == 1)				//辊筒右转
+					 else
+					 {
+						guntong_start = 0;		//高电平有效
+					 }
+					 if(g_shoudong_guntong_youzhuan == 1)				//辊筒右转
 					 {
 							//Cha_Jiang();
 							guntong_fanzhuan = 1;	//高电平有效
 							speek("辊筒右转");
 						 delay_rtos(0,0,0,500);
 					 }
-					 else if(g_shoudong_turn_left == 1)				//左转
+					 else
+					 {
+						guntong_fanzhuan = 0;		//高电平有效
+					 }					 
+					 
+					 if(g_shoudong_turn_left == 1)				//左转
 					 {
 							//Zuo_Fen();
-							speek("左转向");
+							speek("左转");
 						 delay_rtos(0,0,0,500);
 					 }
 					 else if(g_shoudong_turn_right == 1)				//右转
 					 {
 							//You_Fen();
-							speek("右转向");
+							speek("右转");
 						 delay_rtos(0,0,0,500);
 					 }
-					 if(g_AGV_Car_mode == 0)				//0:自动模式 1:自动模式
+					 
+					 if(g_AGV_Status.Car_mode == 0)				//0:自动模式 1:自动模式
 					 {
 							if(g_shoudong_start == 1)			//启动
 							{
-								//Qi_Dong();		//启动的语音
-								g_shoudong_start = 1;
-								speek("启动");
-								delay_rtos(0,0,0,500);
+								Qi_Dong();		//启动的语音
+
 							}
 							if(g_shoudong_stop == 1)		 	//停止
 							{
-								//Ting_Zhi();		//停止的语音
-								g_shoudong_stop = 1;
-								speek("停止");
-								delay_rtos(0,0,0,500);
+								Ting_Zhi();		//停止的语音
+
 							}
 							else if(g_shoudong_goto == 1)		//设置前进方向,自动模式下,设置行走方向
 							{
-								//Qian_Jin();		//前进模式
-								g_AGV_Car_dir = 0;
-								speek("方向前进");
-								delay_rtos(0,0,0,500);
+								Qian_Jin();		//前进模式
+
 							}
 							else if(g_shoudong_goback == 1) 	//设置后退方向,自动模式下,设置行走方向
 							{
-								//Hou_You();		//后退模式
-								g_AGV_Car_dir = 1;
-								speek("方向后退");
-								delay_rtos(0,0,0,500);
+								Hou_Tui();		//后退模式
 							}
 					 }
 
@@ -878,7 +883,7 @@ void Screen_task(void *p_arg)    	//触摸屏界面操作
 			}
 			break;
 			//路径规划段界面	
-			case LuJingSheZhiJieMian: 				//9//路径设置界面（第一次选择规划路径时的界面）
+			case LuJingSheZhiJieMian: 				//9//路径设置界面（第一次选择规划路径时的界面） 
 			{
 				//如果路径号为零，则置一
 				if(HmiRouteNum == 0)
@@ -891,293 +896,293 @@ void Screen_task(void *p_arg)    	//触摸屏界面操作
 			case FuZhiLuJingTanChuJieMian:				//11复制路径界面
 			case QueDingChaRuZhanDianJieMian: 			//12插入路径界面
 			case QueDingShanChuZhanDianJieMian:			//13删除路径界面
-			case XvNiDiBiaoJieMian:  					//14虚拟地标界面
+			case XvNiDiBiaoJieMian:  					//14虚拟地标界面			-- OK 
 			{
 				while(HmiScreenSetGet == LuJingGuiHuaJieMian || HmiScreenSetGet == FuZhiLuJingTanChuJieMian ||
 						HmiScreenSetGet == QueDingChaRuZhanDianJieMian || HmiScreenSetGet == QueDingShanChuZhanDianJieMian ||
 						HmiScreenSetGet == XvNiDiBiaoJieMian)
 				{
-	//				 //复制路径
-	//				 if(HmiScreenSetGet == FuZhiLuJingTanChuJieMian)
-	////				 {
-	////						//被复制路径号初始化为1
-	////						HmiRouteCopiedNum = 1;
-	////						while(HmiScreenSetGet == FuZhiLuJingTanChuJieMian) //处于复制路径界面
-	////						{
-	////							//被复制路径号为零时置1
-	////							if(HmiRouteCopiedNum == 0)
-	////								 HmiRouteCopiedNum = 1;
-	////							if(HmiRouteCopiedNum > RouteNum)
-	////							{
-	////								 HmiRouteCopiedNum = 1;
-	////							}
+				 //复制路径
+				 if(HmiScreenSetGet == FuZhiLuJingTanChuJieMian)
+				 {
+						//被复制路径号初始化为1
+						HmiRouteCopiedNum = 1;
+						while(HmiScreenSetGet == FuZhiLuJingTanChuJieMian) //处于复制路径界面
+						{
+							//被复制路径号为零时置1
+							if(HmiRouteCopiedNum == 0)
+								 HmiRouteCopiedNum = 1;
+							if(HmiRouteCopiedNum > RouteNum)
+							{
+								 HmiRouteCopiedNum = 1;
+							}
 
-	////							//输入的被复制流程号变化时更新
-	////							if(HmiRouteCopiedNumTemp != HmiRouteCopiedNum)
-	////								 HmiRouteCopiedCount = GetRouteStationNum(HmiRouteCopiedNum);
+							//输入的被复制流程号变化时更新
+							if(HmiRouteCopiedNumTemp != HmiRouteCopiedNum)
+								 HmiRouteCopiedCount = GetRouteStationNum(HmiRouteCopiedNum);
 
 
-	////							//确定复制
-	////							if(HmiRoutemode == 1)
-	////							{
-	////								 //读取被复制信息到当前
-	////								 GetRouteData(HmiRouteCopiedNum);
+							//确定复制
+							if(HmiRoutemode == 1)
+							{
+								 //读取被复制信息到当前
+								 GetRouteData(HmiRouteCopiedNum);
 
-	////								 //保存并更新被复制信息
-	////								 SetRouteData(HmiRouteNum);
+								 //保存并更新被复制信息
+								 SetRouteData(HmiRouteNum);
 
-	////								 UpdataStationToHmi();
+								 UpdataStationToHmi();
 
-	////								 //设置当前站点为1
-	////								 if(HmiStationNum != 0)
-	////										HmiStationSerialNum = 1;
+								 //设置当前站点为1
+								 if(HmiStationNum != 0)
+										HmiStationSerialNum = 1;
 
-	////								 //退出复制模式
-	////								 HmiRoutemode = 0;
-	////							}
-	////							osdelay_ms(10);
-	////						}
-	////				 }
+								 //退出复制模式
+								 HmiRoutemode = 0;
+							}
+							osdelay_ms(10);
+						}
+				 }
 
-	//				 //添加站点
-	//				 if(HmiRoutemode == 2)									//4x41确定按键的模式，查看0，复制1，添加2，插入3，更改4，删除5
-	//				 {
-	//						//站点数加一
-	//						HmiStationNum ++;
-	//						//站点号等于站点数
-	//						HmiStationSerialNum = HmiStationNum;
+				 //添加站点
+				 if(HmiRoutemode == 2)									//4x41确定按键的模式，查看0，复制1，添加2，插入3，更改4，删除5
+				 {
+						//站点数加一
+						HmiStationNum ++;
+						//站点号等于站点数
+						HmiStationSerialNum = HmiStationNum;
 
-	//						//地标号清零
-	//						keynumber = 0;
+						//地标号清零
+						g_AGV_Status.RFID_ID = 0;
 
-	//						ClearStationToHmi();
-	//				 
-	//						while(HmiRoutemode == 2)
-	//						{
-	//							//如果读到地标，更新到显示器
-	//							if(keynumber != 0)
-	//							{
-	//								 HmiRfidNum = keynumber;//刷新地标号
-	//								 keynumber = 0;
-	//							}
+						ClearStationToHmi();
+				 
+						while(HmiRoutemode == 2)		//添加模式
+						{
+							//如果读到地标，更新到显示器
+							if(g_AGV_Status.RFID_ID != 0)
+							{
+								 HmiRfidNum = g_AGV_Status.RFID_ID;//刷新地标号
+								 g_AGV_Status.RFID_ID = 0;
+							}
 
-	//							//确定
-	//							if(HmiRouteEnter == 1)
-	//							{
-	//								 HmiRouteEnter = 0;
-	//								 //更新站点数据到当前数据
-	//								 UpdataStationToNow();
-	//								 //保存当前站点数据
-	//								 SetRouteData(HmiRouteNum);
-	//								 //退出添加模式
-	//								 HmiRoutemode =	0;
-	//							}
-	//							else
-	//								 //取消
-	//								 if(HmiRouteEnter == 2)
-	//								 {
-	//										HmiRouteEnter = 0;
-	//										//站点数减一
-	//										HmiStationNum--;
-	//										//站点号等于站点数
-	//										HmiStationSerialNum = HmiStationNum;
-	//										//退出添加模式
-	//										HmiRoutemode =	0;
-	//								 }
-	//							osdelay_ms(10);
-	//						}
-	//				 }
-	//				 //插入站点
-	//				 if(HmiRoutemode == 3)
-	//				 {
-	//						//站点数加一
-	//						HmiStationNum ++;
-	//						//站点号为零时加一
-	//						if(HmiStationNum == 0)
-	//							HmiStationSerialNum = 1;
+							//确定
+							if(HmiRouteEnter == 1)
+							{
+								 HmiRouteEnter = 0;
+								 //更新站点数据到当前数据
+								 UpdataStationToNow();
+								 //保存当前站点数据
+								 SetRouteData(HmiRouteNum);
+								 //退出添加模式
+								 HmiRoutemode =	0;
+							}
+							else
+								 //取消
+								 if(HmiRouteEnter == 2)
+								 {
+										HmiRouteEnter = 0;
+										//站点数减一
+										HmiStationNum--;
+										//站点号等于站点数
+										HmiStationSerialNum = HmiStationNum;
+										//退出添加模式
+										HmiRoutemode =	0;
+								 }
+							osdelay_ms(10);
+						}
+				 }
+				 //插入站点
+				 if(HmiRoutemode == 3)
+				 {
+						//站点数加一
+						HmiStationNum ++;
+						//站点号为零时加一
+						if(HmiStationNum == 0)
+							HmiStationSerialNum = 1;
 
-	//						//地标号清零
-	//						keynumber = 0;
+						//地标号清零
+						g_AGV_Status.RFID_ID = 0;
 
-	//						ClearStationToHmi();
+						ClearStationToHmi();
 
-	//						while(HmiRoutemode == 3)
-	//						{
-	//							//如果读到地标，更新到显示器
-	//							if(keynumber != 0)
-	//							{
-	//								 HmiRfidNum = keynumber;//刷新地标号
-	//								 keynumber = 0;
-	//							}
+						while(HmiRoutemode == 3)
+						{
+							//如果读到地标，更新到显示器
+							if(g_AGV_Status.RFID_ID != 0)
+							{
+								 HmiRfidNum = g_AGV_Status.RFID_ID;//刷新地标号
+								 g_AGV_Status.RFID_ID = 0;
+							}
 
-	//							//确定
-	//							if(HmiRouteEnter == 1)
-	//							{
-	//								 HmiRouteEnter = 0;
+							//确定
+							if(HmiRouteEnter == 1)
+							{
+								 HmiRouteEnter = 0;
 
-	//								 //站点信息向后移动一个位置，并插入当前站点信息
-	//								 for(i = HmiStationNum; i >= HmiStationSerialNum; i--)
-	//								 {
-	//										for(j = 0; j < StaiionInfor; j++)
-	//										{
-	//											NowRouteInfor[i][j] = NowRouteInfor[i - 1][j];
-	//										}
-	//								 }
+								 //站点信息向后移动一个位置，并插入当前站点信息
+								 for(i = HmiStationNum; i >= HmiStationSerialNum; i--)
+								 {
+										for(j = 0; j < StaiionInfor; j++)
+										{
+											NowRouteInfor[i][j] = NowRouteInfor[i - 1][j];
+										}
+								 }
 
-	//								 //更新站点信息到当前
-	//								 UpdataStationToNow();
+								 //更新站点信息到当前
+								 UpdataStationToNow();
 
-	//								 //保存路径信息
-	//								 SetRouteData(HmiRouteNum);
+								 //保存路径信息
+								 SetRouteData(HmiRouteNum);
 
-	//								 //退出添加模式
-	//								 HmiRoutemode =	0;
-	//							}
-	//							else
-	//								 //取消
-	//								 if(HmiRouteEnter == 2)
-	//								 {
-	//										HmiRouteEnter = 0;
-	//										//站点数减一
-	//										HmiStationNum--;
-	//										//站点号为1时置零
-	//										if(HmiStationSerialNum == 1)
-	//											HmiStationSerialNum = 0;
-	//										//退出添加模式
-	//										HmiRoutemode =	0;
-	//								 }
+								 //退出添加模式
+								 HmiRoutemode =	0;
+							}
+							else
+								 //取消
+								 if(HmiRouteEnter == 2)
+								 {
+										HmiRouteEnter = 0;
+										//站点数减一
+										HmiStationNum--;
+										//站点号为1时置零
+										if(HmiStationSerialNum == 1)
+											HmiStationSerialNum = 0;
+										//退出添加模式
+										HmiRoutemode =	0;
+								 }
 
-	//							osdelay_ms(10);
-	//						}
+							osdelay_ms(10);
+						}
 
-	//				 }
-	//				 //更改站点
-	//				 if(HmiRoutemode == 4)
-	//				 {
-	//						keynumber = 0;
-	//						while(HmiRoutemode == 4)
-	//						{
-	//							//如果读到地标，更新到显示器
-	//							if(keynumber != 0)
-	//							{
-	//								 HmiRfidNum = keynumber;//刷新地标号
-	//								 keynumber = 0;
-	//							}
+				 }
+				 //更改站点
+				 if(HmiRoutemode == 4)
+				 {
+						g_AGV_Status.RFID_ID = 0;
+						while(HmiRoutemode == 4)
+						{
+							//如果读到地标，更新到显示器
+							if(g_AGV_Status.RFID_ID != 0)
+							{
+								 HmiRfidNum = g_AGV_Status.RFID_ID;//刷新地标号
+								 g_AGV_Status.RFID_ID = 0;
+							}
 
-	//							//确定
-	//							if(HmiRouteEnter == 1)
-	//							{
-	//								 HmiRouteEnter = 0;
-	//								 //更新站点数据到当前数据
-	//								 UpdataStationToNow();
-	//								 //保存当前站点数据
-	//								 SetRouteData(HmiRouteNum);
-	//								 //退出添加模式
-	//								 HmiRoutemode =	0;
-	//							}
-	//							else
-	//								 //取消
-	//								 if(HmiRouteEnter == 2)
-	//								 {
-	//										HmiRouteEnter = 0;
-	//										//更新到界面
-	//										UpdataStationToHmi();
-	//										//退出添加模式
-	//										HmiRoutemode =	0;
-	//								 }
-	//							osdelay_ms(10);
-	//						}
-	//				 }
+							//确定
+							if(HmiRouteEnter == 1)
+							{
+								 HmiRouteEnter = 0;
+								 //更新站点数据到当前数据
+								 UpdataStationToNow();
+								 //保存当前站点数据
+								 SetRouteData(HmiRouteNum);
+								 //退出添加模式
+								 HmiRoutemode =	0;
+							}
+							else
+								 //取消
+								 if(HmiRouteEnter == 2)
+								 {
+										HmiRouteEnter = 0;
+										//更新到界面
+										UpdataStationToHmi();
+										//退出添加模式
+										HmiRoutemode =	0;
+								 }
+							osdelay_ms(10);
+						}
+				 }
 
-	//				 //删除站点
-	//				 if(HmiRoutemode == 5)
-	//				 {
-	//						if(HmiStationNum > 0)
-	//						{
-	//							//将后面所数据向前移动一位
-	//							if((HmiStationNum > 0) && ((HmiStationNum) != HmiStationSerialNum))
-	//							{
-	//								 //站点信息向前移动一个位置
-	//								 for(i = HmiStationSerialNum; i < HmiStationNum; i++)
-	//								 {
-	//										for(j = 0; j < StaiionInfor; j++)
-	//										{
-	//											NowRouteInfor[i - 1][j] = NowRouteInfor[i][j];
-	//										}
-	//								 }
-	//							}
+				 //删除站点
+				 if(HmiRoutemode == 5)
+				 {
+						if(HmiStationNum > 0)
+						{
+							//将后面所数据向前移动一位
+							if((HmiStationNum > 0) && ((HmiStationNum) != HmiStationSerialNum))
+							{
+								 //站点信息向前移动一个位置
+								 for(i = HmiStationSerialNum; i < HmiStationNum; i++)
+								 {
+										for(j = 0; j < StaiionInfor; j++)
+										{
+											NowRouteInfor[i - 1][j] = NowRouteInfor[i][j];
+										}
+								 }
+							}
 
-	//							HmiStationNum--;
-	//							if(HmiStationNum == 0)
-	//								 HmiStationSerialNum = 0;
-	//							else if((HmiStationNum + 1) == HmiStationSerialNum)
-	//								 HmiStationSerialNum--;
-	//							//保存路径信息
-	//							SetRouteData(HmiRouteNum);
+							HmiStationNum--;
+							if(HmiStationNum == 0)
+								 HmiStationSerialNum = 0;
+							else if((HmiStationNum + 1) == HmiStationSerialNum)
+								 HmiStationSerialNum--;
+							//保存路径信息
+							SetRouteData(HmiRouteNum);
 
-	//							//更新界面
-	//							UpdataStationToHmi();
-	//						}
-	//						HmiRoutemode = 0;
-	//				 }
+							//更新界面
+							UpdataStationToHmi();
+						}
+						HmiRoutemode = 0;
+				 }
 
-	//				 //查询站点
-	//				 if(HmiRoutemode == 0)
-	//				 {
-	//						//当路径站点数大于0，并且序号为0时，设置序号为1，并更新显示内容
-	//						if((HmiStationNum > 0) && (HmiStationSerialNum == 0))
-	//						{
-	//							HmiStationSerialNum = 1;
-	//							//更新到界面
-	//							UpdataStationToHmi();
-	//						}
-	//						else if(HmiStationNum == 0)
-	//						{
-	//							HmiStationSerialNum = 0;
-	//						}
+				 //查询站点
+				 if(HmiRoutemode == 0)
+				 {
+						//当路径站点数大于0，并且序号为0时，设置序号为1，并更新显示内容
+						if((HmiStationNum > 0) && (HmiStationSerialNum == 0))
+						{
+							HmiStationSerialNum = 1;
+							//更新到界面
+							UpdataStationToHmi();
+						}
+						else if(HmiStationNum == 0)
+						{
+							HmiStationSerialNum = 0;
+						}
 
-	//						//路径号变化时，更新界面
-	//						if(HmiRouteNumFlag != HmiRouteNum)
-	//						{
-	//							HmiRouteNumFlag = HmiRouteNum;
-	//							//获取路径信息
-	//							GetRouteData(HmiRouteNum);
-	//							if(HmiStationNum > 0)
-	//								 HmiStationSerialNum = 1;
-	//							//更新到界面
-	//							UpdataStationToHmi();
-	//						}
+						//路径号变化时，更新界面
+						if(HmiRouteNumFlag != HmiRouteNum)
+						{
+							HmiRouteNumFlag = HmiRouteNum;
+							//获取路径信息
+							GetRouteData(HmiRouteNum);
+							if(HmiStationNum > 0)
+								 HmiStationSerialNum = 1;
+							//更新到界面
+							UpdataStationToHmi();
+						}
 
-	//						//上一个
-	//						if(HmiStationLast == 1)
-	//						{
-	//							HmiStationLast = 0;
-	//							if(HmiStationSerialNum > 1)
-	//								 HmiStationSerialNum--;
-	//							else
-	//								 HmiStationSerialNum = HmiStationNum;
-	//						}
-	//						//下一个
-	//						if(HmiStationNext == 2)
-	//						{
-	//							HmiStationNext = 0;
-	//							if(HmiStationSerialNum < HmiStationNum)
-	//								 HmiStationSerialNum++;
-	//							else if(HmiStationSerialNum != 0)
-	//								 HmiStationSerialNum = 1;
-	//						}
+						//上一个
+						if(HmiStationLast == 1)
+						{
+							HmiStationLast = 0;
+							if(HmiStationSerialNum > 1)
+								 HmiStationSerialNum--;
+							else
+								 HmiStationSerialNum = HmiStationNum;
+						}
+						//下一个
+						if(HmiStationNext == 2)
+						{
+							HmiStationNext = 0;
+							if(HmiStationSerialNum < HmiStationNum)
+								 HmiStationSerialNum++;
+							else if(HmiStationSerialNum != 0)
+								 HmiStationSerialNum = 1;
+						}
 
-	//						if(HmiStationNum == 0)		//没有站点
-	//						{
-	//							//清除站点信息
-	//							ClearStationToHmi();
-	//						}
-	//						else
-	//						{
-	//							//更新站点信息
-	//							UpdataStationToHmi();
-	//						}
-	//				 }
+						if(HmiStationNum == 0)		//没有站点
+						{
+							//清除站点信息
+							ClearStationToHmi();
+						}
+						else
+						{
+							//更新站点信息
+							UpdataStationToHmi();
+						}
+				 }
 					osdelay_ms(10);
 				}
 			}
@@ -1195,449 +1200,430 @@ void Screen_task(void *p_arg)    	//触摸屏界面操作
 			case LiuChengGuiHuaJieMian:				//流程规划界面
 			case FuZhiLiuChengTanChuJieMian:		//复制流程界面
 			case QueDingChaRuLiuChengJieMian:   	//插入流程界面
-			case QueDingShanChuLiuChengJieMian: 	//删除流程界面
+			case QueDingShanChuLiuChengJieMian: 	//删除流程界面					-- OK
 			{
 				while(HmiScreenSetGet == LiuChengGuiHuaJieMian || HmiScreenSetGet == FuZhiLiuChengTanChuJieMian || HmiScreenSetGet == QueDingChaRuLiuChengJieMian || HmiScreenSetGet == QueDingShanChuLiuChengJieMian)
 				{
-//					 //查看模式
-//					 if(HmiProcessMode == 0)
-//					 {
-//							//当前流程步数大于0，并且界面序号为0时，设置序号为1，并更新显示内容
-//							if((HmiStepNum > 0) && (HmiProcessSerialNum == 0))
-//							{
-//								HmiProcessSerialNum = 1;
-//								GetProcessData();
-//							}
-//							else if(HmiStepNum == 0)
-//							{
-//								HmiProcessSerialNum = 0;
-//								HmiProcessStartNum = 0;
-//								HmiProcessStopNum = 0;
-//								HmiProcessAction = 0;
-//							}
+					 //查看模式
+					 if(HmiProcessMode == 0)
+					 {
+							//当前流程步数大于0，并且界面序号为0时，设置序号为1，并更新显示内容
+							if((HmiStepNum > 0) && (HmiProcessSerialNum == 0))
+							{
+								HmiProcessSerialNum = 1;
+								GetProcessData();
+							}
+							else if(HmiStepNum == 0)
+							{
+								HmiProcessSerialNum = 0;
+								HmiProcessStartNum = 0;
+								HmiProcessStopNum = 0;
+								HmiProcessAction = 0;
+							}
 
-//							//流程号变化时，更新界面
-//							if(HmiProcessNumFlag != HmiProcessNum)
-//							{
-//								HmiProcessNumFlag = HmiProcessNum;
-//								GetProcessData();
-//							}
+							//流程号变化时，更新界面
+							if(HmiProcessNumFlag != HmiProcessNum)
+							{
+								HmiProcessNumFlag = HmiProcessNum;
+								GetProcessData();
+							}
 
-//							if(HmiProcessLast == 1) //上一个
-//							{
-//								HmiProcessLast = 0;
-//								if(HmiProcessSerialNum > 1)
-//									 HmiProcessSerialNum--;
-//								else
-//									 HmiProcessSerialNum = HmiStepNum;
-//							}
-//							else if(HmiProcessNext == 2) //下一个
-//							{
-//								HmiProcessNext = 0;
-//								if(HmiProcessSerialNum < HmiStepNum)
-//									 HmiProcessSerialNum++;
-//								else if(HmiProcessSerialNum != 0)
-//									 HmiProcessSerialNum = 1;
-//							}
+							if(HmiProcessLast == 1) //上一个
+							{
+								HmiProcessLast = 0;
+								if(HmiProcessSerialNum > 1)
+									 HmiProcessSerialNum--;
+								else
+									 HmiProcessSerialNum = HmiStepNum;
+							}
+							else if(HmiProcessNext == 2) //下一个
+							{
+								HmiProcessNext = 0;
+								if(HmiProcessSerialNum < HmiStepNum)
+									 HmiProcessSerialNum++;
+								else if(HmiProcessSerialNum != 0)
+									 HmiProcessSerialNum = 1;
+							}
 
-//							if(HmiStepNum == 0)
-//							{
-//								ClearStepToHmi();
-//							}
-//							else
-//							{
-//								UpdataProcessToHmi();
-//							}
+							if(HmiStepNum == 0)
+							{
+								ClearStepToHmi();
+							}
+							else
+							{
+								UpdataProcessToHmi();
+							}
 
-//					 }
+					 }
 
-//					 //复制流程
-//					 if(HmiScreenSetGet == FuZhiLiuChengTanChuJieMian)
-//					 {
-//							//初始化别复制流程为1
-//							HmiProcessCopiedNum = 1;
-//							while(HmiScreenSetGet == FuZhiLiuChengTanChuJieMian)
-//							{
-//								//被复制流程号为零时置1
-//								if(HmiProcessCopiedNum == 0)
-//									 HmiProcessCopiedNum = 1;
-//								if(HmiProcessCopiedNum > ProcessNum)
-//									 HmiProcessCopiedNum = 1;
+					 //复制流程
+					 if(HmiScreenSetGet == FuZhiLiuChengTanChuJieMian)
+					 {
+							//初始化别复制流程为1
+							HmiProcessCopiedNum = 1;
+							while(HmiScreenSetGet == FuZhiLiuChengTanChuJieMian)
+							{
+								//被复制流程号为零时置1
+								if(HmiProcessCopiedNum == 0)
+									 HmiProcessCopiedNum = 1;
+								if(HmiProcessCopiedNum > ProcessNum)
+									 HmiProcessCopiedNum = 1;
 
-//								//输入的被复制流程号变化时更新
-//								if(HmiProcessCopiedNumTemp != HmiProcessCopiedNum)
-//									 HmiProcessCopiedCount = GetProcessStepNum(HmiProcessCopiedNum);
+								//输入的被复制流程号变化时更新
+								if(HmiProcessCopiedNumTemp != HmiProcessCopiedNum)
+									 HmiProcessCopiedCount = GetProcessStepNum(HmiProcessCopiedNum);
 
-//								//确定复制
-//								if(HmiProcessMode == 1)
-//								{
-//									 //读取被复制信息到当前
-//									 GetProcessDataFrom(HmiProcessCopiedNum);
-//									 //保存被复制信息
-//									 SetProcessData();
+								//确定复制
+								if(HmiProcessMode == 1)
+								{
+									 //读取被复制信息到当前
+									 GetProcessDataFrom(HmiProcessCopiedNum);
+									 //保存被复制信息
+									 SetProcessData();
 
-//									 //设置当前序号为1
-//									 if(HmiStepNum != 0)
-//											HmiProcessSerialNum = 1;
+									 //设置当前序号为1
+									 if(HmiStepNum != 0)
+											HmiProcessSerialNum = 1;
 
-//									 //退出复制模式
-//									 HmiProcessMode = 0;
-//								}
-//								osdelay_ms(10);
-//							}
-//					 }
+									 //退出复制模式
+									 HmiProcessMode = 0;
+								}
+								osdelay_ms(10);
+							}
+					 }
 
-//					 //添加流程
-//					 if(HmiProcessMode == 2)
-//					 {
-//							//流程步数加一
-//							HmiStepNum++;
-//							//序号等于流程数
-//							HmiProcessSerialNum = HmiStepNum;
+					 //添加流程
+					 if(HmiProcessMode == 2)
+					 {
+							//流程步数加一
+							HmiStepNum++;
+							//序号等于流程数
+							HmiProcessSerialNum = HmiStepNum;
 
-//							ClearStepToHmi();
+							ClearStepToHmi();
 
-//							while(HmiProcessMode == 2)
-//							{
-//								switch(HmiProcessAction)
-//								{
-//								case 0://单次执行
-//									 break;
-//								case 1://顺序执行到
-//									 if(HmiProcessStopNum <= HmiProcessStartNum)
-//									 {
-//											if(HmiProcessStartNum == ProcessNum)
-//												HmiProcessStopNum = HmiProcessStartNum;
-//											else
-//												HmiProcessStopNum = HmiProcessStartNum + 1;
-//									 }
-//									 break;
-//								case 2://倒序执行
-//									 if(HmiProcessStopNum >= HmiProcessStartNum)
-//									 {
-//											if(HmiProcessStartNum == 1)
-//												HmiProcessStopNum = HmiProcessStartNum;
-//											else
-//												HmiProcessStopNum = HmiProcessStartNum - 1;
-//									 }
-//									 break;
-//								case 3://循环执行
-//									 if(HmiProcessStopNum == 0)
-//									 {
-//											HmiProcessStopNum = 1;
-//									 }
-//									 break;
-//								default:
-//									 break;
-//								}
+							while(HmiProcessMode == 2)
+							{
+								switch(HmiProcessAction)
+								{
+								case 0://单次执行
+									 break;
+								case 1://顺序执行到
+									 if(HmiProcessStopNum <= HmiProcessStartNum)
+									 {
+											if(HmiProcessStartNum == ProcessNum)
+												HmiProcessStopNum = HmiProcessStartNum;
+											else
+												HmiProcessStopNum = HmiProcessStartNum + 1;
+									 }
+									 break;
+								case 2://倒序执行
+									 if(HmiProcessStopNum >= HmiProcessStartNum)
+									 {
+											if(HmiProcessStartNum == 1)
+												HmiProcessStopNum = HmiProcessStartNum;
+											else
+												HmiProcessStopNum = HmiProcessStartNum - 1;
+									 }
+									 break;
+								case 3://循环执行
+									 if(HmiProcessStopNum == 0)
+									 {
+											HmiProcessStopNum = 1;
+									 }
+									 break;
+								default:
+									 break;
+								}
 
-//								//确定
-//								if(HmiProcessEnter == 1)
-//								{
-//									 HmiProcessEnter = 0;
-//									 //保存并更新数据
-//									 SetProcessData();
+								//确定
+								if(HmiProcessEnter == 1)
+								{
+									 HmiProcessEnter = 0;
+									 //保存并更新数据
+									 SetProcessData();
 
-//									 //退出添加模式
-//									 HmiProcessMode = 0;
-//								}
-//								//取消
-//								else if(HmiProcessEnter == 2)
-//								{
-//									 HmiProcessEnter = 0;
+									 //退出添加模式
+									 HmiProcessMode = 0;
+								}
+								//取消
+								else if(HmiProcessEnter == 2)
+								{
+									 HmiProcessEnter = 0;
 
-//									 //流程步数减一
-//									 HmiStepNum--;
-//									 //序号等于流程数
-//									 HmiProcessSerialNum = HmiStepNum;
+									 //流程步数减一
+									 HmiStepNum--;
+									 //序号等于流程数
+									 HmiProcessSerialNum = HmiStepNum;
 
-//									 //退出添加模式
-//									 HmiProcessMode = 0;
-//								}
-//								osdelay_ms(10);
-//							}
-//					 }
+									 //退出添加模式
+									 HmiProcessMode = 0;
+								}
+								osdelay_ms(10);
+							}
+					 }
 
 
-//					 //插入流程
-//					 if(HmiProcessMode == 3)
-//					 {
-//							//流程步数加一
-//							HmiStepNum++;
-//							//序号为零时加一
-//							if(HmiProcessSerialNum == 0)
-//								HmiProcessSerialNum = 1;
+					 //插入流程
+					 if(HmiProcessMode == 3)
+					 {
+							//流程步数加一
+							HmiStepNum++;
+							//序号为零时加一
+							if(HmiProcessSerialNum == 0)
+								HmiProcessSerialNum = 1;
 
-//							ClearStepToHmi();
+							ClearStepToHmi();
 
-//							while(HmiProcessMode == 3)
-//							{
-//								switch(HmiProcessAction)
-//								{
-//								case 0://单次执行
-//									 break;
-//								case 1://顺序执行到
-//									 if(HmiProcessStopNum <= HmiProcessStartNum)
-//									 {
-//											if(HmiProcessStartNum == ProcessNum)
-//												HmiProcessStopNum = HmiProcessStartNum;
-//											else
-//												HmiProcessStopNum = HmiProcessStartNum + 1;
-//									 }
-//									 break;
-//								case 2://倒序执行
-//									 if(HmiProcessStopNum >= HmiProcessStartNum)
-//									 {
-//											if(HmiProcessStartNum == 1)
-//												HmiProcessStopNum = HmiProcessStartNum;
-//											else
-//												HmiProcessStopNum = HmiProcessStartNum - 1;
-//									 }
-//									 break;
-//								case 3://循环执行
-//									 if(HmiProcessStopNum == 0)
-//									 {
-//											HmiProcessStopNum = 1;
-//									 }
-//									 break;
-//								default:
-//									 break;
-//								}
+							while(HmiProcessMode == 3)
+							{
+								switch(HmiProcessAction)
+								{
+								case 0://单次执行
+									 break;
+								case 1://顺序执行到
+									 if(HmiProcessStopNum <= HmiProcessStartNum)
+									 {
+											if(HmiProcessStartNum == ProcessNum)
+												HmiProcessStopNum = HmiProcessStartNum;
+											else
+												HmiProcessStopNum = HmiProcessStartNum + 1;
+									 }
+									 break;
+								case 2://倒序执行
+									 if(HmiProcessStopNum >= HmiProcessStartNum)
+									 {
+											if(HmiProcessStartNum == 1)
+												HmiProcessStopNum = HmiProcessStartNum;
+											else
+												HmiProcessStopNum = HmiProcessStartNum - 1;
+									 }
+									 break;
+								case 3://循环执行
+									 if(HmiProcessStopNum == 0)
+									 {
+											HmiProcessStopNum = 1;
+									 }
+									 break;
+								default:
+									 break;
+								}
 
-//								//确定
-//								if(HmiProcessEnter == 1)
-//								{
-//									 HmiProcessEnter = 0;
+								//确定
+								if(HmiProcessEnter == 1)
+								{
+									 HmiProcessEnter = 0;
 
-//									 //保存并更新数据
-//									 InsertProcessData();
+									 //保存并更新数据
+									 InsertProcessData();
 
-//									 //退出插入模式
-//									 HmiProcessMode = 0;
-//								}
-//								//取消
-//								else if(HmiProcessEnter == 2)
-//								{
-//									 HmiProcessEnter = 0;
+									 //退出插入模式
+									 HmiProcessMode = 0;
+								}
+								//取消
+								else if(HmiProcessEnter == 2)
+								{
+									 HmiProcessEnter = 0;
 
-//									 //流程步数减一
-//									 HmiStepNum--;
-//									 //序号为1时减一
-//									 if(HmiProcessSerialNum == 1)
-//											HmiProcessSerialNum = 0;
+									 //流程步数减一
+									 HmiStepNum--;
+									 //序号为1时减一
+									 if(HmiProcessSerialNum == 1)
+											HmiProcessSerialNum = 0;
 
-//									 //退出添加模式
-//									 HmiProcessMode = 0;
-//								}
-//								osdelay_ms(10);
-//							}
-//					 }
+									 //退出添加模式
+									 HmiProcessMode = 0;
+								}
+								osdelay_ms(10);
+							}
+					 }
 
-//					 //更改流程
-//					 if(HmiProcessMode == 4)
-//					 {
-//							while(HmiProcessMode == 4)
-//							{
-//								switch(HmiProcessAction)
-//								{
-//								case 0://单次执行
-//									 break;
-//								case 1://顺序执行到
-//									 if(HmiProcessStopNum <= HmiProcessStartNum)
-//									 {
-//											if(HmiProcessStartNum == ProcessNum)
-//												HmiProcessStopNum = HmiProcessStartNum;
-//											else
-//												HmiProcessStopNum = HmiProcessStartNum + 1;
-//									 }
-//									 break;
-//								case 2://倒序执行
-//									 if(HmiProcessStopNum >= HmiProcessStartNum)
-//									 {
-//											if(HmiProcessStartNum == 1)
-//												HmiProcessStopNum = HmiProcessStartNum;
-//											else
-//												HmiProcessStopNum = HmiProcessStartNum - 1;
-//									 }
-//									 break;
-//								case 3://循环执行
-//									 if(HmiProcessStopNum == 0)
-//									 {
-//											HmiProcessStopNum = 1;
-//									 }
-//									 break;
-//								default:
-//									 break;
-//								}
+					 //更改流程
+					 if(HmiProcessMode == 4)
+					 {
+							while(HmiProcessMode == 4)
+							{
+								switch(HmiProcessAction)
+								{
+								case 0://单次执行
+									 break;
+								case 1://顺序执行到
+									 if(HmiProcessStopNum <= HmiProcessStartNum)
+									 {
+											if(HmiProcessStartNum == ProcessNum)
+												HmiProcessStopNum = HmiProcessStartNum;
+											else
+												HmiProcessStopNum = HmiProcessStartNum + 1;
+									 }
+									 break;
+								case 2://倒序执行
+									 if(HmiProcessStopNum >= HmiProcessStartNum)
+									 {
+											if(HmiProcessStartNum == 1)
+												HmiProcessStopNum = HmiProcessStartNum;
+											else
+												HmiProcessStopNum = HmiProcessStartNum - 1;
+									 }
+									 break;
+								case 3://循环执行
+									 if(HmiProcessStopNum == 0)
+									 {
+											HmiProcessStopNum = 1;
+									 }
+									 break;
+								default:
+									 break;
+								}
 
-//								//确定
-//								if(HmiProcessEnter == 1)
-//								{
-//									 HmiProcessEnter = 0;
-//									 //保存并更新数据
-//									 SetProcessData();
+								//确定
+								if(HmiProcessEnter == 1)
+								{
+									 HmiProcessEnter = 0;
+									 //保存并更新数据
+									 SetProcessData();
 
-//									 //退出更改模式
-//									 HmiProcessMode = 0;
-//								}
-//								//取消
-//								else if(HmiProcessEnter == 2)
-//								{
-//									 HmiProcessEnter = 0;
+									 //退出更改模式
+									 HmiProcessMode = 0;
+								}
+								//取消
+								else if(HmiProcessEnter == 2)
+								{
+									 HmiProcessEnter = 0;
 
-//									 //退出添加模式
-//									 HmiProcessMode = 0;
-//								}
-//								osdelay_ms(10);
-//							}
-//					 }
+									 //退出添加模式
+									 HmiProcessMode = 0;
+								}
+								osdelay_ms(10);
+							}
+					 }
 
-//					 //删除流程
-//					 if(HmiProcessMode == 5)
-//					 {
-//							DeleteProcessData();
-//							//退出删除模式
-//							HmiProcessMode = 0;
-//					 }
+					 //删除流程
+					 if(HmiProcessMode == 5)
+					 {
+							DeleteProcessData();
+							//退出删除模式
+							HmiProcessMode = 0;
+					 }
 
 					 osdelay_ms(10);
 				}
 			}
 			break;
 			//执行任务段界面
-			case ZhiXingLuJingJieMian: 				//18//执行路径界面
+			case ZhiXingLuJingJieMian: 				//18//执行路径界面			-- 		OK 
 			{
 				while(HmiScreenSetGet == ZhiXingLuJingJieMian)
 				{
-//					 if(ZhiXingLuJingQueDing == 1)
-//					 {
-//							//保存路径号
-//							SetOneParameterToSystem(HmiRouteNum, 24);
-//							SystemParameter[26] = HmiTask;
-//							//保存任务号
-//							SetOneParameterToSystem(HmiTask, 26);
-//							ZhiXingLuJingQueDing = 0;
+					 if(ZhiXingLuJingQueDing == 1)
+					 {
+							//保存路径号
+							SetOneParameterToSystem(HmiRouteNum, 24);
+							SystemParameter[26] = HmiTask;
+							//保存任务号
+							SetOneParameterToSystem(HmiTask, 26);
+							ZhiXingLuJingQueDing = 0;
 
-//							//加载自动界面信息
-//							HmiAutoReload();
+							//加载自动界面信息
+							HmiAutoReload();
 
-//							HmiTask = 1;
+							HmiTask = 1;
 
-//							FX_flag = 1; //方向切换到前进
+							 g_AGV_Status.Car_dir = 0; //方向切换到前进
 
-//							//跳转到自动界面
-//							HmiScreenSetGet = ZiDongJieMian;
-//					 }
+							//跳转到自动界面
+							HmiScreenSetGet = ZiDongJieMian;
+					 }
 					 osdelay_ms(10);
 				}
 			}
 			break;
-			case ZhiXingLiuChengJieMian:  			//执行流程界面
+			case ZhiXingLiuChengJieMian:  			//执行流程界面				--  	Ok
 			{
 				while(HmiScreenSetGet == ZhiXingLiuChengJieMian)
 				{
-//					 if(ZhiXingLiuChengQueDing == 1)
-//					 {
-//							ActiveProcess();
-//							ZhiXingLiuChengQueDing = 0;
-//					 }
+					 if(ZhiXingLiuChengQueDing == 1)
+					 {
+							ActiveProcess(); 
+							ZhiXingLiuChengQueDing = 0;
+					 }
 					 osdelay_ms(10);
 				}
 			}
 			break;
-			case ZiDongJieMian: 					//20自动运行界面
+			case ZiDongJieMian: 					//20自动运行界面			--    	OK 
 			{
 				while(HmiScreenSetGet == ZiDongJieMian)
 				{
 					 if(PLC_OutPut[4] == 1)						//屏幕的手动按键按下时
 					 {
-							//Shou_Dong();		//切到手动程序
-							g_AGV_Car_mode = 1;
+							Shou_Dong();		//切到手动程序
+							
 					 }
 					 else if(PLC_OutPut[5] == 1)				//屏幕的自动按键按下时
 					 {
-							//Zi_Dong();			//切到自动程序
-							g_AGV_Car_mode = 0;			 
+							Zi_Dong();			//切到自动程序
+									 
 					 }
-					 if(g_AGV_Car_mode == 0)				//0:自动模式 1:手动模式
+					 if(g_AGV_Status.Car_mode == 0)				//0:自动模式 1:手动模式
 					 {
 							if(PLC_OutPut[11] == 1)			//启动
 							{
-								//Qi_Dong();
-								g_shoudong_start = 1;
+								Qi_Dong();
+								
 							}
 							if(PLC_OutPut[12] == 1)		 	//停止
 							{
-								//Ting_Zhi();
-								g_shoudong_stop = 1;
+								Ting_Zhi();
+								
 							}
 					 }
 					 osdelay_ms(20);
 				}
 			}
 			break;
-			case QuXiaoRenWuJieMian: 				//取消任务界面
+			case QuXiaoRenWuJieMian: 				//21取消任务界面			--      OK 
 			{
 				while(HmiScreenSetGet == QuXiaoRenWuJieMian)
 				{
-//					 if(QuXiaoRenWuQueDing == 1)
-//					 {
-//							QuXiaoRenWuQueDing = 0;
+					 if(QuXiaoRenWuQueDing == 1)
+					 {
+							QuXiaoRenWuQueDing = 0;
 
-//							HmiTask = 0;
+							HmiTask = 0;
 
-//							//任务状态为空闲
-//							HmiTaskState = 0;
+							//任务状态为空闲
+							HmiTaskState = 0;
 
-//							//停车
-//							Ting_Zhi();
+							//停车
+							Ting_Zhi();
 
-//							//清除开门信号
-//							PLC2_Data[22] = 1; //(1,弹起开门按钮，10，按下开门按钮)
 
-//							//切换方向标识为前进
-//							FX_flag = 1;
+							HmiScreenSetGet = 2;
 
-//							//清除请求进入
-//							PLC2_Data[32] = 0;
-//							//清除设备内信号
-//							PLC2_Data[38] = 0;
-//							PLC2_Data[39] = 0;
-//							PLC2_Data[40] = 0;
-//							PLC2_Data[41] = 0;
-
-//							//跳转界面，返回之前界面
-//				//							  if(lastscreenNum != 0)
-//				//							  {
-//				//									HmiScreenSetGet = lastscreenNum;
-//				//									lastscreenNum = 0;
-//				//							  }
-//				//							  else
-//								HmiScreenSetGet = 2;
-
-//							//删除任务
-//							OSTaskDel((OS_TCB*)&Task5_TaskTCB, &err);
-//							//重新创建任务
-//							OSTaskCreate((OS_TCB 	* )&Task5_TaskTCB,
-//											(CPU_CHAR	* )"Task5 task",
-//											(OS_TASK_PTR )Task5_task,
-//											(void		* )0,
-//											(OS_PRIO	  )Task5_TASK_PRIO,
-//											(CPU_STK   * )&Task5_TASK_STK[0],
-//											(CPU_STK_SIZE)Task5_STK_SIZE / 10,
-//											(CPU_STK_SIZE)Task5_STK_SIZE,
-//											(OS_MSG_QTY  )0,
-//											(OS_TICK	  )0,
-//											(void   	* )0,
-//											(OS_OPT      )OS_OPT_TASK_STK_CHK | OS_OPT_TASK_STK_CLR,
-//											(OS_ERR 	* )&err);
-//					 }
+							//删除任务
+							OSTaskDel((OS_TCB*)&Task5_TaskTCB, &err);
+							//重新创建任务
+							OSTaskCreate((OS_TCB 	* )&Task5_TaskTCB,
+											(CPU_CHAR	* )"Task5 task",
+											(OS_TASK_PTR )Task5_task,
+											(void		* )0,
+											(OS_PRIO	  )Task5_TASK_PRIO,
+											(CPU_STK   * )&Task5_TASK_STK[0],
+											(CPU_STK_SIZE)Task5_STK_SIZE / 10,
+											(CPU_STK_SIZE)Task5_STK_SIZE,
+											(OS_MSG_QTY  )0,
+											(OS_TICK	  )0,
+											(void   	* )0,
+											(OS_OPT      )OS_OPT_TASK_STK_CHK | OS_OPT_TASK_STK_CLR,
+											(OS_ERR 	* )&err);
+											
+					 }
 					 osdelay_ms(10);
 				}
 			}
 			break;
 			//数据调试及系统参数界面段程序
-			case ChuanGanQiJieMian:					//22//传感器调试各个传感器的状态更新到屏幕上
+			case ChuanGanQiJieMian:					//22//传感器调试界面		--		OK
 			{
 				while(HmiScreenSetGet == ChuanGanQiJieMian)
 				{
@@ -1660,7 +1646,7 @@ void Screen_task(void *p_arg)    	//触摸屏界面操作
 				}
 			}
 			break;
-			case JiBenShuJuJieMian:					//23//基本数据测试界面
+			case JiBenShuJuJieMian:					//23//基本数据测试界面		--      OK
 			{
 				while(HmiScreenSetGet == JiBenShuJuJieMian)
 				{
@@ -1716,7 +1702,7 @@ void Screen_task(void *p_arg)    	//触摸屏界面操作
 				W25QXX_Write_16(SystemParameter+50, 50, 13);			//将当前屏幕参数写入到flash中
 			}
 			break;
-			case ChaBiShuJuJieMian:					//24//预留数据调试
+			case ChaBiShuJuJieMian:					//24//寻正上轨速度设置		--		OK
 			{
 				while(HmiScreenSetGet == ChaBiShuJuJieMian)
 				{
@@ -1725,8 +1711,6 @@ void Screen_task(void *p_arg)    	//触摸屏界面操作
 					//#define XZ_Speed42       	 PLC_Data[49] 		//磁条寻轨速度
 					//#define XZ_Speed43       	 PLC_Data[50] 		//电机最大速度
 
-
-					
 					AGV_SYS.XZ_MAX_Speed 		= SystemParameter[40] 		= 	XZ_Speed40;
 					AGV_SYS.XZ_DWQ_Speed_bili 	= SystemParameter[41] 		= 	XZ_Speed41;
 					AGV_SYS.XZ_CiTiao_Speed 	= SystemParameter[42] 		= 	XZ_Speed42;
@@ -1738,7 +1722,7 @@ void Screen_task(void *p_arg)    	//触摸屏界面操作
 				W25QXX_Write_16(SystemParameter+40, 40, 4);			//将当前屏幕参数写入到flash中
 			}
 			break;
-			case LeiDaShuJuJieMian:					//25//电池原始数据 
+			case LeiDaShuJuJieMian:					//25//电池原始数据 			-- 		OK
 			{
 				while(HmiScreenSetGet == LeiDaShuJuJieMian)
 				{
@@ -1772,7 +1756,7 @@ void Screen_task(void *p_arg)    	//触摸屏界面操作
 				SetOneParameterToSystem(SystemParameter[70], 70);
 			}
 			break;
-			case DianTiTiaoShiJieMian:				//26//电梯调试界面(在车上对电梯的一切进行操控和显示电梯状态)
+			case DianTiTiaoShiJieMian:				//26//电梯调试界面			--		未使用
 			{
 				while(HmiScreenSetGet == ChuanGanQiJieMian)
 				{
@@ -1809,7 +1793,7 @@ void Screen_task(void *p_arg)    	//触摸屏界面操作
 				}
 			}
 			break;
-			case XiTongCanShuJieMian:				//8//系统参数界面，速度的档位设置、雷达阈值的设定
+			case XiTongCanShuJieMian:				//8//系统参数界面			--		OK
 			{
 				while(HmiScreenSetGet == XiTongCanShuJieMian)
 				{
@@ -1860,7 +1844,7 @@ void Screen_task(void *p_arg)    	//触摸屏界面操作
 			}
 			break; 
 			//用户界面程序段
-			case YongHuShouYeJieMian:				//27//用户首页
+			case YongHuShouYeJieMian:				//27//用户首页--充电界面	--		未使用
 			{
 				while(HmiScreenSetGet == YongHuShouYeJieMian)
 				{
@@ -1905,137 +1889,141 @@ void Screen_task(void *p_arg)    	//触摸屏界面操作
 //2.启动按键被按下磁导航寻轨
 //3.前后都上轨才能go
 
-void Control_task(void *p_arg)		// 执行路径或执行流程 -- 应用层控制任务
+void Task5_task(void *p_arg)		// 执行路径或执行流程 -- 应用层控制任务
 {
-//	u16 i=0;
-//	u16 j=0; 
-//	u16 k=0;
+	u16 i=0;
+	u16 j=0; 
+	u16 k=0;
 	
 	OS_ERR err;
 	p_arg = p_arg;
 
 	while(1)
     {
-        //if(g_AGV_Car_mode == 0 && g_Start_flag.Start_Auto_PID == 1) //自动模式并且启动
-//        {
-//            //执行路径
-//            if(HmiTask == 1)							//任务动作 0:无任务 1:执行路径 2:执行流程
-//            {
-//               
-//                HmiRfidNum = 0; 						//清除当前地标
-//                HmiStationSerialNum = 0;				//站点序号清0
-//                //根据所选路径，执行相应动作
-//                for(i = 0; i < HmiStationNum; i++)
-//                {
-//                    StationAction(i);
-//                }
-//                HmiTask = 0;
+		
+		#if 0
+        if(g_AGV_Status.Car_mode == 0 && g_Start_flag.Start_Auto_PID == 1) //自动模式并且启动
+        {
+            //执行路径
+            if(HmiTask == 1)							//任务动作 0:无任务 1:执行路径 2:执行流程
+            {
+               
+                HmiRfidNum = 0; 						//清除当前地标
+                HmiStationSerialNum = 0;				//站点序号清0
+                //根据所选路径，执行相应动作
+                for(i = 0; i < HmiStationNum; i++)
+                {
+                    StationAction(i);
+                }
+                HmiTask = 0;
 
 
-//            }
-//            else
-//            {
-//                //执行流程
-//                if(HmiTask == 2)
-//                {
+            }
+            else
+            {
+                //执行流程
+                if(HmiTask == 2)
+                {
 
-//                    
-//                    HmiRfidNum = 0;						//清除当前地标
-//                    HmiProcessSerialNum = 0;			//流程序号清0
-//                    for(i = 0; i < HmiStepNum; i++)
-//                    {
-//                        HmiProcessSerialNum++;			//流程序号自加
-//                        switch(NowProcessInfor[i][1])
-//                        {
-//							case 0://单次执行
-//								//更新路径号
-//								HmiRouteNum = NowProcessInfor[i][0];
-//								//获取路径包含站点数
-//								GetRouteStationNum(HmiRouteNum);
-//								//获取当前路径信息
-//								GetRouteData(HmiRouteNum);
+                    
+                    HmiRfidNum = 0;						//清除当前地标
+                    HmiProcessSerialNum = 0;			//流程序号清0
+                    for(i = 0; i < HmiStepNum; i++)
+                    {
+                        HmiProcessSerialNum++;			//流程序号自加
+                        switch(NowProcessInfor[i][1])
+                        {
+							case 0://单次执行
+								//更新路径号
+								HmiRouteNum = NowProcessInfor[i][0];
+								//获取路径包含站点数
+								GetRouteStationNum(HmiRouteNum);
+								//获取当前路径信息
+								GetRouteData(HmiRouteNum);
 
-//								HmiStationSerialNum = 0;
-//								//根据所选路径，执行相应动作
-//								for(j = 0; j < HmiStationNum; j++)
-//								{
-//									StationAction(j);
-//								}
-//								break;
-//							case 1://顺序执行
-//								for(k = NowProcessInfor[i][0]; k <= NowProcessInfor[i][2]; k++)
-//								{
-//									//更新路径号
-//									HmiRouteNum = k;
-//									//获取路径包含站点数
-//									GetRouteStationNum(HmiRouteNum);
-//									//获取当前路径信息
-//									GetRouteData(HmiRouteNum);
+								HmiStationSerialNum = 0;
+								//根据所选路径，执行相应动作
+								for(j = 0; j < HmiStationNum; j++)
+								{
+									StationAction(j);
+								}
+								break;
+							case 1://顺序执行
+								for(k = NowProcessInfor[i][0]; k <= NowProcessInfor[i][2]; k++)
+								{
+									//更新路径号
+									HmiRouteNum = k;
+									//获取路径包含站点数
+									GetRouteStationNum(HmiRouteNum);
+									//获取当前路径信息
+									GetRouteData(HmiRouteNum);
 
-//									HmiStationSerialNum = 0;
-//									//根据所选路径，执行相应动作
-//									for(j = 0; j < HmiStationNum; j++)
-//									{
-//										StationAction(j);
-//									}
-//								}
-//								break;
-//							case 2://倒序执行
-//								for(k = NowProcessInfor[i][0]; k >= NowProcessInfor[i][2]; k--)
-//								{
-//									//更新路径号
-//									HmiRouteNum = k;
-//									//获取路径包含站点数
-//									GetRouteStationNum(HmiRouteNum);
-//									//获取当前路径信息
-//									GetRouteData(HmiRouteNum);
+									HmiStationSerialNum = 0;
+									//根据所选路径，执行相应动作
+									for(j = 0; j < HmiStationNum; j++)
+									{
+										StationAction(j);
+									}
+								}
+								break;
+							case 2://倒序执行
+								for(k = NowProcessInfor[i][0]; k >= NowProcessInfor[i][2]; k--)
+								{
+									//更新路径号
+									HmiRouteNum = k;
+									//获取路径包含站点数
+									GetRouteStationNum(HmiRouteNum);
+									//获取当前路径信息
+									GetRouteData(HmiRouteNum);
 
-//									HmiStationSerialNum = 0;
-//									//根据所选路径，执行相应动作
-//									for(j = 0; j < HmiStationNum; j++)
-//									{
-//										StationAction(j);
-//									}
-//								}
-//								break;
-//							case 3://循环执行
-//								//更新路径号
-//								HmiRouteNum = NowProcessInfor[i][0];
-//								//获取路径包含站点数
-//								GetRouteStationNum(HmiRouteNum);
-//								//获取当前路径信息
-//								GetRouteData(HmiRouteNum);
-//								for(k = 0; k < NowProcessInfor[i][2]; k++)
-//								{
-//									HmiStationSerialNum = 0;
-//									//根据所选路径，执行相应动作
-//									for(j = 0; j < HmiStationNum; j++)
-//									{
-//										StationAction(j);
-//									}
-//								}
-//								break;
-//							default:
-//								break;
-//                        }
-//                    }
-//                    HmiTask = 0;
-//					
-//					
-//					
+									HmiStationSerialNum = 0;
+									//根据所选路径，执行相应动作
+									for(j = 0; j < HmiStationNum; j++)
+									{
+										StationAction(j);
+									}
+								}
+								break;
+							case 3://循环执行
+								//更新路径号
+								HmiRouteNum = NowProcessInfor[i][0];
+								//获取路径包含站点数
+								GetRouteStationNum(HmiRouteNum);
+								//获取当前路径信息
+								GetRouteData(HmiRouteNum);
+								for(k = 0; k < NowProcessInfor[i][2]; k++)
+								{
+									HmiStationSerialNum = 0;
+									//根据所选路径，执行相应动作
+									for(j = 0; j < HmiStationNum; j++)
+									{
+										StationAction(j);
+									}
+								}
+								break;
+							default:
+								break;
+                        }
+                    }
+                    HmiTask = 0;
+					
+					
+					
 
 
-//                    //HmiScreenSetGet = 16;//跳到用户首页
+                    //HmiScreenSetGet = 16;//跳到用户首页
 
-////					if(lastscreenNum!=0)
-////					{
-//////						HmiScreenSetGet = lastscreenNum;
-////						HmiScreenSetGet = 16;//跳到用户首页
-////						lastscreenNum = 0;
-////					}
-//                }
-//            }
-//        }
+//					if(lastscreenNum!=0)
+//					{
+////						HmiScreenSetGet = lastscreenNum;
+//						HmiScreenSetGet = 16;//跳到用户首页
+//						lastscreenNum = 0;
+//					}
+                }
+            }
+        }
+		#endif
+		
         OSTimeDlyHMSM(0,0,0,10,OS_OPT_TIME_HMSM_STRICT,&err); //延时nms
     }	
 	
@@ -2054,7 +2042,8 @@ void WIFI_task(void *p_arg)			//暂未使用
 	{
 		
 		
-		
+		guntong_start = 1;
+		guntong_fanzhuan = 1;
 		
 		
 		
@@ -2068,7 +2057,7 @@ void guntong_task(void *p_arg)
 	p_arg = p_arg;
 	while(1)
 	{
-		if(g_AGV_Car_mode) //1://手动模式
+		if(g_AGV_Status.Car_mode) //1://手动模式
 		{
 			if(g_AGV_yaokong.SD_ir == 9)			//摇杆左旋--滚筒左转
 			{
@@ -2090,8 +2079,8 @@ void guntong_task(void *p_arg)
 		
 		
 //		//清空地标
-//		g_AGV_RFID_ID=0;
-//		while(g_AGV_RFID_ID==0)
+//		g_AGV_Status.RFID_ID=0;
+//		while(g_AGV_Status.RFID_ID==0)
 //		{
 //			OSTimeDlyHMSM(0,0,0,10,OS_OPT_TIME_HMSM_STRICT,&err);
 //		}
@@ -2254,12 +2243,241 @@ void DCv_task(void *p_arg)											//电压采集
 
 void heartbeat_task(void *p_arg)
 {
-	OS_ERR err;
+	//OS_ERR err;
 	p_arg = p_arg;
 
 	while(1)
 	{
-        
+		switch(g_AGV_Status.Car_Speaker_flag)
+        {
+			case 0://自动运行时的音乐提示
+			{
+//				//没有避障并且在自动运行状态是才有运行音乐
+//				if(Bi_Zhang_flag == 0 && Mode_flag == 1 && QD_flag == 1)
+//				{
+//					if(sound_num == 120)
+//					{
+//						speek("[x1]sound220");
+//					}
+//					sound_num++;
+//					if(sound_num >= 240)
+//					{
+//						sound_num = 0;
+//					}
+//				}
+//				else//否则没有
+//				{
+//					if(sound_num != 0)
+//					{
+//						sound_num = 0;
+//					}
+//				}
+//				
+//				
+//				
+//				if(Bi_Zhang_flag == 1 && Mode_flag == 1 && QD_flag == 1) //有避障时
+//				{
+//					if(sound_num1 == 150)
+//					{
+//						speek("[x1]sound304");
+//					}
+//					sound_num1++;
+//					if(sound_num1 >= 250)
+//					{
+//						sound_num1 = 0;
+//						g_AGV_Status.Car_Speaker_flag = 15;
+//					}
+//				}
+//				else//否则没有
+//				{
+//					if(sound_num1 != 0)
+//					{
+//						sound_num1 = 0;
+//					}
+//				}
+			}
+			break;
+			case 1://自动
+			{
+				g_AGV_Status.Car_Speaker_flag = 0;
+				speek("自动");
+				break;
+			}
+			case 2://手动
+			{
+				g_AGV_Status.Car_Speaker_flag = 0;
+				speek("手动");
+				break;
+			}
+			case 3://前进
+			{
+				g_AGV_Status.Car_Speaker_flag = 0;
+				speek("前进");
+				break;
+			}
+			case 4://工位对接
+			{
+				g_AGV_Status.Car_Speaker_flag = 0;
+				speek("工位对接");
+				break;
+			}
+			case 5://后退
+			{
+				g_AGV_Status.Car_Speaker_flag = 0;
+				speek("后退");
+				break;
+			}
+			case 6://停止
+			{
+				g_AGV_Status.Car_Speaker_flag = 0;
+				speek("停止");
+				break;
+			}
+			case 7://启动
+			{
+				g_AGV_Status.Car_Speaker_flag = 0;
+				speek("启动");
+				break;
+			}
+			case 8://左分叉
+			{
+				g_AGV_Status.Car_Speaker_flag = 0;
+				speek("左分叉");
+				break;
+			}
+			case 9://中分叉
+			{
+				g_AGV_Status.Car_Speaker_flag = 0;
+				speek("中分叉");
+				break;
+			}
+			case 10://右分叉
+			{
+				g_AGV_Status.Car_Speaker_flag = 0;
+				speek("右分叉");
+				break;
+			}
+			case 11://滚筒左转
+			{
+				g_AGV_Status.Car_Speaker_flag = 0;
+				speek("叉臂上升");
+				break;
+			}
+			case 12://滚筒右转
+			{
+				g_AGV_Status.Car_Speaker_flag = 0;
+				speek("叉臂下降");
+				break;
+			}
+			
+			
+			
+			
+			
+			
+			case 13://遥控前进
+			{
+				g_AGV_Status.Car_Speaker_flag = 0;
+				speek("遥控前进");
+				break;
+			}
+			case 14://遥控后退
+			{
+				g_AGV_Status.Car_Speaker_flag = 0;
+				speek("遥控后退");
+				break;
+			}
+			case 15://前方有障碍，请清除
+			{
+				g_AGV_Status.Car_Speaker_flag = 0;
+				speek("前方有障碍，请清除");
+				break;
+			}
+			case 16://障碍已清除
+			{
+				g_AGV_Status.Car_Speaker_flag = 0;
+				speek("障碍已清除");
+				break;
+			}
+			case 17://前方有障碍，请小心驾驶
+			{
+				g_AGV_Status.Car_Speaker_flag = 0;
+				speek("前方有障碍，请小心驾驶");
+				break;
+			}
+			case 18://复位ok
+			{
+				g_AGV_Status.Car_Speaker_flag = 0;
+				speek("复位ok");
+				break;
+			}
+			case 19://去一楼
+			{
+				g_AGV_Status.Car_Speaker_flag = 0;
+				speek("去一楼");
+				break;
+			}
+			case 20://左转
+			{
+				g_AGV_Status.Car_Speaker_flag = 0;
+				speek("左转");
+				break;
+			}
+			case 21://右转
+			{
+				g_AGV_Status.Car_Speaker_flag = 0;
+				speek("右转");
+				break;
+			}
+			case 22://请求进入
+			{
+				g_AGV_Status.Car_Speaker_flag = 0;
+				speek("请求进入");
+				break;
+			}
+			case 23://允许进入
+			{
+				g_AGV_Status.Car_Speaker_flag = 0;
+				speek("允许进入");
+				break;
+			}
+			case 24://开门
+			{
+				g_AGV_Status.Car_Speaker_flag = 0;
+				speek("开门");
+				break;
+			}
+			case 25://关门
+			{
+				g_AGV_Status.Car_Speaker_flag = 0;
+				speek("关门");
+				break;
+			}
+			case 26://去一楼
+			{
+				g_AGV_Status.Car_Speaker_flag = 0;
+				speek("去一楼");
+				break;
+			}
+			case 27://去三楼
+			{
+				g_AGV_Status.Car_Speaker_flag = 0;
+				speek("去三楼");
+				break;
+			}
+			case 28://障碍
+			{
+				g_AGV_Status.Car_Speaker_flag = 0;
+				speek("障碍已移除，2秒后启动程序");
+				break;
+			}
+			
+			
+			
+
+        }		
+		
+		
 		delay_ms(1000);		
 	}
 }
@@ -2267,7 +2485,7 @@ void heartbeat_task(void *p_arg)
 void openbox_task(void *p_arg)
 {
 	u8 temp_i=0;
-	OS_ERR err;
+	//OS_ERR err;
 	p_arg = p_arg;
 	
 	//Heart(1);
@@ -2282,7 +2500,7 @@ void openbox_task(void *p_arg)
 			temp_i = 0;
 		}
 		
-		delay_ms(10);
+		delay_rtos(0,0,0,10);
 	}
 }
 
