@@ -7,7 +7,7 @@ u8 g_cinavi2_RXbuff[16];
 u8 g_cinavi3_RXbuff[16];  
 u8 g_cinavi4_RXbuff[16];	//后磁导航
 
-
+u16 g_AGV_RFID_ID;//地标  //
 u8  g_flag_RFID_beep;
 
 u8 g_watie_Motec_init = 110;				//等待
@@ -177,7 +177,7 @@ void CAN1_RX0_IRQHandler(void)			//磁导航采集
 	{
 		for(i=0;i<RxMessage.DLC;i++)
 		g_Get_RFID_buff[i] = RxMessage.Data[i]; 
-		g_AGV_Status.RFID_ID = g_Get_RFID_buff[1]<<8|g_Get_RFID_buff[0];
+		g_AGV_RFID_ID = g_Get_RFID_buff[1]<<8|g_Get_RFID_buff[0];
 		g_flag_RFID_beep = 1;
 		
 	}  	
@@ -294,7 +294,7 @@ void CAN1_RX0_IRQHandler(void)			//磁导航采集
 	{
 		for(i=0;i<RxMessage.DLC;i++)
 		g_cinavi1_RXbuff[i]=RxMessage.Data[i];
-		g_CDH8_qian_1 = FindSpace1(g_cinavi1_RXbuff[0],8,g_AGV_Status.Car_fencha_dir);
+		g_CDH8_qian_1 = FindSpace1(g_cinavi1_RXbuff[0],8,g_AGV_Car_fencha_dir);
 //		if(g_CDH8_qian_1.Distance)	//非0存
 //		{
 //			g_Ct_chugui[0] = g_CDH8_qian_1.Distance;
@@ -306,7 +306,7 @@ void CAN1_RX0_IRQHandler(void)			//磁导航采集
 	{
 		for(i=0;i<RxMessage.DLC;i++)
 		g_cinavi2_RXbuff[i]=RxMessage.Data[i]; 
-		g_CDH8_qian_2 = FindSpace1(g_cinavi2_RXbuff[0],8,g_AGV_Status.Car_fencha_dir);
+		g_CDH8_qian_2 = FindSpace1(g_cinavi2_RXbuff[0],8,g_AGV_Car_fencha_dir);
 //		if(g_CDH8_qian_2.Distance)	//非0存
 //		{
 //			g_Ct_chugui[1] = g_CDH8_qian_2.Distance;
@@ -317,7 +317,7 @@ void CAN1_RX0_IRQHandler(void)			//磁导航采集
 	{
 		for(i=0;i<RxMessage.DLC;i++)
 		g_cinavi3_RXbuff[i]=RxMessage.Data[i]; 
-		g_CDH8_hou_1 = FindSpace1(g_cinavi3_RXbuff[0],8,g_AGV_Status.Car_fencha_dir);
+		g_CDH8_hou_1 = FindSpace1(g_cinavi3_RXbuff[0],8,g_AGV_Car_fencha_dir);
 //		if(g_CDH8_qian_2.Distance)	//非0存
 //		{
 //			g_Ct_chugui[1] = g_CDH8_qian_2.Distance;
@@ -327,7 +327,7 @@ void CAN1_RX0_IRQHandler(void)			//磁导航采集
 	{
 		for(i=0;i<RxMessage.DLC;i++)
 		g_cinavi4_RXbuff[i]=RxMessage.Data[i]; 
-		g_CDH8_hou_2 = FindSpace1(g_cinavi4_RXbuff[0],8,g_AGV_Status.Car_fencha_dir);
+		g_CDH8_hou_2 = FindSpace1(g_cinavi4_RXbuff[0],8,g_AGV_Car_fencha_dir);
 //		if(g_CDH8_qian_2.Distance)	//非0存
 //		{
 //			g_Ct_chugui[1] = g_CDH8_qian_2.Distance;
@@ -624,7 +624,7 @@ u8 g_Init_OK_Motec;
 
 void check_Motec_init(void)
 {
-	//u8 temp_i = 0;
+	u8 temp_i = 0;
 	
 	g_Init_OK_Motec = 0;
 	

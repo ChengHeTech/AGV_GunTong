@@ -11,6 +11,9 @@ typedef struct
 	u8  SD_ir;
 	u16 SD_Speed;
 
+	
+
+
 
 }yaokong;
 	
@@ -32,7 +35,7 @@ extern u8 g_cinavi6_RXbuff[16];	//后磁导航
 
 extern int g_SD_buff[16];
 
-
+extern u16 g_AGV_RFID_ID;//地标
 
 
 extern u8  g_flag_RFID_beep;

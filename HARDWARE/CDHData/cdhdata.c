@@ -335,9 +335,9 @@ void PID_AUTO_QianLun(u16 j_speed,float kp,float ki,float kd)
 	
 	PID.SetTarget = 0;		//PID目标值
 	
-	if(g_AGV_Status.Car_dir == 0)
+	if(g_AGV_Car_dir == 0)
 	{
-		while( g_CDH8_qian_1.Num==0 && num<50 )				//空点检测0.5秒
+		while( g_CDH8_qian_1.Num==0 && num<100 )				//空点检测0.5秒
 		{
 			num++;
 			delay_rtos(0,0,0,10);
@@ -346,6 +346,10 @@ void PID_AUTO_QianLun(u16 j_speed,float kp,float ki,float kd)
 		{
 			AGV_System_Stop();					//停止
 			HmiTaskState = 4;								//触摸屏显示车辆停止
+			speek("前1");
+			delay_rtos(0,0,0,500);
+		
+		
 		}
 		else
 		{
@@ -368,9 +372,9 @@ void PID_AUTO_QianLun(u16 j_speed,float kp,float ki,float kd)
 						
 		}
 	}
-	else if(g_AGV_Status.Car_dir == 1)					//后退
+	else if(g_AGV_Car_dir == 1)					//后退
 	{
-		while(g_CDH8_qian_2.Num==0 && num!=50)		//空点检测0.5秒
+		while(g_CDH8_qian_2.Num==0 && num!=100)		//空点检测0.5秒
 		{
 			num++;
 			delay_rtos(0,0,0,10);
@@ -379,6 +383,8 @@ void PID_AUTO_QianLun(u16 j_speed,float kp,float ki,float kd)
 		{
 			AGV_System_Stop();					//停止
 			HmiTaskState = 4;					//无磁条停止
+			speek("前2");
+			delay_rtos(0,0,0,500);
 		}
 		else
 		{
@@ -414,7 +420,7 @@ void PID_AUTO_HouLun(u16 j_speed2,float kp2,float ki2,float kd2)	//后轮的PID调节
 	
 	PID2.SetTarget = 0;		//PID2目标值
 	
-	if(g_AGV_Status.Car_dir == 0)	//前进
+	if(g_AGV_Car_dir == 0)	//前进
 	{
 		while( g_CDH8_hou_1.Num==0 && num2<50 )				//空点检测0.5秒
 		{
@@ -425,6 +431,10 @@ void PID_AUTO_HouLun(u16 j_speed2,float kp2,float ki2,float kd2)	//后轮的PID调节
 		{
 			AGV_System_Stop();							//停止
 			HmiTaskState = 4;								//触摸屏显示车辆停止
+		
+		
+			speek("后1");
+			delay_rtos(0,0,0,500);
 		}
 		else
 		{
@@ -445,7 +455,7 @@ void PID_AUTO_HouLun(u16 j_speed2,float kp2,float ki2,float kd2)	//后轮的PID调节
 			
 		}
 	}
-	else if(g_AGV_Status.Car_dir == 1)					//后退
+	else if(g_AGV_Car_dir == 1)					//后退
 	{
 		while(g_CDH8_hou_2.Num==0 && num2!=50)		//空点检测0.5秒
 		{
@@ -456,6 +466,8 @@ void PID_AUTO_HouLun(u16 j_speed2,float kp2,float ki2,float kd2)	//后轮的PID调节
 		{
 			AGV_System_Stop();
 			HmiTaskState = 4;					//无磁条停止
+				speek("后2");
+			delay_rtos(0,0,0,500);
 		}
 		else
 		{

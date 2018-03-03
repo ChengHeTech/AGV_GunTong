@@ -80,27 +80,27 @@ void DMA_Uart2_Init(void)
  
     //DMA_Cmd(DMA1_Stream6, DISABLE);
     //DMA_DeInit(DMA1_Stream6);
-//	DMA_InitStructure.DMA_Channel = DMA_Channel_4;
-//    DMA_InitStructure.DMA_PeripheralBaseAddr = (uint32_t)(&USART2->DR);
+	DMA_InitStructure.DMA_Channel = DMA_Channel_4;
+    DMA_InitStructure.DMA_PeripheralBaseAddr = (uint32_t)(&USART2->DR);
 	
     DMA_InitStructure.DMA_Memory0BaseAddr = (uint32_t)g_ethernet_TXbuff;  //发送buff
 	
 	
-//    DMA_InitStructure.DMA_DIR = DMA_DIR_MemoryToPeripheral;
-//    DMA_InitStructure.DMA_BufferSize = g_ethernet_TXbuff_len;			  //发送buff长度
-//    DMA_InitStructure.DMA_PeripheralInc = DMA_PeripheralInc_Disable;
-//    DMA_InitStructure.DMA_MemoryInc = DMA_MemoryInc_Enable;
-//    DMA_InitStructure.DMA_PeripheralDataSize = DMA_PeripheralDataSize_Byte;
-//    DMA_InitStructure.DMA_MemoryDataSize = DMA_MemoryDataSize_Byte;
-//    DMA_InitStructure.DMA_Mode = DMA_Mode_Circular;	
-//	DMA_InitStructure.DMA_FIFOMode = DMA_FIFOMode_Disable; 
-//    DMA_InitStructure.DMA_FIFOThreshold = DMA_FIFOThreshold_Full;	
-//    DMA_InitStructure.DMA_Priority = DMA_Priority_VeryHigh;
-//	DMA_InitStructure.DMA_MemoryBurst = DMA_MemoryBurst_Single;//存储器突发单次传输
-//	DMA_InitStructure.DMA_PeripheralBurst = DMA_PeripheralBurst_Single;//外设突发单次传输
-//    DMA_Init(DMA1_Stream6, &DMA_InitStructure);
-//	DMA_Cmd(DMA1_Stream6, DISABLE);
-//    DMA_ITConfig(DMA1_Stream6, DMA_IT_TC, ENABLE);
+    DMA_InitStructure.DMA_DIR = DMA_DIR_MemoryToPeripheral;
+    DMA_InitStructure.DMA_BufferSize = g_ethernet_TXbuff_len;			  //发送buff长度
+    DMA_InitStructure.DMA_PeripheralInc = DMA_PeripheralInc_Disable;
+    DMA_InitStructure.DMA_MemoryInc = DMA_MemoryInc_Enable;
+    DMA_InitStructure.DMA_PeripheralDataSize = DMA_PeripheralDataSize_Byte;
+    DMA_InitStructure.DMA_MemoryDataSize = DMA_MemoryDataSize_Byte;
+    DMA_InitStructure.DMA_Mode = DMA_Mode_Circular;	
+	DMA_InitStructure.DMA_FIFOMode = DMA_FIFOMode_Disable; 
+    DMA_InitStructure.DMA_FIFOThreshold = DMA_FIFOThreshold_Full;	
+    DMA_InitStructure.DMA_Priority = DMA_Priority_VeryHigh;
+	DMA_InitStructure.DMA_MemoryBurst = DMA_MemoryBurst_Single;//存储器突发单次传输
+	DMA_InitStructure.DMA_PeripheralBurst = DMA_PeripheralBurst_Single;//外设突发单次传输
+    DMA_Init(DMA1_Stream6, &DMA_InitStructure);
+	DMA_Cmd(DMA1_Stream6, DISABLE);
+    DMA_ITConfig(DMA1_Stream6, DMA_IT_TC, ENABLE);
    
 /*--- LUMMOD_UART_Rx_DMA_Channel DMA Config ---*/
  

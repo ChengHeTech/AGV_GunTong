@@ -3,6 +3,16 @@
 
 
 
+
+			
+u8  g_AGV_Car_dir;				//全局唯一//0:前进    1:后退
+
+u8  g_AGV_Car_fencha_dir;		//全局唯一//0:左分叉  1:右分叉
+u8  g_AGV_Car_mode = 1;			//0:自动  1:手动
+
+
+
+
 #if 0
 ////电机驱动器
 ////使能信号,方向信号,引脚初始化
@@ -313,7 +323,7 @@ void CtXunZheng_qian(u8 cidaohang_id,u16 xunzheng_speed0)
 	
 	if(cidaohang_id == 1)		//前1磁导航
 	{
-		while(g_CDH8_qian_1.Num<2)		//少于2个亮点		
+		while(g_CDH8_qian_1.Num<4)		//少于4个亮点		
 		{									
 					
 			temp_dianweiqi_1 = g_After_filter[1];	//前驱动电位器
@@ -371,7 +381,7 @@ void CtXunZheng_qian(u8 cidaohang_id,u16 xunzheng_speed0)
 	}
 	else if(cidaohang_id == 2)		//前2磁导航
 	{
-		while(g_CDH8_qian_2.Num<2)		//检测到2个亮点		
+		while(g_CDH8_qian_2.Num<4)		//检测到2个亮点		
 		{									
 					
 			temp_dianweiqi_1 = g_After_filter[1];	//前驱动电位器
@@ -562,7 +572,7 @@ void check_CtXunZ_OK(u16 XunZ_speed)
 {
 	u8 temp_Val=0;
 	
-	if(!g_AGV_Status.Car_dir)	//0:前进
+	if(!g_AGV_Car_dir)	//0:前进
 	{
 		CtXunZheng_qian(1,XunZ_speed);
 		CtXunZheng_hou (1,XunZ_speed);		
@@ -605,13 +615,15 @@ void check_CtXunZ_OK(u16 XunZ_speed)
 
 void AGV_System_Stop(void)
 {
-	MotoStop(0);
+	//MotoStop(0);
 	g_Start_flag.Stop_AGV_SysCode = 1;
+	delay_rtos(0,0,1,0);
 
 }	
 void AGV_System_Start(void)
 {
 	g_Start_flag.Start_AGV_SysCode = 1;
+	delay_rtos(0,0,1,0);
 }
 
 
@@ -700,7 +712,7 @@ void AGV_Stop2Start(void)
 //	}
 	
 
-	if(!g_AGV_Status.Car_mode)	//0:自动
+	if(!g_AGV_Car_mode)	//0:自动
 	{
 		//AGV磁条寻正
 		if(g_Start_flag.Start_button_Car==1 && g_Start_flag.button_Start==1)	
