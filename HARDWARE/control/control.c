@@ -104,7 +104,9 @@ void GunTong_L(u8 enable)
 	{
 		guntong_start = 1;	
 		guntong_fanzhuan = 1;					//¹öÍ²ÓÒ×ª
-		speek("¹öÍ²×ó×ª");
+
+		speek("¹öÍ²[=tong3]×ó×ª");
+		
 		delay_rtos(0,0,0,g_Speaker_delay);
 	}
 	else

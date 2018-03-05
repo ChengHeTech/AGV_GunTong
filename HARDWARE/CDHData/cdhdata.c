@@ -346,7 +346,7 @@ void PID_AUTO_QianLun(u16 j_speed,float kp,float ki,float kd)
 		{
 			AGV_System_Stop();					//停止
 			HmiTaskState = 4;								//触摸屏显示车辆停止
-			speek("前1");
+			speek("脱离轨道");
 			delay_rtos(0,0,0,500);
 		
 		
@@ -383,7 +383,7 @@ void PID_AUTO_QianLun(u16 j_speed,float kp,float ki,float kd)
 		{
 			AGV_System_Stop();					//停止
 			HmiTaskState = 4;					//无磁条停止
-			speek("前2");
+			speek("脱离轨道");
 			delay_rtos(0,0,0,500);
 		}
 		else
@@ -434,7 +434,7 @@ void PID_AUTO_HouLun(u16 j_speed2,float kp2,float ki2,float kd2)	//后轮的PID调节
 			HmiTaskState = 4;								//触摸屏显示车辆停止
 		
 		
-			speek("后1");
+			speek("脱离轨道");
 			delay_rtos(0,0,0,500);
 		}
 		else
@@ -467,7 +467,7 @@ void PID_AUTO_HouLun(u16 j_speed2,float kp2,float ki2,float kd2)	//后轮的PID调节
 		{
 			AGV_System_Stop();
 			HmiTaskState = 4;					//无磁条停止
-				speek("后2");
+				speek("脱离轨道");
 			delay_rtos(0,0,0,500);
 		}
 		else

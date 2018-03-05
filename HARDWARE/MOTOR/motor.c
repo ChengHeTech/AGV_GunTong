@@ -913,8 +913,8 @@ void delay_rtos(u32 h,u32 m,u32 s,u32 ms)
 AGV_Start_flag g_Start_flag = 
 {
 	0, 		//u8 Start_AGV_SysCode;		//系统程序调用
-	0, 		//u8 Start_IR;				//系统程序调用
-	0,		//u8 Start_jixie;			//系统程序调用
+	1, 		//u8 Start_IR;				//系统程序调用
+	1,		//u8 Start_jixie;			//系统程序调用
 	0,		//u8 button_Start;		
 	0, 		//u8 Start_Auto_PID;		//底层PID函数的开关--自动
 	0,   	//u8 Start_Manu_PID;		//底层PID函数的开关--手动

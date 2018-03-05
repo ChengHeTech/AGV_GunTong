@@ -532,21 +532,21 @@ void Transducer_task(void *p_arg)  	//开关量输入采集及行车灯状态
 void float_task(void *p_arg)		//红外和机械避障
 {
 	OS_ERR err;
-	//u8 temp_i=0;
-	//u8 temp_j=0;
-	//u8 temp_k=0;
-	//u8 temp_flag[]={0,0,0,0};
+	u8 temp_i=0;
+	u8 temp_j=0;
+	u8 temp_k=0;
+	u8 temp_flag[]={0,0,0,0};
 	
 
-	//u8 temp_Tiaojian[] = {0,0,0,0};					//条件
-	//u8 *temp_Jieguo[]  = {&g_Start_flag.Start_IR,&g_Start_flag.Start_jixie,&g_Start_flag.Start_IR,&g_Start_flag.Start_jixie};		//结果
+	u8 temp_Tiaojian[] = {0,0,0,0};					//条件
+	u8 *temp_Jieguo[]  = {&g_Start_flag.Start_IR,&g_Start_flag.Start_jixie,&g_Start_flag.Start_IR,&g_Start_flag.Start_jixie};		//结果
 	
 	g_Start_flag.Start_IR=1;
 	g_Start_flag.Start_jixie=1;
 
 	while(1)
 	{	
-		#if 0
+		#if 1
 		
 		if(!g_AGV_Sta.Car_Auto2Manu_mode)				//自动模式
 		{
@@ -583,12 +583,10 @@ void float_task(void *p_arg)		//红外和机械避障
 			temp_Tiaojian[3] = g_flag_fangzhuang_hou;		//条件			
 		}
 
-		
 	
-		
 		for(temp_i=temp_j;temp_i<temp_j+2;temp_i++)
 		{
-			if(temp_Tiaojian[temp_i] == 0)				//近红外避障 0触发
+			if(temp_Tiaojian[temp_i] == 0&&*temp_Jieguo[temp_i] == 1)				//近红外避障 0触发
 			{
 //				delay_rtos(0,0,0,10);
 //				if(temp_j == 0)
@@ -605,9 +603,12 @@ void float_task(void *p_arg)		//红外和机械避障
 				if(temp_Tiaojian[temp_i] == 0)				//近红外避障 0触发
 				{
 					*temp_Jieguo[temp_i] = 0;	//0停止
+					
+					speek("前方有障碍");
+					//delay_rtos(0,0,0,g_Speaker_delay);
 				}
 			}	
-			else
+			else if(temp_Tiaojian[temp_i] == 1&&*temp_Jieguo[temp_i] == 0)
 			{
 //				delay_rtos(0,0,0,10);
 //				if(temp_j == 0)
@@ -623,8 +624,8 @@ void float_task(void *p_arg)		//红外和机械避障
 				
 				if(temp_Tiaojian[temp_i] == 1)		
 				{
-					if(*temp_Jieguo[temp_i] == 0)
-					{
+//					if(*temp_Jieguo[temp_i] == 0)
+//					{
 //						temp_k++;
 //						if(temp_k > 100)
 //						{
@@ -632,12 +633,17 @@ void float_task(void *p_arg)		//红外和机械避障
 //						}
 						delay_rtos(0,0,1,0);
 						*temp_Jieguo[temp_i] = 1;	//1启动
-					}
-					else
-					{
-						*temp_Jieguo[temp_i] = 1;	//1启动
-					}
-					
+						
+						speek("障碍已清除");
+						delay_rtos(0,0,0,g_Speaker_delay);
+//					}
+//					else
+//					{
+//						*temp_Jieguo[temp_i] = 1;	//1启动
+//						
+//						
+//					}
+//					
 				}		
 			}					
 		}
@@ -2039,7 +2045,7 @@ void Task5_task(void *p_arg)		// 执行路径或执行流程 -- 应用层控制任务
 
 
 
-void WIFI_task(void *p_arg)			//暂未使用 
+void WIFI_task(void *p_arg)			//服务器远程控制
 {
 	
 	//u8 temp_i=0;
@@ -2048,11 +2054,25 @@ void WIFI_task(void *p_arg)			//暂未使用
 	p_arg = p_arg;
 	while(1)
 	{
-		
-
-		
-		
-		
+		//左转
+		if(Dbus.Register[1])
+		{
+			Dbus.Register[1] = 0;
+			GunTong_L(1);
+		}
+		//右转
+		if(Dbus.Register[2])
+		{
+			Dbus.Register[2] = 0;
+			GunTong_R(1);
+		}
+		//停止
+		if(Dbus.Register[3])
+		{
+			Dbus.Register[3] = 0;
+			GunTong_L(0);
+			GunTong_R(0);
+		}		
 		OSTimeDlyHMSM(0,0,0,10,OS_OPT_TIME_HMSM_STRICT,&err);
 	}
 }

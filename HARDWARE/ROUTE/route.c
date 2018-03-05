@@ -1093,12 +1093,7 @@ void StationAction(u16 num)
 
 
 	
-    //延时到站
-    if(NowRouteInfor[num][1] > 0)
-    {
-        osdelay_s(NowRouteInfor[num][1] / 10);
-        osdelay_ms((NowRouteInfor[num][1] % 10) * 100);
-    }
+    
 
     switch(NowRouteInfor[num][6])//停止、前进、后退左、后退右、左旋、右旋
     {
@@ -1114,6 +1109,12 @@ void StationAction(u16 num)
 			break;
 		case 5:
 			break;	//通过
+    }
+		//延时到站
+    if(NowRouteInfor[num][1] > 0)
+    {
+        osdelay_s(NowRouteInfor[num][1] / 10);
+        osdelay_ms((NowRouteInfor[num][1] % 10) * 100);
     }
     switch(NowRouteInfor[num][4])//速度档位判断
     {
@@ -1152,7 +1153,7 @@ void StationAction(u16 num)
     }
 	
 	
-   switch(NowRouteInfor[num][0])//远程红外
+		switch(NowRouteInfor[num][0])//远程红外
     {
 		case 0:
 			break;//保持上次信息
@@ -1254,6 +1255,8 @@ void StationAction(u16 num)
 		break;
 
     }
+		
+
 	
 //@@
 //备用接口
@@ -1401,7 +1404,8 @@ void StationAction(u16 num)
 			break;//停止
 		case 2://前进
 		{
-			g_AGV_Sta.Car_dir = g_AGV_Sta.Car_dir;
+			Qian_Jin();
+//			g_AGV_Sta.Car_dir = g_AGV_Sta.Car_dir;
 			Qi_Dong();			
 			
 		}
@@ -1417,7 +1421,8 @@ void StationAction(u16 num)
 		break;
 		case 4://后退
 		{
-			g_AGV_Sta.Car_dir = !g_AGV_Sta.Car_dir;
+			Hou_Tui();
+//			g_AGV_Sta.Car_dir = !g_AGV_Sta.Car_dir;
 			Qi_Dong();
 			
 		}
